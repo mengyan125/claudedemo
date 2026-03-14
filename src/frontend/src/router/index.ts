@@ -77,24 +77,55 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/pages/admin/QuickReplyPage.vue'),
         meta: { title: '快捷回复管理' }
       },
-      /* 系统管理 */
+      /* 系统管理（子Tab导航） */
       {
-        path: 'system/role',
-        name: 'SystemRole',
-        component: () => import('@/pages/system/RolePage.vue'),
-        meta: { title: '角色权限设置' }
-      },
-      {
-        path: 'system/category-permission',
-        name: 'SystemCategoryPermission',
-        component: () => import('@/pages/system/CategoryPermissionPage.vue'),
-        meta: { title: '类别权限配置' }
-      },
-      {
-        path: 'system/user',
-        name: 'SystemUser',
-        component: () => import('@/pages/system/UserPage.vue'),
-        meta: { title: '用户管理' }
+        path: 'system',
+        component: () => import('@/pages/system/SystemLayout.vue'),
+        redirect: '/system/user',
+        children: [
+          {
+            path: 'user',
+            name: 'SystemUser',
+            component: () => import('@/pages/system/UserPage.vue'),
+            meta: { title: '用户管理' }
+          },
+          {
+            path: 'semester',
+            name: 'SystemSemester',
+            component: () => import('@/pages/system/SemesterPage.vue'),
+            meta: { title: '学期管理' }
+          },
+          {
+            path: 'grade',
+            name: 'SystemGrade',
+            component: () => import('@/pages/system/GradePage.vue'),
+            meta: { title: '年级管理' }
+          },
+          {
+            path: 'class',
+            name: 'SystemClass',
+            component: () => import('@/pages/system/ClassPage.vue'),
+            meta: { title: '班级管理' }
+          },
+          {
+            path: 'relation',
+            name: 'SystemRelation',
+            component: () => import('@/pages/system/RelationPage.vue'),
+            meta: { title: '师生关系管理' }
+          },
+          {
+            path: 'role',
+            name: 'SystemRole',
+            component: () => import('@/pages/system/RolePage.vue'),
+            meta: { title: '角色权限设置' }
+          },
+          {
+            path: 'category-permission',
+            name: 'SystemCategoryPermission',
+            component: () => import('@/pages/system/CategoryPermissionPage.vue'),
+            meta: { title: '类别权限配置' }
+          }
+        ]
       }
     ]
   },

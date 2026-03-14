@@ -42,7 +42,7 @@
     </header>
 
     <!-- 内容区域 -->
-    <main class="main-content">
+    <main class="main-content" :class="{ 'no-padding': isNestedLayout }">
       <router-view />
     </main>
   </div>
@@ -74,7 +74,7 @@ const allTabs: TabItem[] = [
   { path: '/admin/feedback', label: '反馈查看', match: ['/admin/feedback'], roles: ['admin'] },
   { path: '/admin/statistics', label: '反馈统计', match: ['/admin/statistics'], roles: ['admin'] },
   { path: '/admin/category', label: '反馈管理', match: ['/admin/category', '/admin/quick-reply'], roles: ['admin'] },
-  { path: '/system/role', label: '系统管理', match: ['/system'], roles: ['admin'] }
+  { path: '/system', label: '系统管理', match: ['/system'], roles: ['admin'] }
 ]
 
 /* 根据角色过滤可见 Tab */
@@ -92,6 +92,11 @@ const visibleTabs = computed(() => {
 function isActiveTab(tab: TabItem): boolean {
   return tab.match.some(prefix => route.path.startsWith(prefix))
 }
+
+/* 是否为嵌套布局路由（系统管理/反馈管理含子Tab） */
+const isNestedLayout = computed(() => {
+  return route.path.startsWith('/system') || route.path.startsWith('/admin/category') || route.path.startsWith('/admin/quick-reply')
+})
 
 /* 下拉菜单命令 */
 async function handleCommand(command: string) {
@@ -209,5 +214,9 @@ async function handleCommand(command: string) {
   overflow: auto;
   background: #f5f5f5;
   padding: 24px 40px;
+}
+
+.main-content.no-padding {
+  padding: 0;
 }
 </style>

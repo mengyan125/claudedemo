@@ -5,6 +5,11 @@ import 'element-plus/dist/index.css'
 import App from './App.vue'
 import router from './router'
 
+/* 开发环境启用 Mock */
+if (import.meta.env.DEV) {
+  import('./mock').then(({ setupMock }) => setupMock())
+}
+
 const app = createApp(App)
 
 app.use(createPinia())
