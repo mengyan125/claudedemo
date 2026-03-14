@@ -29,19 +29,19 @@
       <el-table-column label="操作" min-width="200">
         <template #default="{ row }">
           <el-button
-            link
-            type="primary"
+            text
+            class="text-btn-primary"
             :disabled="row.feedbackCount > 0"
             @click="handleEdit(row)"
           >编辑</el-button>
           <el-button
-            link
-            :type="row.status === 1 ? 'warning' : 'success'"
+            text
+            :class="row.status === 1 ? 'text-btn-warning' : 'text-btn-success'"
             @click="handleToggleStatus(row)"
           >{{ row.status === 1 ? '停用' : '启用' }}</el-button>
           <el-button
-            link
-            type="danger"
+            text
+            class="text-btn-danger"
             :disabled="row.feedbackCount > 0"
             @click="handleDelete(row)"
           >删除</el-button>
@@ -61,6 +61,7 @@
         :model="formData"
         :rules="formRules"
         label-width="120px"
+        label-position="left"
       >
         <el-form-item label="类别名称" prop="name">
           <el-input
@@ -78,6 +79,16 @@
         </el-form-item>
         <el-form-item label="显示顺序" prop="sortOrder">
           <el-input-number v-model="formData.sortOrder" :min="1" :max="9" />
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input
+            v-model="formData.remark"
+            type="textarea"
+            :rows="3"
+            placeholder="请输入备注"
+            maxlength="200"
+            show-word-limit
+          />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -114,7 +125,8 @@ const formData = ref({
   name: '',
   isTeachingRelated: false,
   sortOrder: 1,
-  status: 1
+  status: 1,
+  remark: ''
 })
 
 const formRules: FormRules = {
@@ -147,7 +159,7 @@ async function fetchList() {
 /* 新增 */
 function openCreateDialog() {
   editingItem.value = null
-  formData.value = { name: '', isTeachingRelated: false, sortOrder: 1, status: 1 }
+  formData.value = { name: '', isTeachingRelated: false, sortOrder: 1, status: 1, remark: '' }
   dialogVisible.value = true
 }
 
@@ -162,7 +174,8 @@ function handleEdit(row: CategoryItem) {
     name: row.name,
     isTeachingRelated: row.isTeachingRelated,
     sortOrder: row.sortOrder,
-    status: row.status
+    status: row.status,
+    remark: row.remark ?? ''
   }
   dialogVisible.value = true
 }
@@ -270,4 +283,12 @@ onMounted(() => {
   border-color: #24a0bf;
   color: #fff;
 }
+:deep(.text-btn-primary.el-button) { color: #2AABCB; background: transparent; border: none; }
+:deep(.text-btn-primary.el-button:hover) { color: #24a0bf; background: transparent; }
+:deep(.text-btn-warning.el-button) { color: #E6A23C; background: transparent; border: none; }
+:deep(.text-btn-warning.el-button:hover) { color: #d09a2e; background: transparent; }
+:deep(.text-btn-success.el-button) { color: #67C23A; background: transparent; border: none; }
+:deep(.text-btn-success.el-button:hover) { color: #529b2e; background: transparent; }
+:deep(.text-btn-danger.el-button) { color: #F56C6C; background: transparent; border: none; }
+:deep(.text-btn-danger.el-button:hover) { color: #f23c3c; background: transparent; }
 </style>
