@@ -1,6 +1,7 @@
 package com.feedback.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.feedback.common.exception.BusinessException;
 import com.feedback.mapper.FbQuickReplyMapper;
 import com.feedback.mapper.SysUserMapper;
@@ -13,6 +14,7 @@ import com.feedback.security.UserContext;
 import com.feedback.service.AdminQuickReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
@@ -55,6 +57,7 @@ public class AdminQuickReplyServiceImpl implements AdminQuickReplyService {
                     .id(quickReply.getId())
                     .content(quickReply.getContent())
                     .sortOrder(quickReply.getSortOrder())
+                    .isActive(quickReply.getIsActive() != null && quickReply.getIsActive() == 1)
                     .createUserName(createUserName)
                     .createTime(quickReply.getCreateTime() != null ? sdf.format(quickReply.getCreateTime()) : "")
                     .build();
@@ -88,6 +91,22 @@ public class AdminQuickReplyServiceImpl implements AdminQuickReplyService {
             quickReply.setSortOrder(dto.getSortOrder());
         }
         quickReply.setUpdateTime(new Date());
+        fbQuickReplyMapper.updateById(quickReply);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void setActiveQuickReply(Long id) {
+        FbQuickReply quickReply = fbQuickReplyMapper.selectById(id);
+        if (quickReply == null) {
+            throw new BusinessException("快捷回复不存在");
+        }
+        // 先将所有快捷回复设为未启用
+        LambdaUpdateWrapper<FbQuickReply> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.set(FbQuickReply::getIsActive, 0);
+        fbQuickReplyMapper.update(null, updateWrapper);
+        // 设置目标快捷回复为启用
+        quickReply.setIsActive(1);
         fbQuickReplyMapper.updateById(quickReply);
     }
 

@@ -8,7 +8,20 @@
       "Read(//d/xm/AI/claudedemo/src/backend/**)",
       "Bash(taskkill //F //PID 59608)",
       "Bash(JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF-8\" ./mvnw spring-boot:run -q)",
-      "Bash(curl -s -X POST http://localhost:8080/api/auth/login -H \"Content-Type: application/json\" -d \"{\"\"username\"\":\"\"admin\"\",\"\"password\"\":\"\"123456\"\"}\")"
+      "Bash(curl -s -X POST http://localhost:8080/api/auth/login -H \"Content-Type: application/json\" -d \"{\"\"username\"\":\"\"admin\"\",\"\"password\"\":\"\"123456\"\"}\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/admin/quick-reply -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODIwNzQsInVzZXJJZCI6MSwiaWF0IjoxNzczNDk1Njc0LCJ1c2VybmFtZSI6ImFkbWluIn0.GZOHbp8W08tOepEsvjyWTlaQ5jp22mMe0FtoDwikD-Q\" -H \"Content-Type: application/json\" -d '{\"\"content\"\":\"\"test reply\"\",\"\"sortOrder\"\":1}')",
+      "Bash(curl -s http://localhost:8080/api/admin/quick-reply/list -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODIwNzQsInVzZXJJZCI6MSwiaWF0IjoxNzczNDk1Njc0LCJ1c2VybmFtZSI6ImFkbWluIn0.GZOHbp8W08tOepEsvjyWTlaQ5jp22mMe0FtoDwikD-Q\")",
+      "Bash(taskkill //F //PID 86000)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODIzNjksInVzZXJJZCI6MSwiaWF0IjoxNzczNDk1OTY5LCJ1c2VybmFtZSI6ImFkbWluIn0.KZbXF9r5sRiHU7isZZoINlN4VhJB3i0FNfZTCN1IgG8\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/admin/quick-reply -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"\"content\"\":\"\"reply 1\"\",\"\"sortOrder\"\":1}')",
+      "Bash(curl -s -X POST http://localhost:8080/api/admin/quick-reply -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"\"content\"\":\"\"reply 2\"\",\"\"sortOrder\"\":2}')",
+      "Bash(curl -s http://localhost:8080/api/admin/quick-reply/list -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(curl -s -X PUT http://localhost:8080/api/admin/quick-reply/1/active -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(curl -s -X PUT http://localhost:8080/api/admin/quick-reply/2/active -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODI5MzIsInVzZXJJZCI6MSwiaWF0IjoxNzczNDk2NTMyLCJ1c2VybmFtZSI6ImFkbWluIn0.ckVEp2OB_KrTwLROqevfAkFq4CJyWL7rP69SEryMJd4\")",
+      "Bash(curl -s -X PUT http://localhost:8080/api/admin/category/1 -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"\"name\"\":\"\"test\"\",\"\"isTeachingRelated\"\":true,\"\"sortOrder\"\":1,\"\"remark\"\":\"\"updated remark\"\"}')",
+      "Bash(curl -s http://localhost:8080/api/admin/category/list -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(ls /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/entity/Fb*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/dto/Feedback*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Student*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Teacher*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Feedback*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Attachment*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Reply*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/mapper/FbFeedback*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/mapper/FbReply*.java)"
     ]
   }
 }

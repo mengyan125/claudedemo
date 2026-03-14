@@ -42,6 +42,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
                     .isTeachingRelated(category.getIsTeachingRelated() != null && category.getIsTeachingRelated() == 1)
                     .sortOrder(category.getSortOrder())
                     .status(category.getStatus())
+                    .remark(category.getRemark())
                     .feedbackCount(feedbackCount != null ? feedbackCount : 0L)
                     .build();
             result.add(vo);
@@ -56,6 +57,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
         category.setIsTeachingRelated(Boolean.TRUE.equals(dto.getIsTeachingRelated()) ? 1 : 0);
         category.setSortOrder(dto.getSortOrder());
         category.setStatus(dto.getStatus());
+        category.setRemark(dto.getRemark());
         category.setCreateTime(new Date());
         category.setUpdateTime(new Date());
         fbCategoryMapper.insert(category);
@@ -79,6 +81,9 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
         }
         if (dto.getStatus() != null) {
             category.setStatus(dto.getStatus());
+        }
+        if (dto.getRemark() != null) {
+            category.setRemark(dto.getRemark());
         }
         category.setUpdateTime(new Date());
         fbCategoryMapper.updateById(category);

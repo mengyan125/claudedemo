@@ -6,13 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 快捷回复列表项VO
+ * 回复项VO
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuickReplyItemVO {
+public class ReplyItemVO {
 
     /** 回复ID */
     private Long id;
@@ -20,15 +20,12 @@ public class QuickReplyItemVO {
     /** 回复内容 */
     private String content;
 
-    /** 排序序号 */
-    private Integer sortOrder;
+    /** 回复人姓名 */
+    private String replyUserName;
 
-    /** 是否启用 */
-    private Boolean isActive;
+    /** 回复人类型：admin/student */
+    private String replyUserType;
 
-    /** 创建人姓名（联查sys_user表获取） */
-    private String createUserName;
-
-    /** 创建时间（格式化后的时间字符串） */
+    /** 创建时间（格式：yyyy-MM-dd HH:mm:ss） */
     private String createTime;
 }

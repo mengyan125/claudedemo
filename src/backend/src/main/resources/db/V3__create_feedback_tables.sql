@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS fb_category (
     is_teaching_related INT DEFAULT 0 COMMENT '是否教学相关：0=否 1=是',
     sort_order INT DEFAULT 0 COMMENT '排序',
     status INT DEFAULT 1 COMMENT '状态：1=启用 0=停用',
+    remark VARCHAR(200) DEFAULT '' COMMENT '备注',
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -96,6 +97,7 @@ CREATE TABLE IF NOT EXISTS fb_quick_reply (
     content VARCHAR(500) NOT NULL COMMENT '回复内容',
     create_user_id BIGINT NOT NULL COMMENT '创建人ID',
     sort_order INT DEFAULT 0 COMMENT '排序',
+    is_active TINYINT DEFAULT 0 COMMENT '是否启用 0-未启用 1-启用',
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

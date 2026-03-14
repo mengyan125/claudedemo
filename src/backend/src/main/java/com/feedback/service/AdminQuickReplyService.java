@@ -35,6 +35,13 @@ public interface AdminQuickReplyService {
     void updateQuickReply(Long id, UpdateQuickReplyDTO dto);
 
     /**
+     * 设置启用的快捷回复（仅一个可启用）
+     *
+     * @param id 快捷回复ID
+     */
+    void setActiveQuickReply(Long id);
+
+    /**
      * 删除快捷回复
      *
      * @param id 快捷回复ID

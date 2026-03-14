@@ -59,6 +59,15 @@ public class AdminQuickReplyController {
     }
 
     /**
+     * 设置启用的快捷回复
+     */
+    @PutMapping("/{id}/active")
+    public Result<Void> setActiveQuickReply(@PathVariable Long id) {
+        adminQuickReplyService.setActiveQuickReply(id);
+        return Result.ok();
+    }
+
+    /**
      * 删除快捷回复
      *
      * @param id 快捷回复ID

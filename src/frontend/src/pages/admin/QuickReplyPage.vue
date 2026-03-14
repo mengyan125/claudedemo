@@ -13,8 +13,19 @@
       <el-table-column prop="content" label="回复内容" min-width="300" show-overflow-tooltip />
       <el-table-column prop="sortOrder" label="排序" width="80" />
       <el-table-column prop="createUserName" label="创建人" width="120" />
-      <el-table-column label="操作" width="180">
+      <el-table-column label="状态" width="100">
         <template #default="{ row }">
+          <el-tag v-if="row.isActive" type="success" size="small">已启用</el-tag>
+          <span v-else class="text-muted">未启用</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="240">
+        <template #default="{ row }">
+          <el-button
+            v-if="!row.isActive"
+            text class="text-btn-success"
+            @click="handleSetActive(row)"
+          >启用</el-button>
           <el-button text class="text-btn-primary" @click="handleEdit(row)">编辑</el-button>
           <el-button text class="text-btn-danger" @click="handleDelete(row)">删除</el-button>
         </template>
@@ -65,6 +76,7 @@ import {
   getQuickReplyListApi,
   createQuickReplyApi,
   updateQuickReplyApi,
+  setActiveQuickReplyApi,
   deleteQuickReplyApi
 } from '@/api/admin'
 import type { QuickReplyItem } from '@/api/admin'
@@ -145,6 +157,20 @@ async function handleSubmit() {
   }
 }
 
+/* 启用 */
+async function handleSetActive(row: QuickReplyItem) {
+  await ElMessageBox.confirm(`确定启用该快捷回复吗？启用后其他快捷回复将自动取消启用。`, '提示', {
+    type: 'warning'
+  })
+  try {
+    await setActiveQuickReplyApi(row.id)
+    ElMessage.success('启用成功')
+    fetchList()
+  } catch {
+    /* 错误已在拦截器处理 */
+  }
+}
+
 /* 删除 */
 async function handleDelete(row: QuickReplyItem) {
   await ElMessageBox.confirm('确定删除该快捷回复吗？', '提示', {
@@ -206,4 +232,7 @@ onMounted(() => {
 :deep(.text-btn-primary.el-button:hover) { color: #24a0bf; background: transparent; }
 :deep(.text-btn-danger.el-button) { color: #F56C6C; background: transparent; border: none; }
 :deep(.text-btn-danger.el-button:hover) { color: #f23c3c; background: transparent; }
+:deep(.text-btn-success.el-button) { color: #67C23A; background: transparent; border: none; }
+:deep(.text-btn-success.el-button:hover) { color: #529b2e; background: transparent; }
+.text-muted { color: #C0C4CC; }
 </style>

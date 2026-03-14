@@ -8,6 +8,7 @@ export interface CategoryItem {
   isTeachingRelated: boolean
   sortOrder: number
   status: number // 1=启用 0=停用
+  remark: string
   feedbackCount: number // 该类别下反馈数量（用于判断能否编辑/删除）
 }
 
@@ -41,6 +42,7 @@ export interface QuickReplyItem {
   id: number
   content: string
   sortOrder: number
+  isActive: boolean
   createUserName: string
   createTime: string
 }
@@ -58,6 +60,11 @@ export function createQuickReplyApi(data: { content: string; sortOrder: number }
 /* 更新快捷回复 */
 export function updateQuickReplyApi(id: number, data: Partial<QuickReplyItem>) {
   return request.put<ApiResponse<null>>(`/admin/quick-reply/${id}`, data)
+}
+
+/* 设置启用快捷回复 */
+export function setActiveQuickReplyApi(id: number) {
+  return request.put<ApiResponse<null>>(`/admin/quick-reply/${id}/active`)
 }
 
 /* 删除快捷回复 */

@@ -30,6 +30,9 @@ public class FbCategory {
     /** 状态：0-禁用，1-启用 */
     private Integer status;
 
+    /** 备注 */
+    private String remark;
+
     /** 创建时间 */
     private Date createTime;
 

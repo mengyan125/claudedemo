@@ -24,4 +24,7 @@ public class CreateCategoryDTO {
 
     /** 状态：0-禁用，1-启用 */
     private Integer status = 1;
+
+    /** 备注 */
+    private String remark;
 }
