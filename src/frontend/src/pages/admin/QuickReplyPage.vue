@@ -13,10 +13,10 @@
       <el-table-column prop="content" label="回复内容" min-width="300" show-overflow-tooltip />
       <el-table-column prop="sortOrder" label="排序" width="80" />
       <el-table-column prop="createUserName" label="创建人" width="120" />
-      <el-table-column label="操作" width="140">
+      <el-table-column label="操作" width="180">
         <template #default="{ row }">
-          <el-button link type="primary" @click="handleEdit(row)">编辑</el-button>
-          <el-button link type="danger" @click="handleDelete(row)">删除</el-button>
+          <el-button text class="text-btn-primary" @click="handleEdit(row)">编辑</el-button>
+          <el-button text class="text-btn-danger" @click="handleDelete(row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -202,4 +202,8 @@ onMounted(() => {
   border-color: #24a0bf;
   color: #fff;
 }
+:deep(.text-btn-primary.el-button) { color: #2AABCB; background: transparent; border: none; }
+:deep(.text-btn-primary.el-button:hover) { color: #24a0bf; background: transparent; }
+:deep(.text-btn-danger.el-button) { color: #F56C6C; background: transparent; border: none; }
+:deep(.text-btn-danger.el-button:hover) { color: #f23c3c; background: transparent; }
 </style>

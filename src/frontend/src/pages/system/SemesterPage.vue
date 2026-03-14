@@ -23,13 +23,13 @@
         <template #default="{ row }">
           <el-button
             v-if="!row.isCurrent"
-            link type="primary"
+            text class="text-btn-primary"
             @click="handleSetCurrent(row)"
           >设为当前</el-button>
-          <el-button link type="primary" @click="handleEdit(row)">编辑</el-button>
+          <el-button text class="text-btn-primary" @click="handleEdit(row)">编辑</el-button>
           <el-button
             v-if="!row.isCurrent"
-            link type="danger"
+            text class="text-btn-danger"
             @click="handleDelete(row)"
           >删除</el-button>
         </template>
@@ -223,4 +223,10 @@ onMounted(() => {
 .text-muted {
   color: #C0C4CC;
 }
+.text-btn-primary { color: #2AABCB !important; background: transparent !important; }
+.text-btn-primary:hover { color: #24a0bf !important; }
+.text-btn-danger { color: #F56C6C !important; background: transparent !important; }
+.text-btn-danger:hover { color: #f23c3c !important; }
+.text-btn-success { color: #67C23A !important; background: transparent !important; }
+.text-btn-success:hover { color: #529b2e !important; }
 </style>

@@ -57,7 +57,7 @@
             <el-table-column prop="assignTime" label="分配时间" />
             <el-table-column label="操作">
               <template #default="{ row }">
-                <el-button link type="danger" @click="handleRemoveStudent(row)">移除</el-button>
+                <el-button text class="text-btn-danger" @click="handleRemoveStudent(row)">移除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -75,7 +75,7 @@
             <el-table-column prop="assignTime" label="分配时间" />
             <el-table-column label="操作">
               <template #default="{ row }">
-                <el-button link type="danger" @click="handleRemoveTeacher(row)">移除</el-button>
+                <el-button text class="text-btn-danger" @click="handleRemoveTeacher(row)">移除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -526,4 +526,10 @@ onMounted(() => {
 .assign-item {
   padding: 6px 0;
 }
+.text-btn-primary { color: #2AABCB !important; background: transparent !important; }
+.text-btn-primary:hover { color: #24a0bf !important; }
+.text-btn-danger { color: #F56C6C !important; background: transparent !important; }
+.text-btn-danger:hover { color: #f23c3c !important; }
+.text-btn-success { color: #67C23A !important; background: transparent !important; }
+.text-btn-success:hover { color: #529b2e !important; }
 </style>

@@ -55,15 +55,15 @@
       <el-table-column prop="createTime" label="创建时间" width="200" />
       <el-table-column label="操作" min-width="120">
         <template #default="{ row }">
-          <el-button link type="primary" @click="handleEdit(row)">编辑</el-button>
+          <el-button text class="text-btn-primary" @click="handleEdit(row)">编辑</el-button>
           <el-button
             v-if="row.status === 1"
-            link type="danger"
+            text class="text-btn-danger"
             @click="handleDelete(row)"
           >删除</el-button>
           <el-button
             v-else
-            link type="success"
+            text class="text-btn-success"
             @click="handleToggleStatus(row)"
           >启用</el-button>
         </template>
@@ -369,4 +369,10 @@ onMounted(() => {
   color: #606266;
   margin: 0 0 16px 0;
 }
+.text-btn-primary { color: #2AABCB !important; background: transparent !important; }
+.text-btn-primary:hover { color: #24a0bf !important; }
+.text-btn-danger { color: #F56C6C !important; background: transparent !important; }
+.text-btn-danger:hover { color: #f23c3c !important; }
+.text-btn-success { color: #67C23A !important; background: transparent !important; }
+.text-btn-success:hover { color: #529b2e !important; }
 </style>
