@@ -1,0 +1,213 @@
+<template>
+  <div class="main-layout">
+    <!-- 蓝色导航栏 -->
+    <header class="nav-bar">
+      <!-- 左侧 Logo -->
+      <div class="nav-left">
+        <el-icon :size="24" color="#fff"><Grid /></el-icon>
+        <span class="nav-title">意见反馈</span>
+      </div>
+
+      <!-- 中间 Tab 导航 -->
+      <nav class="nav-tabs">
+        <router-link
+          v-for="tab in visibleTabs"
+          :key="tab.path"
+          :to="tab.path"
+          :class="['nav-tab', { active: isActiveTab(tab) }]"
+        >
+          {{ tab.label }}
+        </router-link>
+      </nav>
+
+      <!-- 右侧信息区 -->
+      <div class="nav-right">
+        <el-icon :size="20" class="nav-icon"><Bell /></el-icon>
+        <span class="school-tag">{{ userStore.userInfo?.schoolName || '学校' }}</span>
+        <el-dropdown trigger="click" @command="handleCommand">
+          <span class="user-info">
+            {{ userStore.userInfo?.realName || '用户' }}
+            <el-icon :size="14"><ArrowDown /></el-icon>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+        <el-icon :size="20" class="nav-icon" @click="showSettings = true">
+          <Setting />
+        </el-icon>
+      </div>
+    </header>
+
+    <!-- 内容区域 -->
+    <main class="main-content">
+      <router-view />
+    </main>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { Grid, Bell, ArrowDown, Setting } from '@element-plus/icons-vue'
+import { useUserStore } from '@/stores/user'
+import { logoutApi } from '@/api/auth'
+
+const route = useRoute()
+const router = useRouter()
+const userStore = useUserStore()
+const showSettings = ref(false)
+
+/* Tab 导航配置 */
+interface TabItem {
+  path: string
+  label: string
+  match: string[] // 用于匹配激活状态的路由前缀
+  roles: string[] // 可见角色：student / admin / all
+}
+
+const allTabs: TabItem[] = [
+  { path: '/student/feedback', label: '我要反馈', match: ['/student/feedback'], roles: ['student'] },
+  { path: '/student/tracking', label: '反馈跟踪', match: ['/student/tracking'], roles: ['student'] },
+  { path: '/admin/feedback', label: '反馈查看', match: ['/admin/feedback'], roles: ['admin'] },
+  { path: '/admin/statistics', label: '反馈统计', match: ['/admin/statistics'], roles: ['admin'] },
+  { path: '/admin/category', label: '反馈管理', match: ['/admin/category', '/admin/quick-reply'], roles: ['admin'] },
+  { path: '/system/role', label: '系统管理', match: ['/system'], roles: ['admin'] }
+]
+
+/* 根据角色过滤可见 Tab */
+const visibleTabs = computed(() => {
+  const userType = userStore.userInfo?.userType
+  return allTabs.filter(tab => {
+    if (tab.roles.includes('all')) return true
+    if (tab.roles.includes('student') && userType === 'student') return true
+    if (tab.roles.includes('admin') && userType !== 'student') return true
+    return false
+  })
+})
+
+/* 判断 Tab 是否激活 */
+function isActiveTab(tab: TabItem): boolean {
+  return tab.match.some(prefix => route.path.startsWith(prefix))
+}
+
+/* 下拉菜单命令 */
+async function handleCommand(command: string) {
+  if (command === 'logout') {
+    try {
+      await logoutApi()
+    } catch {
+      /* 忽略登出接口错误 */
+    }
+    userStore.logout()
+    router.push('/login')
+  }
+}
+</script>
+
+<style scoped>
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* 导航栏 */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 24px;
+  background: #2AABCB;
+  flex-shrink: 0;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Tab 导航 */
+.nav-tabs {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.nav-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  height: 100%;
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.2s;
+  box-sizing: border-box;
+  border-bottom: 3px solid transparent;
+}
+
+.nav-tab:hover {
+  color: #fff;
+}
+
+.nav-tab.active {
+  color: #fff;
+  font-weight: 600;
+  border-bottom-color: #fff;
+}
+
+/* 右侧信息区 */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-icon {
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+
+.nav-icon:hover {
+  color: #fff;
+}
+
+.school-tag {
+  font-size: 13px;
+  color: #fff;
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* 内容区域 */
+.main-content {
+  flex: 1;
+  overflow: auto;
+  background: #f5f5f5;
+  padding: 24px 40px;
+}
+</style>
