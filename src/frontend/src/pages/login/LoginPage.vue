@@ -137,7 +137,7 @@ async function handleLogin() {
 .login-container {
   display: flex;
   height: 100vh;
-  width: 100vw;
+  width: 100%;
 }
 
 /* 左侧品牌区域 */

@@ -71,12 +71,6 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/pages/admin/CategoryPage.vue'),
         meta: { title: '反馈管理' }
       },
-      {
-        path: 'admin/quick-reply',
-        name: 'AdminQuickReply',
-        component: () => import('@/pages/admin/QuickReplyPage.vue'),
-        meta: { title: '快捷回复管理' }
-      },
       /* 系统管理（子Tab导航） */
       {
         path: 'system',
@@ -124,6 +118,12 @@ const routes: RouteRecordRaw[] = [
             name: 'SystemCategoryPermission',
             component: () => import('@/pages/system/CategoryPermissionPage.vue'),
             meta: { title: '类别权限配置' }
+          },
+          {
+            path: 'quick-reply',
+            name: 'SystemQuickReply',
+            component: () => import('@/pages/admin/QuickReplyPage.vue'),
+            meta: { title: '快捷回复管理' }
           }
         ]
       }

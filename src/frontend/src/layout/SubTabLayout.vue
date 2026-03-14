@@ -77,4 +77,16 @@ function isActive(path: string) {
   padding: 20px 24px;
   background: #f5f7fa;
 }
+
+/* 统一子页面主按钮颜色与顶部导航栏一致 */
+.sub-tab-content :deep(.el-button--primary) {
+  background-color: #2AABCB;
+  border-color: #2AABCB;
+}
+
+.sub-tab-content :deep(.el-button--primary:hover),
+.sub-tab-content :deep(.el-button--primary:focus) {
+  background-color: #24a0bf;
+  border-color: #24a0bf;
+}
 </style>

@@ -13,6 +13,6 @@ const tabs: SubTab[] = [
   { label: '班级管理', path: '/system/class' },
   { label: '师生关系', path: '/system/relation' },
   { label: '角色权限', path: '/system/role' },
-  { label: '类别权限', path: '/system/category-permission' }
+  { label: '快捷回复', path: '/system/quick-reply' }
 ]
 </script>
