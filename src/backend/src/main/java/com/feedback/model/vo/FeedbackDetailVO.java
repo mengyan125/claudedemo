@@ -31,6 +31,9 @@ public class FeedbackDetailVO {
     /** 教师姓名 */
     private String teacherName;
 
+    /** 是否教学相关类别 */
+    private Boolean isTeachingRelated;
+
     /** 反馈标题 */
     private String title;
 

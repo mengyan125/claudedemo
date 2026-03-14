@@ -245,6 +245,7 @@ public class StudentFeedbackServiceImpl implements StudentFeedbackService {
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         String categoryName = getCategoryName(feedback.getCategoryId());
         String teacherName = getTeacherName(feedback.getTeacherId());
+        Boolean isTeachingRelated = getCategoryTeachingRelated(feedback.getCategoryId());
         List<AttachmentItemVO> attachments = getAttachmentsByFeedbackId(feedback.getId());
         List<ReplyItemVO> replies = getRepliesByFeedbackId(feedback.getId());
 
@@ -254,6 +255,7 @@ public class StudentFeedbackServiceImpl implements StudentFeedbackService {
                 .categoryName(categoryName)
                 .teacherId(feedback.getTeacherId())
                 .teacherName(teacherName)
+                .isTeachingRelated(isTeachingRelated)
                 .title(feedback.getTitle())
                 .content(feedback.getContent())
                 .isAnonymous(feedback.getIsAnonymous() != null && feedback.getIsAnonymous() == 1)
@@ -272,6 +274,15 @@ public class StudentFeedbackServiceImpl implements StudentFeedbackService {
         }
         FbCategory category = fbCategoryMapper.selectById(categoryId);
         return category != null ? category.getName() : null;
+    }
+
+    /** 获取类别是否教学相关 */
+    private Boolean getCategoryTeachingRelated(Long categoryId) {
+        if (categoryId == null) {
+            return false;
+        }
+        FbCategory category = fbCategoryMapper.selectById(categoryId);
+        return category != null && category.getIsTeachingRelated() != null && category.getIsTeachingRelated() == 1;
     }
 
     /** 获取教师姓名 */

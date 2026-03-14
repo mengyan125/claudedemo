@@ -51,10 +51,31 @@
       "Bash(TK=\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODU5OTYsInVzZXJJZCI6MSwiaWF0IjoxNzczNDk5NTk2LCJ1c2VybmFtZSI6ImFkbWluIn0.YeZCJA-ai_M504hwmY-YlHF2-aqwBR2Pw0O09Ax3elg\")",
       "Bash(curl -s http://localhost:8080/api/admin/statistics -H \"Authorization: Bearer $TK\")",
       "Bash(curl -s http://localhost:8080/api/system/role/list -H \"Authorization: Bearer $TK\")",
-      "Bash(curl -s http://localhost:8080/api/system/category-permission/list -H \"Authorization: Bearer $TK\")"
+      "Bash(curl -s http://localhost:8080/api/system/category-permission/list -H \"Authorization: Bearer $TK\")",
+      "Bash(tasklist)",
+      "Bash(powershell -Command \"Get-Process -Name java -ErrorAction SilentlyContinue | Select-Object Id,ProcessName | Format-Table -AutoSize; if \\(-not $?\\) { Write-Host ''没有 Java 进程'' }\")",
+      "Bash(powershell.exe -Command \"Get-Process -Name java -ErrorAction SilentlyContinue\")",
+      "Bash(powershell.exe -Command \"Get-Process -Name java -ErrorAction SilentlyContinue | Stop-Process -Force; Write-Host ''Java进程已停止''\")",
+      "Bash(powershell.exe -Command \"Stop-Process -Id 41544 -Force; Stop-Process -Id 52256 -Force; echo done\")",
+      "Bash(JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF-8\" mvn spring-boot:run -Dspring-boot.run.profiles=dev)",
+      "Bash(npm run:*)",
+      "Bash(powershell.exe -Command \"Get-Process -Name java -ErrorAction SilentlyContinue | Select-Object Id\")",
+      "Bash(where mvn.cmd)",
+      "Read(//c/Users/yanmeng7/.m2/wrapper//**)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODcyNTIsInVzZXJJZCI6MSwiaWF0IjoxNzczNTAwODUyLCJ1c2VybmFtZSI6ImFkbWluIn0.7mIf5yF8U-XeaBcvYbyDRSM4kR2T4F2BihcTDUCBF3c\")",
+      "Bash(curl -s http://localhost:8080/api/auth/me -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/)",
+      "Read(//c/Users/yanmeng7/.claude//**)",
+      "Bash(powershell.exe -Command \"Stop-Process -Name java -Force -ErrorAction SilentlyContinue; echo done\")",
+      "Bash(STOKEN=\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHVkZW50MSIsInVzZXJUeXBlIjoic3R1ZGVudCIsImV4cCI6MTc3MzU4ODg2MiwidXNlcklkIjo1LCJpYXQiOjE3NzM1MDI0NjIsInVzZXJuYW1lIjoic3R1ZGVudDEifQ.vAWowfRxljxcAwfoTjxE9_32FBT0HRLczmvHZoTom6M\")",
+      "Bash(curl -s http://localhost:8080/api/student/teachers -H \"Authorization: Bearer $STOKEN\")",
+      "Bash(curl -s http://localhost:8080/api/student/categories -H \"Authorization: Bearer $STOKEN\")"
     ],
     "additionalDirectories": [
-      "\\tmp"
+      "\\tmp",
+      "d:\\xm\\AI\\claudedemo\\.claude"
     ]
   }
 }

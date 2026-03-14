@@ -118,6 +118,8 @@ const feedbackId = ref<number>(0)
 const categories = ref<StudentCategory[]>([])
 const teachers = ref<TeacherOption[]>([])
 const fileList = ref<UploadFile[]>([])
+/* 已有附件ID列表（服务端已存在，无需重新上传） */
+const existingAttachmentIds = ref<number[]>([])
 
 const formData = reactive({
   categoryId: undefined as number | undefined,
@@ -154,12 +156,21 @@ function handleFileChange(_file: UploadFile, newFileList: UploadFile[]) {
   fileList.value = newFileList
 }
 
-function handleFileRemove(_file: UploadFile, newFileList: UploadFile[]) {
+function handleFileRemove(file: UploadFile, newFileList: UploadFile[]) {
+  /* 如果删除的是已有附件，从 existingAttachmentIds 中移除 */
+  if (!file.raw && file.uid) {
+    existingAttachmentIds.value = existingAttachmentIds.value.filter(id => id !== file.uid)
+  }
   fileList.value = newFileList
 }
 
 async function uploadAllFiles(): Promise<number[]> {
   const ids: number[] = []
+  /* 保留已有附件（未被用户删除的） */
+  for (const id of existingAttachmentIds.value) {
+    ids.push(id)
+  }
+  /* 上传新增的文件 */
   for (const file of fileList.value) {
     if (file.raw) {
       const { data } = await uploadFileApi(file.raw)
@@ -240,11 +251,21 @@ onMounted(async () => {
 
     const d = detailRes.data.data
     formData.categoryId = d.categoryId
-    formData.isTeachingRelated = d.isTeachingRelated
+    formData.isTeachingRelated = d.isTeachingRelated ?? false
     formData.teacherId = d.teacherId ?? undefined
     formData.title = d.title
     formData.content = d.content
     formData.isAnonymous = d.isAnonymous
+    /* 回填已有附件到文件列表 */
+    if (d.attachments && d.attachments.length > 0) {
+      existingAttachmentIds.value = d.attachments.map((a: { id: number }) => a.id)
+      fileList.value = d.attachments.map((a: { id: number; fileName: string; fileUrl: string }) => ({
+        uid: a.id,
+        name: a.fileName,
+        url: a.fileUrl,
+        status: 'success'
+      } as unknown as UploadFile))
+    }
   } catch {
     /* 错误已在拦截器处理 */
   } finally {
