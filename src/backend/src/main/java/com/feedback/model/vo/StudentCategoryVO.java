@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 学生端反馈类别VO
+ * 学生端-反馈类别VO
  */
 @Data
 @Builder

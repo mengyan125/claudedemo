@@ -20,9 +20,12 @@ public class AttachmentItemVO {
     /** 文件名 */
     private String fileName;
 
-    /** 文件访问URL（从filePath转换） */
+    /** 文件访问URL */
     private String fileUrl;
 
     /** 文件类型 */
     private String fileType;
+
+    /** 文件大小（字节） */
+    private Long fileSize;
 }

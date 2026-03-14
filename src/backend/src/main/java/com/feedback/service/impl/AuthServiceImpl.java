@@ -82,6 +82,23 @@ public class AuthServiceImpl implements AuthService {
         return new LoginVO(token, userInfo);
     }
 
+    @Override
+    public UserInfoVO getCurrentUserInfo(Long userId) {
+        SysUser user = sysUserMapper.selectById(userId);
+        if (user == null) {
+            throw new BusinessException(401, "用户不存在");
+        }
+        List<String> roles = getUserRoles(user.getId());
+        return UserInfoVO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .realName(user.getRealName())
+                .userType(user.getUserType())
+                .roles(roles)
+                .schoolName(user.getSchoolName())
+                .build();
+    }
+
     /**
      * 查询用户的角色编码列表
      *

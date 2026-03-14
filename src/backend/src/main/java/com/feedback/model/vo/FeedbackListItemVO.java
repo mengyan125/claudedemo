@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 反馈列表项VO
+ * 学生端-反馈列表项VO
  */
 @Data
 @Builder
@@ -17,21 +17,33 @@ public class FeedbackListItemVO {
     /** 反馈ID */
     private Long id;
 
-    /** 反馈主题 */
-    private String title;
+    /** 类别ID */
+    private Long categoryId;
 
     /** 类别名称 */
     private String categoryName;
 
-    /** 被反馈教师姓名 */
+    /** 被反馈教师ID */
+    private Long teacherId;
+
+    /** 教师姓名 */
     private String teacherName;
 
-    /** 状态：draft/submitted/replied */
+    /** 反馈标题 */
+    private String title;
+
+    /** 是否匿名 */
+    private Boolean isAnonymous;
+
+    /** 状态 */
     private String status;
+
+    /** 回复状态 */
+    private String replyStatus;
 
     /** 是否有未读回复 */
     private Boolean hasUnread;
 
-    /** 创建时间（格式：yyyy-MM-dd HH:mm:ss） */
+    /** 创建时间 */
     private String createTime;
 }

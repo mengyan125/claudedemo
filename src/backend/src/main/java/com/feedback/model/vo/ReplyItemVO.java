@@ -17,15 +17,18 @@ public class ReplyItemVO {
     /** 回复ID */
     private Long id;
 
-    /** 回复内容 */
-    private String content;
+    /** 回复人ID */
+    private Long replyUserId;
 
     /** 回复人姓名 */
     private String replyUserName;
 
-    /** 回复人类型：admin/student */
-    private String replyUserType;
+    /** 回复人类型：student/teacher/admin */
+    private String userType;
 
-    /** 创建时间（格式：yyyy-MM-dd HH:mm:ss） */
+    /** 回复内容 */
+    private String content;
+
+    /** 创建时间 */
     private String createTime;
 }

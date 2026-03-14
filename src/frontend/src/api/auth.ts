@@ -25,6 +25,11 @@ export function loginApi(data: LoginParams) {
   return request.post<ApiResponse<LoginResult>>('/auth/login', data)
 }
 
+/* 获取当前用户信息 */
+export function getUserInfoApi() {
+  return request.get<ApiResponse<LoginResult['userInfo']>>('/auth/me')
+}
+
 /* 登出 */
 export function logoutApi() {
   return request.post<ApiResponse<null>>('/auth/logout')

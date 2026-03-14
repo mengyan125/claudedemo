@@ -3,12 +3,11 @@ package com.feedback.controller;
 import com.feedback.common.result.Result;
 import com.feedback.model.dto.LoginDTO;
 import com.feedback.model.vo.LoginVO;
+import com.feedback.model.vo.UserInfoVO;
+import com.feedback.security.UserContext;
 import com.feedback.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -33,6 +32,19 @@ public class AuthController {
     public Result<LoginVO> login(@RequestBody @Valid LoginDTO loginDTO) {
         LoginVO loginVO = authService.login(loginDTO);
         return Result.ok(loginVO);
+    }
+
+    /**
+     * 获取当前登录用户信息
+     * 根据JWT中的用户ID查询并返回用户信息
+     *
+     * @return 用户信息
+     */
+    @GetMapping("/me")
+    public Result<UserInfoVO> getCurrentUser() {
+        Long userId = UserContext.getCurrentUserId();
+        UserInfoVO userInfo = authService.getCurrentUserInfo(userId);
+        return Result.ok(userInfo);
     }
 
     /**

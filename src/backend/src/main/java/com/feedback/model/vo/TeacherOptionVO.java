@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 教师选项VO（学生端选择被反馈教师）
+ * 学生端-教师选项VO
  */
 @Data
 @Builder
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TeacherOptionVO {
 
-    /** 教师ID */
+    /** 教师用户ID */
     private Long id;
 
     /** 教师姓名 */

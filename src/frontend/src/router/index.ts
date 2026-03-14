@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { getUserInfoApi } from '@/api/auth'
 
 /* 路由配置 */
 const routes: RouteRecordRaw[] = [
@@ -141,14 +142,31 @@ const router = createRouter({
   routes
 })
 
-/* 路由守卫：JWT 认证检查 */
-router.beforeEach((to, _from, next) => {
+/* 路由守卫：JWT 认证检查 + 刷新后恢复用户信息 */
+router.beforeEach(async (to, _from, next) => {
   const userStore = useUserStore()
   if (to.meta.requiresAuth !== false && !userStore.token) {
     next('/login')
-  } else {
-    next()
+    return
   }
+  /* token 存在但 userInfo 丢失（页面刷新），从后端重新获取 */
+  if (userStore.token && !userStore.userInfo) {
+    try {
+      const res = await getUserInfoApi()
+      if (res.data.code === 200 && res.data.data) {
+        userStore.setUserInfo(res.data.data)
+      } else {
+        userStore.logout()
+        next('/login')
+        return
+      }
+    } catch {
+      userStore.logout()
+      next('/login')
+      return
+    }
+  }
+  next()
 })
 
 export default router

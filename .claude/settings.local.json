@@ -21,7 +21,40 @@
       "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODI5MzIsInVzZXJJZCI6MSwiaWF0IjoxNzczNDk2NTMyLCJ1c2VybmFtZSI6ImFkbWluIn0.ckVEp2OB_KrTwLROqevfAkFq4CJyWL7rP69SEryMJd4\")",
       "Bash(curl -s -X PUT http://localhost:8080/api/admin/category/1 -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"\"name\"\":\"\"test\"\",\"\"isTeachingRelated\"\":true,\"\"sortOrder\"\":1,\"\"remark\"\":\"\"updated remark\"\"}')",
       "Bash(curl -s http://localhost:8080/api/admin/category/list -H \"Authorization: Bearer $TOKEN\")",
-      "Bash(ls /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/entity/Fb*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/dto/Feedback*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Student*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Teacher*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Feedback*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Attachment*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Reply*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/mapper/FbFeedback*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/mapper/FbReply*.java)"
+      "Bash(ls /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/entity/Fb*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/dto/Feedback*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Student*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Teacher*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Feedback*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Attachment*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/model/vo/Reply*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/mapper/FbFeedback*.java /d/xm/AI/claudedemo/src/backend/src/main/java/com/feedback/mapper/FbReply*.java)",
+      "Bash(python -c \"print\\(''hello''\\)\")",
+      "Bash(python _gen_files.py)",
+      "Bash(JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF-8\" ./mvnw compile -q)",
+      "Bash(taskkill //F //PID 21144)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODQ1NjEsInVzZXJJZCI6MSwiaWF0IjoxNzczNDk4MTYxLCJ1c2VybmFtZSI6ImFkbWluIn0.lZbQuFsMYMf0ZHkuDv6cHeAdZszA6U7AUDFz85Dc918\")",
+      "Bash(curl -s http://localhost:8080/api/student/categories -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(curl -s http://localhost:8080/api/student/teachers -H \"Authorization: Bearer $TOKEN\")",
+      "Bash(curl -s http://localhost:8080/api/student/categories -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODQ1NjEsInVzZXJJZCI6MSwiaWF0IjoxNzczNDk4MTYxLCJ1c2VybmFtZSI6ImFkbWluIn0.lZbQuFsMYMf0ZHkuDv6cHeAdZszA6U7AUDFz85Dc918\")",
+      "Bash(curl -s http://localhost:8080/api/student/teachers -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODQ1NjEsInVzZXJJZCI6MSwiaWF0IjoxNzczNDk4MTYxLCJ1c2VybmFtZSI6ImFkbWluIn0.lZbQuFsMYMf0ZHkuDv6cHeAdZszA6U7AUDFz85Dc918\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/student/feedback -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODQ1NjEsInVzZXJJZCI6MSwiaWF0IjoxNzczNDk4MTYxLCJ1c2VybmFtZSI6ImFkbWluIn0.lZbQuFsMYMf0ZHkuDv6cHeAdZszA6U7AUDFz85Dc918\" -H \"Content-Type: application/json\" -d '{\"\"categoryId\"\":1,\"\"title\"\":\"\"test feedback\"\",\"\"content\"\":\"\"this is test content\"\",\"\"isAnonymous\"\":false,\"\"status\"\":\"\"submitted\"\",\"\"attachmentIds\"\":[]}')",
+      "Bash(curl -s http://localhost:8080/api/student/feedback/1 -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODQ1NjEsInVzZXJJZCI6MSwiaWF0IjoxNzczNDk4MTYxLCJ1c2VybmFtZSI6ImFkbWluIn0.lZbQuFsMYMf0ZHkuDv6cHeAdZszA6U7AUDFz85Dc918\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/student/feedback/1/reply -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODQ1NjEsInVzZXJJZCI6MSwiaWF0IjoxNzczNDk4MTYxLCJ1c2VybmFtZSI6ImFkbWluIn0.lZbQuFsMYMf0ZHkuDv6cHeAdZszA6U7AUDFz85Dc918\" -H \"Content-Type: application/json\" -d '{\"\"content\"\":\"\"this is a reply\"\"}')",
+      "Bash(taskkill //F //PID 24972)",
+      "Bash(curl -s -X POST http://localhost:8080/api/upload/file -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODQ5MDIsInVzZXJJZCI6MSwiaWF0IjoxNzczNDk4NTAyLCJ1c2VybmFtZSI6ImFkbWluIn0.fMaq3pX5p4INbwT_IaPN42aUgFdMGvlby6eETHk42Rc\" -F \"file=@/tmp/test.jpg\")",
+      "Read(//Users/please_find_the_real_dir_using_pwd_cmd/src/frontend/src/api/**)",
+      "Read(//Users/please_find_the_real_dir_using_pwd_cmd/src/frontend/src/mock/**)",
+      "Read(//Users/please_find_the_real_dir_using_pwd_cmd/src/backend/src/main/resources/db/**)",
+      "Bash(taskkill //F //PID 40072)",
+      "Bash(TK=\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODU0MDMsInVzZXJJZCI6MSwiaWF0IjoxNzczNDk5MDAzLCJ1c2VybmFtZSI6ImFkbWluIn0.BPdV_KQ1sP3HOEg2lXlthVWlYlHu8s506I1oV_RRPKA\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/admin/category -H \"Authorization: Bearer $TK\" -H \"Content-Type: application/json\" -d '{\"\"name\"\":\"\"teaching\"\",\"\"isTeachingRelated\"\":true,\"\"sortOrder\"\":1,\"\"status\"\":1}')",
+      "Bash(curl -s -X POST http://localhost:8080/api/student/feedback -H \"Authorization: Bearer $TK\" -H \"Content-Type: application/json\" -d '{\"\"categoryId\"\":1,\"\"title\"\":\"\"test admin feedback\"\",\"\"content\"\":\"\"this is a test feedback for admin view with long content that should be truncated\"\",\"\"isAnonymous\"\":false,\"\"status\"\":\"\"submitted\"\",\"\"attachmentIds\"\":[]}')",
+      "Bash(curl -s \"http://localhost:8080/api/admin/feedback/list?pageNum=1&pageSize=10\" -H \"Authorization: Bearer $TK\")",
+      "Bash(curl -s http://localhost:8080/api/admin/feedback/1 -H \"Authorization: Bearer $TK\")",
+      "Bash(curl -s -X POST http://localhost:8080/api/admin/feedback/1/reply -H \"Authorization: Bearer $TK\" -H \"Content-Type: application/json\" -d '{\"\"content\"\":\"\"admin reply content\"\"}')",
+      "Bash(curl -s -X POST http://localhost:8080/api/admin/feedback/1/favorite -H \"Authorization: Bearer $TK\")",
+      "Bash(taskkill //F //PID 56240)",
+      "Bash(TK=\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1ODU5OTYsInVzZXJJZCI6MSwiaWF0IjoxNzczNDk5NTk2LCJ1c2VybmFtZSI6ImFkbWluIn0.YeZCJA-ai_M504hwmY-YlHF2-aqwBR2Pw0O09Ax3elg\")",
+      "Bash(curl -s http://localhost:8080/api/admin/statistics -H \"Authorization: Bearer $TK\")",
+      "Bash(curl -s http://localhost:8080/api/system/role/list -H \"Authorization: Bearer $TK\")",
+      "Bash(curl -s http://localhost:8080/api/system/category-permission/list -H \"Authorization: Bearer $TK\")"
+    ],
+    "additionalDirectories": [
+      "\\tmp"
     ]
   }
 }
