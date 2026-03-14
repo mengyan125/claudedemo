@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -X POST http://localhost:8080/api/system/user -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1NzE5NjUsInVzZXJJZCI6MSwiaWF0IjoxNzczNDg1NTY1LCJ1c2VybmFtZSI6ImFkbWluIn0.VDJWK4LZUKtCrUDH8ceAfVA2L9tJXgJnBmz4GBQRT4g\" -H \"Content-Type: application/json\" -d \"{\"\"username\"\":\"\"student1\"\",\"\"realName\"\":\"\"zhangsan\"\",\"\"password\"\":\"\"123456\"\",\"\"userType\"\":\"\"student\"\"}\")",
+      "Bash(curl -s \"http://localhost:8080/api/system/user/list?pageNum=1&pageSize=10\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1NzE5NjUsInVzZXJJZCI6MSwiaWF0IjoxNzczNDg1NTY1LCJ1c2VybmFtZSI6ImFkbWluIn0.VDJWK4LZUKtCrUDH8ceAfVA2L9tJXgJnBmz4GBQRT4g\")",
+      "Bash(curl -s http://localhost:8080/api/base/semester/list -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1NzE5NjUsInVzZXJJZCI6MSwiaWF0IjoxNzczNDg1NTY1LCJ1c2VybmFtZSI6ImFkbWluIn0.VDJWK4LZUKtCrUDH8ceAfVA2L9tJXgJnBmz4GBQRT4g\")",
+      "Bash(netstat -ano)",
+      "Read(//d/xm/AI/claudedemo/src/backend/**)",
+      "Bash(taskkill //F //PID 59608)",
+      "Bash(JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF-8\" ./mvnw spring-boot:run -q)",
+      "Bash(curl -s -X POST http://localhost:8080/api/auth/login -H \"Content-Type: application/json\" -d \"{\"\"username\"\":\"\"admin\"\",\"\"password\"\":\"\"123456\"\"}\")"
+    ]
+  }
+}

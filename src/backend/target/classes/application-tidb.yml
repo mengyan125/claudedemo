@@ -1,0 +1,7 @@
+# TiDB生产环境配置 - 连接信息待配置
+spring:
+  datasource:
+    url: jdbc:mysql://待配置IP:待配置端口/feedback?useSSL=false&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&socksProxyHost=127.0.0.1&socksProxyPort=51080
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: 待配置
+    password: 待配置

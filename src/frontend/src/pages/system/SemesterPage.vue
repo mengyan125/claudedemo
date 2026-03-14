@@ -87,6 +87,7 @@ import { Plus } from '@element-plus/icons-vue'
 import {
   getSemesterListApi,
   createSemesterApi,
+  updateSemesterApi,
   setCurrentSemesterApi,
   deleteSemesterApi
 } from '@/api/base'
@@ -150,7 +151,11 @@ async function handleSubmit() {
 
   submitting.value = true
   try {
-    await createSemesterApi(formData.value)
+    if (editingItem.value) {
+      await updateSemesterApi(editingItem.value.id, formData.value)
+    } else {
+      await createSemesterApi(formData.value)
+    }
     ElMessage.success(editingItem.value ? '更新成功' : '创建成功')
     dialogVisible.value = false
     fetchList()

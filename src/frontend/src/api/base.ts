@@ -41,6 +41,11 @@ export function createSemesterApi(data: Omit<SemesterItem, 'id' | 'isCurrent'>) 
   return request.post<ApiResponse<null>>('/base/semester', data)
 }
 
+/* 更新学期 */
+export function updateSemesterApi(id: number, data: Omit<SemesterItem, 'id' | 'isCurrent'>) {
+  return request.put<ApiResponse<null>>(`/base/semester/${id}`, data)
+}
+
 /* 设置当前学期 */
 export function setCurrentSemesterApi(id: number) {
   return request.put<ApiResponse<null>>(`/base/semester/${id}/current`)

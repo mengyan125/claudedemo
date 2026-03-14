@@ -1,0 +1,17 @@
+# 开发环境配置 - 使用H2内存数据库
+spring:
+  datasource:
+    url: jdbc:h2:mem:feedbackdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/V1__create_sys_tables.sql,classpath:db/V2__create_base_tables.sql,classpath:db/V3__create_feedback_tables.sql
+      data-locations: classpath:db/V4__init_data.sql
+      encoding: UTF-8
