@@ -110,6 +110,8 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
             feedback.setUpdateTime(new Date());
             fbFeedbackMapper.updateById(feedback);
         }
+        // 标记该反馈的备注提醒为已读
+        markRemindersAsRead(adminId, id);
         return buildDetailVO(feedback, adminId);
     }
 
@@ -417,6 +419,7 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
         String teacherName = getTeacherName(feedback.getTeacherId());
         String[] gradeAndClass = getGradeAndClassName(feedback.getStudentId());
         boolean isFavorited = checkIsFavorited(adminId, feedback.getId());
+        boolean hasUnreadReminder = checkHasUnreadReminder(adminId, feedback.getId());
         String contentStr = truncateContent(feedback.getContent());
 
         return AdminFeedbackItemVO.builder()
@@ -431,6 +434,7 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
                 .isAnonymous(feedback.getIsAnonymous() != null && feedback.getIsAnonymous() == 1)
                 .status(feedback.getStatus())
                 .hasUnread(feedback.getHasUnreadForAdmin() != null && feedback.getHasUnreadForAdmin() == 1)
+                .hasUnreadReminder(hasUnreadReminder)
                 .isFavorited(isFavorited)
                 .createTime(feedback.getCreateTime() != null ? sdf.format(feedback.getCreateTime()) : null)
                 .build();
@@ -557,6 +561,44 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
         wrapper.eq(FbCollection::getUserId, adminId)
                .eq(FbCollection::getFeedbackId, feedbackId);
         return fbCollectionMapper.selectCount(wrapper) > 0;
+    }
+
+    /** 检查指定反馈是否有当前用户未读的备注提醒 */
+    private boolean checkHasUnreadReminder(Long userId, Long feedbackId) {
+        // 查该反馈下所有提醒ID
+        LambdaQueryWrapper<FbReminder> rWrapper = new LambdaQueryWrapper<>();
+        rWrapper.eq(FbReminder::getFeedbackId, feedbackId).select(FbReminder::getId);
+        List<Long> reminderIds = fbReminderMapper.selectList(rWrapper).stream()
+                .map(FbReminder::getId).collect(Collectors.toList());
+        if (reminderIds.isEmpty()) {
+            return false;
+        }
+        // 查接收人表中是否有未读记录
+        LambdaQueryWrapper<FbReminderReceiver> rrWrapper = new LambdaQueryWrapper<>();
+        rrWrapper.in(FbReminderReceiver::getReminderId, reminderIds)
+                 .eq(FbReminderReceiver::getReceiverId, userId)
+                 .eq(FbReminderReceiver::getIsRead, 0);
+        return fbReminderReceiverMapper.selectCount(rrWrapper) > 0;
+    }
+
+    /** 标记指定反馈的备注提醒为已读 */
+    private void markRemindersAsRead(Long userId, Long feedbackId) {
+        LambdaQueryWrapper<FbReminder> rWrapper = new LambdaQueryWrapper<>();
+        rWrapper.eq(FbReminder::getFeedbackId, feedbackId).select(FbReminder::getId);
+        List<Long> reminderIds = fbReminderMapper.selectList(rWrapper).stream()
+                .map(FbReminder::getId).collect(Collectors.toList());
+        if (reminderIds.isEmpty()) {
+            return;
+        }
+        LambdaQueryWrapper<FbReminderReceiver> rrWrapper = new LambdaQueryWrapper<>();
+        rrWrapper.in(FbReminderReceiver::getReminderId, reminderIds)
+                 .eq(FbReminderReceiver::getReceiverId, userId)
+                 .eq(FbReminderReceiver::getIsRead, 0);
+        List<FbReminderReceiver> receivers = fbReminderReceiverMapper.selectList(rrWrapper);
+        for (FbReminderReceiver receiver : receivers) {
+            receiver.setIsRead(1);
+            fbReminderReceiverMapper.updateById(receiver);
+        }
     }
 
     /**

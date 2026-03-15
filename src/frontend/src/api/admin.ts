@@ -87,6 +87,7 @@ export interface AdminFeedbackItem {
   isAnonymous: boolean
   status: 'submitted' | 'replied'
   hasUnread: boolean
+  hasUnreadReminder: boolean
   isFavorited: boolean
   createTime: string
 }

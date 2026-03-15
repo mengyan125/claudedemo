@@ -47,6 +47,9 @@ public class AdminFeedbackItemVO {
     /** 是否有未读回复 */
     private Boolean hasUnread;
 
+    /** 是否有未读备注提醒 */
+    private Boolean hasUnreadReminder;
+
     /** 当前管理员是否已收藏 */
     private Boolean isFavorited;
 

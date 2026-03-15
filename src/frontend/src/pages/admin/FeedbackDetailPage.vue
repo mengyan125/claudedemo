@@ -100,11 +100,11 @@
         <div class="reminder-list-section">
           <div v-if="reminderList.length === 0" class="no-reply">暂无备注提醒</div>
           <div v-for="r in reminderList" :key="r.id" class="reply-item">
-            <div class="reply-header">
-              <span class="reply-user">{{ r.senderName }}</span>
-              <span class="reply-time">{{ r.createTime }}</span>
-            </div>
             <p class="reply-content">{{ r.content }}</p>
+            <div class="reminder-meta">
+              <span>{{ r.senderName }}</span>
+              <span>{{ r.createTime }}</span>
+            </div>
           </div>
         </div>
 
@@ -387,6 +387,7 @@ onMounted(async () => {
 
 .reply-list-section { display: flex; flex-direction: column; gap: 16px; }
 .reminder-list-section { display: flex; flex-direction: column; gap: 16px; }
+.reminder-meta { display: flex; gap: 16px; font-size: 12px; color: #999; }
 
 .reply-item { padding: 12px 16px; background: #fafafa; border-radius: 6px; display: flex; flex-direction: column; gap: 8px; }
 .reply-footer { display: flex; justify-content: space-between; align-items: center; }

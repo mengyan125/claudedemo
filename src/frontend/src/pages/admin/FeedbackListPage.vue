@@ -66,6 +66,7 @@
       >
         <div class="item-content">
           <div class="item-title-row">
+            <el-icon v-if="item.hasUnreadReminder" class="reminder-bell"><Bell /></el-icon>
             <span class="item-title" @click="goDetail(item.id)">{{ item.title }}</span>
             <span class="item-spacer" />
             <span
@@ -93,7 +94,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { Search } from '@element-plus/icons-vue'
+import { Search, Bell } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import {
   getAdminFeedbackListApi,
@@ -341,6 +342,22 @@ onMounted(async () => {
 }
 
 .item-title-row { display: flex; align-items: center; }
+
+.reminder-bell {
+  color: #E6A23C;
+  margin-right: 6px;
+  font-size: 16px;
+  animation: bell-shake 1s ease-in-out;
+}
+
+@keyframes bell-shake {
+  0%, 100% { transform: rotate(0); }
+  15% { transform: rotate(12deg); }
+  30% { transform: rotate(-10deg); }
+  45% { transform: rotate(6deg); }
+  60% { transform: rotate(-4deg); }
+  75% { transform: rotate(2deg); }
+}
 
 .item-title {
   font-size: 16px;
