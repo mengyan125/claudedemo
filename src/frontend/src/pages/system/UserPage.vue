@@ -14,7 +14,7 @@
           <el-icon><Search /></el-icon>
         </template>
       </el-input>
-      <div class="btn-group">
+      <div v-if="isSystemAdmin" class="btn-group">
         <el-button type="primary" round @click="openCreateDialog">
           <el-icon><Plus /></el-icon>新增用户
         </el-button>
@@ -31,29 +31,29 @@
       stripe
       class="user-table"
     >
-      <el-table-column prop="username" label="用户名" width="180" />
-      <el-table-column prop="realName" label="真实姓名" width="160" />
-      <el-table-column label="用户类型" width="120">
+      <el-table-column prop="username" label="用户名" min-width="1" />
+      <el-table-column prop="realName" label="真实姓名" min-width="1" />
+      <el-table-column label="用户类型" min-width="1">
         <template #default="{ row }">
           <el-tag :type="userTypeTag(row.userType)" size="small">
             {{ userTypeLabel(row.userType) }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="角色" width="200">
+      <el-table-column label="角色" min-width="1">
         <template #default="{ row }">
           {{ row.roles?.map(roleLabel).join('、') || '—' }}
         </template>
       </el-table-column>
-      <el-table-column label="状态" width="100">
+      <el-table-column label="状态" min-width="1">
         <template #default="{ row }">
           <span :class="['status-dot', row.status === 1 ? 'active' : 'disabled']">
             {{ row.status === 1 ? '正常' : '禁用' }}
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" width="200" />
-      <el-table-column label="操作" min-width="120">
+      <el-table-column prop="createTime" label="创建时间" min-width="1" />
+      <el-table-column v-if="isSystemAdmin" label="操作" min-width="1">
         <template #default="{ row }">
           <el-button text class="text-btn-primary" @click="handleEdit(row)">编辑</el-button>
           <el-button
@@ -117,6 +117,7 @@
           <el-select v-model="formData.userType" placeholder="请选择用户类型">
             <el-option label="学生" value="student" />
             <el-option label="教师" value="teacher" />
+            <el-option label="角色管理员" value="role_admin" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -153,6 +154,7 @@ import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import { Search, Plus, Upload } from '@element-plus/icons-vue'
+import { useUserStore } from '@/stores/user'
 import {
   getUserListApi,
   createUserApi,
@@ -161,6 +163,9 @@ import {
   toggleUserStatusApi
 } from '@/api/system'
 import type { UserItem, CreateUserParams } from '@/api/system'
+
+const userStore = useUserStore()
+const isSystemAdmin = userStore.hasAnyRole(['SYSTEM_ADMIN'])
 
 const keyword = ref('')
 const loading = ref(false)

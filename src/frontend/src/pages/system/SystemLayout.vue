@@ -19,7 +19,7 @@ const allSystemTabs = [
   { label: '班级管理', path: '/system/class', requiredRoles: ['SYSTEM_ADMIN'] },
   { label: '师生关系', path: '/system/relation', requiredRoles: ['SYSTEM_ADMIN'] },
   // { label: '角色权限', path: '/system/role', requiredRoles: ['SYSTEM_ADMIN'] },
-  { label: '角色管理', path: '/system/user', requiredRoles: ['SYSTEM_ADMIN'] },
+  { label: '角色管理', path: '/system/user', requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN'] },
   { label: '类别权限', path: '/system/category-permission', requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN'] },
   { label: '快捷回复', path: '/system/quick-reply', requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN', 'CATEGORY_ADMIN'] },
 ]

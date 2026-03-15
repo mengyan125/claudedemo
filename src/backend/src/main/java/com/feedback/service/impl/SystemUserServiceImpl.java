@@ -86,15 +86,32 @@ public class SystemUserServiceImpl implements SystemUserService {
         // 2. 检查用户名是否已存在
         checkUsernameUnique(dto.getUsername(), null);
 
-        // 3. 构建用户实体并保存
+        // 3. 判断是否为角色管理员（前端传 role_admin，实际创建 teacher 并分配 ROLE_ADMIN 角色）
+        boolean isRoleAdmin = "role_admin".equals(dto.getUserType());
+        String actualUserType = isRoleAdmin ? "teacher" : dto.getUserType();
+
+        // 4. 构建用户实体并保存
         SysUser user = new SysUser();
         user.setUsername(dto.getUsername());
         user.setRealName(dto.getRealName());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setUserType(dto.getUserType());
+        user.setUserType(actualUserType);
         user.setStatus(1);
         user.setDeleted(0);
         sysUserMapper.insert(user);
+
+        // 5. 角色管理员自动分配 ROLE_ADMIN 角色
+        if (isRoleAdmin) {
+            LambdaQueryWrapper<SysRole> roleWrapper = new LambdaQueryWrapper<>();
+            roleWrapper.eq(SysRole::getRoleCode, "ROLE_ADMIN");
+            SysRole role = sysRoleMapper.selectOne(roleWrapper);
+            if (role != null) {
+                SysUserRole userRole = new SysUserRole();
+                userRole.setUserId(user.getId());
+                userRole.setRoleId(role.getId());
+                sysUserRoleMapper.insert(userRole);
+            }
+        }
     }
 
     @Override

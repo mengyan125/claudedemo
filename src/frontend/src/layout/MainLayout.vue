@@ -22,7 +22,6 @@
 
       <!-- 右侧信息区 -->
       <div class="nav-right">
-        <el-icon :size="20" class="nav-icon"><Bell /></el-icon>
         <el-dropdown trigger="click" @command="handleCommand">
           <span class="user-info">
             {{ userStore.userInfo?.realName || '用户' }}
@@ -50,7 +49,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Grid, Bell, ArrowDown, Setting } from '@element-plus/icons-vue'
+import { Grid, ArrowDown, Setting } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import { logoutApi } from '@/api/auth'
 
@@ -72,7 +71,7 @@ const allTabs: TabItem[] = [
   { path: '/student/feedback', label: '我要反馈', match: ['/student/feedback'], requiredUserType: 'student' },
   { path: '/student/tracking', label: '反馈跟踪', match: ['/student/tracking'], requiredUserType: 'student' },
   { path: '/admin/feedback', label: '反馈查看', match: ['/admin/feedback'], requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN', 'CATEGORY_ADMIN'] },
-  { path: '/admin/statistics', label: '反馈统计', match: ['/admin/statistics'], requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN'] },
+  { path: '/admin/statistics', label: '反馈统计', match: ['/admin/statistics'], requiredRoles: ['SYSTEM_ADMIN'] },
   { path: '/admin/category', label: '反馈管理', match: ['/admin/category'], requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN'] },
   { path: '/system', label: '系统管理', match: ['/system'], requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN'] },
 ]

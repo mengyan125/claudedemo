@@ -22,7 +22,7 @@ public class CreateUserDTO {
     @NotBlank(message = "密码不能为空")
     private String password;
 
-    /** 用户类型(student/teacher) */
+    /** 用户类型(student/teacher/role_admin) */
     @NotBlank(message = "用户类型不能为空")
     private String userType;
 }

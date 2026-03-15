@@ -20,7 +20,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/system/user")
-@RequiresRole("SYSTEM_ADMIN")
+@RequiresRole({"SYSTEM_ADMIN", "ROLE_ADMIN"})
 public class SystemUserController {
 
     @Autowired

@@ -32,7 +32,7 @@ export interface CreateUserParams {
   username: string
   realName: string
   password: string
-  userType: 'student' | 'teacher'
+  userType: 'student' | 'teacher' | 'role_admin'
 }
 
 /* 用户列表 */

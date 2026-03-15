@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api/admin/statistics")
-@RequiresRole({"SYSTEM_ADMIN", "ROLE_ADMIN"})
+@RequiresRole("SYSTEM_ADMIN")
 public class AdminStatisticsController {
 
     @Autowired

@@ -58,13 +58,13 @@ const routes: RouteRecordRaw[] = [
         path: 'admin/statistics',
         name: 'AdminStatistics',
         component: () => import('@/pages/admin/StatisticsPage.vue'),
-        meta: { title: '反馈统计', requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN'] }
+        meta: { title: '反馈统计', requiredRoles: ['SYSTEM_ADMIN'] }
       },
       {
         path: 'admin/statistics/teacher/:id',
         name: 'TeacherFeedbackDetail',
         component: () => import('@/pages/admin/TeacherDetailPage.vue'),
-        meta: { title: '教师被反馈详情', requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN'] }
+        meta: { title: '教师被反馈详情', requiredRoles: ['SYSTEM_ADMIN'] }
       },
       {
         path: 'admin/category',
@@ -76,14 +76,14 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'system',
         component: () => import('@/pages/system/SystemLayout.vue'),
-        meta: { requiredRoles: ['SYSTEM_ADMIN'] },
+        meta: { requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN'] },
         redirect: '/system/user',
         children: [
           {
             path: 'user',
             name: 'SystemUser',
             component: () => import('@/pages/system/UserPage.vue'),
-            meta: { title: '用户管理', requiredRoles: ['SYSTEM_ADMIN'] }
+            meta: { title: '用户管理', requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN'] }
           },
           {
             path: 'semester',
