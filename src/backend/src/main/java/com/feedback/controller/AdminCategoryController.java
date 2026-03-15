@@ -5,6 +5,7 @@ import com.feedback.model.dto.CreateCategoryDTO;
 import com.feedback.model.dto.UpdateCategoryDTO;
 import com.feedback.model.dto.UpdateCategoryStatusDTO;
 import com.feedback.model.vo.CategoryItemVO;
+import com.feedback.security.RequiresRole;
 import com.feedback.service.AdminCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ public class AdminCategoryController {
      * @return 类别列表
      */
     @GetMapping("/list")
+    @RequiresRole({"SYSTEM_ADMIN", "ROLE_ADMIN", "CATEGORY_ADMIN"})
     public Result<List<CategoryItemVO>> getCategoryList() {
         List<CategoryItemVO> list = adminCategoryService.getCategoryList();
         return Result.ok(list);
@@ -41,6 +43,7 @@ public class AdminCategoryController {
      * @return 成功响应
      */
     @PostMapping
+    @RequiresRole({"SYSTEM_ADMIN", "ROLE_ADMIN"})
     public Result<Void> createCategory(@RequestBody @Valid CreateCategoryDTO dto) {
         adminCategoryService.createCategory(dto);
         return Result.ok();
@@ -54,6 +57,7 @@ public class AdminCategoryController {
      * @return 成功响应
      */
     @PutMapping("/{id}")
+    @RequiresRole({"SYSTEM_ADMIN", "ROLE_ADMIN"})
     public Result<Void> updateCategory(@PathVariable Long id, @RequestBody @Valid UpdateCategoryDTO dto) {
         adminCategoryService.updateCategory(id, dto);
         return Result.ok();
@@ -66,6 +70,7 @@ public class AdminCategoryController {
      * @return 成功响应
      */
     @DeleteMapping("/{id}")
+    @RequiresRole({"SYSTEM_ADMIN", "ROLE_ADMIN"})
     public Result<Void> deleteCategory(@PathVariable Long id) {
         adminCategoryService.deleteCategory(id);
         return Result.ok();
@@ -79,6 +84,7 @@ public class AdminCategoryController {
      * @return 成功响应
      */
     @PutMapping("/{id}/status")
+    @RequiresRole({"SYSTEM_ADMIN", "ROLE_ADMIN"})
     public Result<Void> updateCategoryStatus(@PathVariable Long id, @RequestBody @Valid UpdateCategoryStatusDTO dto) {
         adminCategoryService.updateCategoryStatus(id, dto);
         return Result.ok();

@@ -8,6 +8,7 @@ import com.feedback.model.vo.AdminFeedbackItemVO;
 import com.feedback.model.vo.FeedbackStatusCountVO;
 import com.feedback.model.vo.ReminderItemVO;
 import com.feedback.model.vo.UserSearchVO;
+import com.feedback.security.RequiresRole;
 import com.feedback.service.AdminFeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/admin")
+@RequiresRole({"SYSTEM_ADMIN", "ROLE_ADMIN", "CATEGORY_ADMIN"})
 public class AdminFeedbackController {
 
     @Autowired

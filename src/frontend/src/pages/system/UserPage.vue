@@ -42,7 +42,7 @@
       </el-table-column>
       <el-table-column label="角色" width="200">
         <template #default="{ row }">
-          {{ row.roles?.join('、') || '—' }}
+          {{ row.roles?.map(roleLabel).join('、') || '—' }}
         </template>
       </el-table-column>
       <el-table-column label="状态" width="100">
@@ -187,6 +187,16 @@ const formRules: FormRules = {
   realName: [{ required: true, message: '请输入真实姓名', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
   userType: [{ required: true, message: '请选择用户类型', trigger: 'change' }]
+}
+
+/* 角色编码转中文 */
+function roleLabel(code: string) {
+  const map: Record<string, string> = {
+    SYSTEM_ADMIN: '系统管理员',
+    ROLE_ADMIN: '角色管理员',
+    CATEGORY_ADMIN: '类别管理员'
+  }
+  return map[code] || code
 }
 
 /* 用户类型标签 */

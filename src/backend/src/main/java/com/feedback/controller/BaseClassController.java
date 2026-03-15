@@ -4,6 +4,7 @@ import com.feedback.common.result.Result;
 import com.feedback.model.dto.CreateClassDTO;
 import com.feedback.model.dto.UpdateClassDTO;
 import com.feedback.model.vo.ClassItemVO;
+import com.feedback.security.RequiresRole;
 import com.feedback.service.BaseClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,7 @@ public class BaseClassController {
      * @return 成功响应
      */
     @PostMapping
+    @RequiresRole("SYSTEM_ADMIN")
     public Result<Void> createClass(@RequestBody @Valid CreateClassDTO dto) {
         baseClassService.createClass(dto);
         return Result.ok();
@@ -54,6 +56,7 @@ public class BaseClassController {
      * @return 成功响应
      */
     @PutMapping("/{id}")
+    @RequiresRole("SYSTEM_ADMIN")
     public Result<Void> updateClass(@PathVariable Long id, @RequestBody @Valid UpdateClassDTO dto) {
         baseClassService.updateClass(id, dto);
         return Result.ok();
@@ -66,6 +69,7 @@ public class BaseClassController {
      * @return 成功响应
      */
     @DeleteMapping("/{id}")
+    @RequiresRole("SYSTEM_ADMIN")
     public Result<Void> deleteClass(@PathVariable Long id) {
         baseClassService.deleteClass(id);
         return Result.ok();

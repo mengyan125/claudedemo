@@ -13,6 +13,7 @@ com\feedback\model\vo\AdminFeedbackDetailVO.class
 com\feedback\controller\BaseClassController.class
 com\feedback\mapper\FbFeedbackMapper.class
 com\feedback\model\dto\CreateQuickReplyDTO.class
+com\feedback\model\vo\UserRoleItemVO.class
 com\feedback\mapper\FbQuickReplyMapper.class
 com\feedback\model\vo\AdminFeedbackDetailVO$AdminFeedbackDetailVOBuilder.class
 com\feedback\controller\BaseGradeController.class
@@ -23,6 +24,7 @@ com\feedback\config\WebMvcConfig.class
 com\feedback\controller\BaseRelationController.class
 com\feedback\model\dto\UpdateUserDTO.class
 com\feedback\model\vo\SemesterItemVO$SemesterItemVOBuilder.class
+com\feedback\security\RequiresRole.class
 com\feedback\model\vo\RoleItemVO$RoleItemVOBuilder.class
 com\feedback\common\constant\FeedbackStatusEnum.class
 com\feedback\model\dto\UpdateUserStatusDTO.class
@@ -78,6 +80,7 @@ com\feedback\model\dto\UpdateClassDTO.class
 com\feedback\service\AuthService.class
 com\feedback\model\vo\ReplyItemVO$ReplyItemVOBuilder.class
 com\feedback\model\vo\ReplyItemVO.class
+com\feedback\model\dto\AssignRoleDTO.class
 com\feedback\model\vo\QuickReplyItemVO$QuickReplyItemVOBuilder.class
 com\feedback\model\vo\AdminFeedbackItemVO$AdminFeedbackItemVOBuilder.class
 com\feedback\model\vo\ReminderItemVO.class
@@ -105,6 +108,7 @@ com\feedback\model\vo\CategoryPermissionVO$CategoryPermissionVOBuilder.class
 com\feedback\model\vo\RoleItemVO.class
 com\feedback\service\impl\SystemPermissionServiceImpl.class
 com\feedback\model\entity\FbReminderReceiver.class
+com\feedback\model\vo\UserRoleItemVO$UserRoleItemVOBuilder.class
 com\feedback\model\dto\LoginDTO.class
 com\feedback\model\entity\BaseSemester.class
 com\feedback\model\entity\SysUser.class
@@ -122,6 +126,7 @@ com\feedback\mapper\BaseGradeMapper.class
 com\feedback\model\dto\UpdateQuickReplyDTO.class
 com\feedback\model\vo\TeacherFeedbackResultVO$TeacherFeedbackResultVOBuilder.class
 com\feedback\service\StudentFeedbackService.class
+com\feedback\security\RoleInterceptor.class
 com\feedback\model\dto\AssignStudentsDTO.class
 com\feedback\model\entity\FbCollection.class
 com\feedback\model\vo\ClassItemVO$ClassItemVOBuilder.class

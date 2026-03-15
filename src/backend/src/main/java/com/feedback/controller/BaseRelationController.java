@@ -5,6 +5,7 @@ import com.feedback.model.dto.AssignStudentsDTO;
 import com.feedback.model.dto.AssignTeacherDTO;
 import com.feedback.model.vo.StudentAssignmentVO;
 import com.feedback.model.vo.TeacherAssignmentVO;
+import com.feedback.security.RequiresRole;
 import com.feedback.service.BaseRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +55,7 @@ public class BaseRelationController {
      * @return 成功响应
      */
     @PostMapping("/class/{classId}/students")
+    @RequiresRole("SYSTEM_ADMIN")
     public Result<Void> assignStudentsToClass(@PathVariable Long classId, @RequestBody @Valid AssignStudentsDTO dto) {
         baseRelationService.assignStudentsToClass(classId, dto);
         return Result.ok();
@@ -66,6 +68,7 @@ public class BaseRelationController {
      * @return 成功响应
      */
     @DeleteMapping("/student-assignment/{id}")
+    @RequiresRole("SYSTEM_ADMIN")
     public Result<Void> removeStudentAssignment(@PathVariable Long id) {
         baseRelationService.removeStudentAssignment(id);
         return Result.ok();
@@ -91,6 +94,7 @@ public class BaseRelationController {
      * @return 成功响应
      */
     @PostMapping("/class/{classId}/teachers")
+    @RequiresRole("SYSTEM_ADMIN")
     public Result<Void> assignTeacherToClass(@PathVariable Long classId, @RequestBody @Valid AssignTeacherDTO dto) {
         baseRelationService.assignTeacherToClass(classId, dto);
         return Result.ok();
@@ -103,6 +107,7 @@ public class BaseRelationController {
      * @return 成功响应
      */
     @DeleteMapping("/teacher-assignment/{id}")
+    @RequiresRole("SYSTEM_ADMIN")
     public Result<Void> removeTeacherAssignment(@PathVariable Long id) {
         baseRelationService.removeTeacherAssignment(id);
         return Result.ok();

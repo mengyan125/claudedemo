@@ -4,6 +4,7 @@ import com.feedback.common.result.Result;
 import com.feedback.model.dto.CreateSemesterDTO;
 import com.feedback.model.dto.UpdateSemesterDTO;
 import com.feedback.model.vo.SemesterItemVO;
+import com.feedback.security.RequiresRole;
 import com.feedback.service.BaseSemesterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,7 @@ public class BaseSemesterController {
      * @return 成功响应
      */
     @PostMapping
+    @RequiresRole("SYSTEM_ADMIN")
     public Result<Void> createSemester(@RequestBody @Valid CreateSemesterDTO dto) {
         baseSemesterService.createSemester(dto);
         return Result.ok();
@@ -49,6 +51,7 @@ public class BaseSemesterController {
      * 更新学期
      */
     @PutMapping("/{id}")
+    @RequiresRole("SYSTEM_ADMIN")
     public Result<Void> updateSemester(@PathVariable Long id, @RequestBody @Valid UpdateSemesterDTO dto) {
         baseSemesterService.updateSemester(id, dto);
         return Result.ok();
@@ -61,6 +64,7 @@ public class BaseSemesterController {
      * @return 成功响应
      */
     @PutMapping("/{id}/current")
+    @RequiresRole("SYSTEM_ADMIN")
     public Result<Void> setCurrentSemester(@PathVariable Long id) {
         baseSemesterService.setCurrentSemester(id);
         return Result.ok();
@@ -73,6 +77,7 @@ public class BaseSemesterController {
      * @return 成功响应
      */
     @DeleteMapping("/{id}")
+    @RequiresRole("SYSTEM_ADMIN")
     public Result<Void> deleteSemester(@PathVariable Long id) {
         baseSemesterService.deleteSemester(id);
         return Result.ok();

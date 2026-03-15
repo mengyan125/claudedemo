@@ -64,3 +64,59 @@ export function deleteUserApi(id: number) {
 export function toggleUserStatusApi(id: number, status: number) {
   return request.put<ApiResponse<null>>(`/system/user/${id}/status`, { status })
 }
+
+/* ===== 角色管理 ===== */
+
+/* 角色信息 */
+export interface RoleItem {
+  id: number
+  roleCode: string
+  roleName: string
+}
+
+/* 角色下的用户信息 */
+export interface UserRoleItem {
+  userId: number
+  username: string
+  realName: string
+  userType: string
+}
+
+/* 获取角色列表 */
+export function getRoleListApi() {
+  return request.get<ApiResponse<RoleItem[]>>('/system/role/list')
+}
+
+/* 获取角色下的用户列表 */
+export function getRoleUsersApi(roleId: number) {
+  return request.get<ApiResponse<UserRoleItem[]>>('/system/role/users', { params: { roleId } })
+}
+
+/* 为用户分配角色 */
+export function assignRoleApi(data: { userId: number; roleId: number }) {
+  return request.post<ApiResponse<null>>('/system/role/assign', data)
+}
+
+/* 撤销用户角色 */
+export function revokeRoleApi(data: { userId: number; roleId: number }) {
+  return request.delete<ApiResponse<null>>('/system/role/revoke', { data })
+}
+
+/* ===== 类别权限配置 ===== */
+
+/* 类别权限项 */
+export interface CategoryPermissionItem {
+  categoryId: number
+  categoryName: string
+  adminIds: number[]
+}
+
+/* 获取类别权限列表 */
+export function getCategoryPermissionListApi() {
+  return request.get<ApiResponse<CategoryPermissionItem[]>>('/system/category-permission/list')
+}
+
+/* 更新类别权限 */
+export function updateCategoryPermissionApi(categoryId: number, adminIds: number[]) {
+  return request.put<ApiResponse<null>>(`/system/category-permission/${categoryId}`, { adminIds })
+}

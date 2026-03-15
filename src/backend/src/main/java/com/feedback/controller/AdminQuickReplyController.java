@@ -4,6 +4,7 @@ import com.feedback.common.result.Result;
 import com.feedback.model.dto.CreateQuickReplyDTO;
 import com.feedback.model.dto.UpdateQuickReplyDTO;
 import com.feedback.model.vo.QuickReplyItemVO;
+import com.feedback.security.RequiresRole;
 import com.feedback.service.AdminQuickReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/admin/quick-reply")
+@RequiresRole({"SYSTEM_ADMIN", "ROLE_ADMIN", "CATEGORY_ADMIN"})
 public class AdminQuickReplyController {
 
     @Autowired

@@ -79,18 +79,7 @@
             show-word-limit
           />
           <div class="quick-reply-row">
-            <el-popover placement="top" :width="320" trigger="click">
-              <template #reference>
-                <span class="quick-reply-btn">快捷回复</span>
-              </template>
-              <div class="quick-reply-list">
-                <div
-                  v-for="qr in quickReplies" :key="qr.id"
-                  class="quick-reply-item"
-                  @click="replyContent = qr.content"
-                >{{ qr.content }}</div>
-              </div>
-            </el-popover>
+            <span class="quick-reply-btn" @click="fillActiveQuickReply">快捷回复</span>
           </div>
         </div>
 
@@ -202,7 +191,7 @@ const loading = ref(false)
 const submitting = ref(false)
 const detail = ref<AdminFeedbackDetail | null>(null)
 const replyContent = ref('')
-const quickReplies = ref<Array<{ id: number; content: string }>>([])
+const quickReplies = ref<Array<{ id: number; content: string; isActive?: boolean }>>([])
 const activeTab = ref<'reply' | 'reminder'>('reply')
 
 /* 附件预览 */
@@ -329,6 +318,16 @@ async function handleSendReminder() {
     fetchReminders()
   } catch { /* 错误已在拦截器处理 */ }
   finally { sendingReminder.value = false }
+}
+
+/** 点击快捷回复，自动填充启用的那条内容 */
+function fillActiveQuickReply() {
+  const active = quickReplies.value.find(qr => qr.isActive)
+  if (active) {
+    replyContent.value = active.content
+  } else {
+    ElMessage.info('暂无启用的快捷回复')
+  }
 }
 
 onMounted(async () => {

@@ -1,6 +1,7 @@
 package com.feedback.config;
 
 import com.feedback.security.JwtInterceptor;
+import com.feedback.security.RoleInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     private JwtInterceptor jwtInterceptor;
 
+    @Autowired
+    private RoleInterceptor roleInterceptor;
+
     /**
      * 文件上传目录，默认为当前目录下的 uploads 文件夹
      */
@@ -35,10 +39,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor)
-                // 拦截所有 API 请求
                 .addPathPatterns("/api/**")
-                // 排除登录接口和文件访问接口
-                .excludePathPatterns("/api/auth/login", "/api/files/**");
+                .excludePathPatterns("/api/auth/login", "/api/files/**")
+                .order(1);
+        registry.addInterceptor(roleInterceptor)
+                .addPathPatterns("/api/**")
+                .excludePathPatterns("/api/auth/login", "/api/files/**")
+                .order(2);
     }
 
     /**

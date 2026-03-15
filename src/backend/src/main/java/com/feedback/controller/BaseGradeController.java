@@ -4,6 +4,7 @@ import com.feedback.common.result.Result;
 import com.feedback.model.dto.CreateGradeDTO;
 import com.feedback.model.dto.UpdateGradeDTO;
 import com.feedback.model.entity.BaseGrade;
+import com.feedback.security.RequiresRole;
 import com.feedback.service.BaseGradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,7 @@ public class BaseGradeController {
      * @return 成功响应
      */
     @PostMapping
+    @RequiresRole("SYSTEM_ADMIN")
     public Result<Void> createGrade(@RequestBody @Valid CreateGradeDTO dto) {
         baseGradeService.createGrade(dto);
         return Result.ok();
@@ -53,6 +55,7 @@ public class BaseGradeController {
      * @return 成功响应
      */
     @PutMapping("/{id}")
+    @RequiresRole("SYSTEM_ADMIN")
     public Result<Void> updateGrade(@PathVariable Long id, @RequestBody @Valid UpdateGradeDTO dto) {
         baseGradeService.updateGrade(id, dto);
         return Result.ok();
@@ -65,6 +68,7 @@ public class BaseGradeController {
      * @return 成功响应
      */
     @DeleteMapping("/{id}")
+    @RequiresRole("SYSTEM_ADMIN")
     public Result<Void> deleteGrade(@PathVariable Long id) {
         baseGradeService.deleteGrade(id);
         return Result.ok();

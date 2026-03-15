@@ -3,6 +3,7 @@ package com.feedback.controller;
 import com.feedback.common.result.Result;
 import com.feedback.model.vo.FeedbackStatisticsVO;
 import com.feedback.model.vo.TeacherFeedbackResultVO;
+import com.feedback.security.RequiresRole;
 import com.feedback.service.AdminStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api/admin/statistics")
+@RequiresRole({"SYSTEM_ADMIN", "ROLE_ADMIN"})
 public class AdminStatisticsController {
 
     @Autowired

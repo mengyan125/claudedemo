@@ -46,6 +46,9 @@ request.interceptors.response.use(
       userStore.logout()
       router.push('/login')
       ElMessage.error('登录已过期，请重新登录')
+    } else if (error.response?.status === 403) {
+      ElMessage.error('权限不足，无法执行此操作')
+      return Promise.reject(error)
     } else {
       ElMessage.error(error.message || '网络异常')
     }

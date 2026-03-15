@@ -37,6 +37,7 @@ D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\AuthService.j
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\FbFeedback.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\FbReminderMapper.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\FeedbackStatusCountVO.java
+D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\UserRoleItemVO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\FbFeedbackAttachment.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\impl\BaseSemesterServiceImpl.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\dto\CreateGradeDTO.java
@@ -75,7 +76,9 @@ D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\ClassItemVO.
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\FbCategory.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\FbReplyMapper.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\FbReminderReceiverMapper.java
+D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\dto\AssignRoleDTO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\BaseStudentClassMapper.java
+D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\security\RoleInterceptor.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\common\exception\GlobalExceptionHandler.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\impl\StudentFeedbackServiceImpl.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\TeacherAssignmentVO.java
@@ -94,6 +97,7 @@ D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\FbFeedbackAtta
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\common\exception\BusinessException.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\controller\SystemPermissionController.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\SysUserRoleMapper.java
+D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\security\RequiresRole.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\dto\CreateCategoryDTO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\TeacherFeedbackResultVO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\controller\StudentFeedbackController.java

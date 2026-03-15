@@ -25,6 +25,14 @@ export const useUserStore = defineStore('user', () => {
       ['SYSTEM_ADMIN', 'ROLE_ADMIN', 'CATEGORY_ADMIN'].includes(r)
     ) ?? false
   )
+  const isSystemAdmin = computed(() => userInfo.value?.roles?.includes('SYSTEM_ADMIN') ?? false)
+  const isRoleAdmin = computed(() => userInfo.value?.roles?.includes('ROLE_ADMIN') ?? false)
+  const isCategoryAdmin = computed(() => userInfo.value?.roles?.includes('CATEGORY_ADMIN') ?? false)
+
+  /* 判断是否拥有指定角色之一 */
+  function hasAnyRole(roles: string[]): boolean {
+    return roles.some(r => userInfo.value?.roles?.includes(r) ?? false)
+  }
 
   /* 设置 token */
   function setToken(newToken: string) {
@@ -50,6 +58,10 @@ export const useUserStore = defineStore('user', () => {
     isLoggedIn,
     isStudent,
     isAdmin,
+    isSystemAdmin,
+    isRoleAdmin,
+    isCategoryAdmin,
+    hasAnyRole,
     setToken,
     setUserInfo,
     logout

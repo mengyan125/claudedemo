@@ -67,6 +67,9 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
     @Autowired
     private FbReminderReceiverMapper fbReminderReceiverMapper;
 
+    @Autowired
+    private FbCategoryAdminMapper fbCategoryAdminMapper;
+
     @Override
     public PageResult<AdminFeedbackItemVO> getFeedbackList(Long categoryId, String status,
                                                             String keyword, Long gradeId,
@@ -95,6 +98,11 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
         FbFeedback feedback = fbFeedbackMapper.selectById(id);
         if (feedback == null) {
             throw new BusinessException("反馈不存在");
+        }
+        // CATEGORY_ADMIN 校验类别权限
+        List<Long> allowedCategoryIds = getAllowedCategoryIds();
+        if (allowedCategoryIds != null && !allowedCategoryIds.contains(feedback.getCategoryId())) {
+            throw new BusinessException(403, "权限不足");
         }
         // 标记管理员已读
         if (feedback.getHasUnreadForAdmin() != null && feedback.getHasUnreadForAdmin() == 1) {
@@ -292,6 +300,17 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
         LambdaQueryWrapper<FbFeedback> wrapper = new LambdaQueryWrapper<>();
         // 过滤掉草稿
         wrapper.ne(FbFeedback::getStatus, "draft");
+
+        // CATEGORY_ADMIN 类别数据过滤
+        List<Long> allowedCategoryIds = getAllowedCategoryIds();
+        if (allowedCategoryIds != null) {
+            if (allowedCategoryIds.isEmpty()) {
+                wrapper.eq(FbFeedback::getId, -1L);
+                return wrapper;
+            }
+            wrapper.in(FbFeedback::getCategoryId, allowedCategoryIds);
+        }
+
         if (categoryId != null) {
             wrapper.eq(FbFeedback::getCategoryId, categoryId);
         }
@@ -538,6 +557,29 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
         wrapper.eq(FbCollection::getUserId, adminId)
                .eq(FbCollection::getFeedbackId, feedbackId);
         return fbCollectionMapper.selectCount(wrapper) > 0;
+    }
+
+    /**
+     * 获取当前用户允许访问的类别ID列表
+     * SYSTEM_ADMIN / ROLE_ADMIN 返回 null（不过滤）
+     * CATEGORY_ADMIN 返回 fb_category_admin 中被分配的类别ID
+     */
+    private List<Long> getAllowedCategoryIds() {
+        UserContext.UserInfo user = UserContext.getCurrentUser();
+        List<String> roles = user.getRoles();
+        if (roles == null || roles.isEmpty()) {
+            return new ArrayList<>();
+        }
+        // SYSTEM_ADMIN 或 ROLE_ADMIN 不做类别限制
+        if (roles.contains("SYSTEM_ADMIN") || roles.contains("ROLE_ADMIN")) {
+            return null;
+        }
+        // CATEGORY_ADMIN 查询被分配的类别
+        LambdaQueryWrapper<FbCategoryAdmin> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FbCategoryAdmin::getUserId, user.getId());
+        return fbCategoryAdminMapper.selectList(wrapper).stream()
+                .map(FbCategoryAdmin::getCategoryId)
+                .collect(Collectors.toList());
     }
 
     /** 截断内容为前30字 */

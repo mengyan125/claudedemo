@@ -119,11 +119,18 @@ async function handleLogin() {
 
     ElMessage.success('登录成功')
 
-    /* 根据角色跳转 */
+    /* 管理员角色列表 */
+    const ADMIN_ROLES = ['SYSTEM_ADMIN', 'ROLE_ADMIN', 'CATEGORY_ADMIN']
+    const roles: string[] = result.userInfo.roles || []
+    const hasAdminRole = roles.some((r: string) => ADMIN_ROLES.includes(r))
+
+    /* 根据用户类型和角色跳转 */
     if (result.userInfo.userType === 'student') {
       router.push('/student/feedback')
-    } else {
+    } else if (hasAdminRole) {
       router.push('/admin/feedback')
+    } else {
+      router.push('/no-permission')
     }
   } catch {
     /* 错误已在拦截器中处理 */

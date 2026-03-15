@@ -216,7 +216,7 @@ export function getTeacherFeedbackListApi(teacherId: number) {
 
 /* 获取快捷回复列表（用于回复弹窗） */
 export function getQuickRepliesForReplyApi() {
-  return request.get<ApiResponse<Array<{ id: number; content: string }>>>('/admin/quick-reply/list')
+  return request.get<ApiResponse<QuickReplyItem[]>>('/admin/quick-reply/list')
 }
 
 /* ===== 状态统计 ===== */

@@ -65,25 +65,30 @@ interface TabItem {
   path: string
   label: string
   match: string[] // 用于匹配激活状态的路由前缀
-  roles: string[] // 可见角色：student / admin / all
+  requiredUserType?: string
+  requiredRoles?: string[]
 }
 
 const allTabs: TabItem[] = [
-  { path: '/student/feedback', label: '我要反馈', match: ['/student/feedback'], roles: ['student'] },
-  { path: '/student/tracking', label: '反馈跟踪', match: ['/student/tracking'], roles: ['student'] },
-  { path: '/admin/feedback', label: '反馈查看', match: ['/admin/feedback'], roles: ['admin'] },
-  { path: '/admin/statistics', label: '反馈统计', match: ['/admin/statistics'], roles: ['admin'] },
-  { path: '/admin/category', label: '反馈管理', match: ['/admin/category', '/admin/quick-reply'], roles: ['admin'] },
-  { path: '/system', label: '系统管理', match: ['/system'], roles: ['admin'] }
+  { path: '/student/feedback', label: '我要反馈', match: ['/student/feedback'], requiredUserType: 'student' },
+  { path: '/student/tracking', label: '反馈跟踪', match: ['/student/tracking'], requiredUserType: 'student' },
+  { path: '/admin/feedback', label: '反馈查看', match: ['/admin/feedback'], requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN', 'CATEGORY_ADMIN'] },
+  { path: '/admin/statistics', label: '反馈统计', match: ['/admin/statistics'], requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN'] },
+  { path: '/admin/category', label: '反馈管理', match: ['/admin/category'], requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN'] },
+  { path: '/system', label: '系统管理', match: ['/system'], requiredRoles: ['SYSTEM_ADMIN', 'ROLE_ADMIN'] },
 ]
 
 /* 根据角色过滤可见 Tab */
 const visibleTabs = computed(() => {
-  const userType = userStore.userInfo?.userType
+  const info = userStore.userInfo
+  if (!info) return []
   return allTabs.filter(tab => {
-    if (tab.roles.includes('all')) return true
-    if (tab.roles.includes('student') && userType === 'student') return true
-    if (tab.roles.includes('admin') && userType !== 'student') return true
+    if (tab.requiredUserType) {
+      return info.userType === tab.requiredUserType
+    }
+    if (tab.requiredRoles) {
+      return userStore.hasAnyRole(tab.requiredRoles)
+    }
     return false
   })
 })

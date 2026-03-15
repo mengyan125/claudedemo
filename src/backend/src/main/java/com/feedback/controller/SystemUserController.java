@@ -6,6 +6,7 @@ import com.feedback.model.dto.CreateUserDTO;
 import com.feedback.model.dto.UpdateUserDTO;
 import com.feedback.model.dto.UpdateUserStatusDTO;
 import com.feedback.model.vo.UserItemVO;
+import com.feedback.security.RequiresRole;
 import com.feedback.service.SystemUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/system/user")
+@RequiresRole("SYSTEM_ADMIN")
 public class SystemUserController {
 
     @Autowired

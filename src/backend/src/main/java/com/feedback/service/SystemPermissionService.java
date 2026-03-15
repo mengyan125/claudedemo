@@ -2,6 +2,7 @@ package com.feedback.service;
 
 import com.feedback.model.vo.CategoryPermissionVO;
 import com.feedback.model.vo.RoleItemVO;
+import com.feedback.model.vo.UserRoleItemVO;
 
 import java.util.List;
 
@@ -34,4 +35,28 @@ public interface SystemPermissionService {
      * @param adminIds   管理员用户ID列表
      */
     void updateCategoryPermission(Long categoryId, List<Long> adminIds);
+
+    /**
+     * 获取角色下的用户列表
+     *
+     * @param roleId 角色ID
+     * @return 用户列表
+     */
+    List<UserRoleItemVO> getRoleUsers(Long roleId);
+
+    /**
+     * 分配角色给用户
+     *
+     * @param userId 用户ID
+     * @param roleId 角色ID
+     */
+    void assignRole(Long userId, Long roleId);
+
+    /**
+     * 撤销用户的角色
+     *
+     * @param userId 用户ID
+     * @param roleId 角色ID
+     */
+    void revokeRole(Long userId, Long roleId);
 }

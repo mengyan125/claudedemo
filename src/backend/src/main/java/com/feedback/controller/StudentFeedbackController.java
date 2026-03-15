@@ -4,6 +4,7 @@ import com.feedback.common.result.PageResult;
 import com.feedback.common.result.Result;
 import com.feedback.model.dto.FeedbackSubmitDTO;
 import com.feedback.model.vo.*;
+import com.feedback.security.RequiresRole;
 import com.feedback.service.StudentFeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/student")
+@RequiresRole(userType = "student")
 public class StudentFeedbackController {
 
     @Autowired
