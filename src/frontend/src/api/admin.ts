@@ -159,7 +159,7 @@ export interface FeedbackStatistics {
   monthCount: number
   categoryDistribution: Array<{ name: string; count: number; percentage: number }>
   semesterTrend: Array<{ semester: string; count: number }>
-  teacherTop10: Array<{ rank: number; teacherName: string; subject: string; gradeName: string; className: string; count: number }>
+  teacherTop10: Array<{ rank: number; teacherId: number; teacherName: string; subject: string; gradeName: string; className: string; count: number; categoryName: string }>
 }
 
 /* 教师被反馈列表项 */
@@ -208,6 +208,11 @@ export function toggleFavoriteApi(feedbackId: number) {
 /* 获取反馈统计 */
 export function getStatisticsApi() {
   return request.get<ApiResponse<FeedbackStatistics>>('/admin/statistics')
+}
+
+/* 获取教师被反馈TOP10（支持时间筛选） */
+export function getTeacherTop10Api(params?: { startDate?: string; endDate?: string }) {
+  return request.get<ApiResponse<FeedbackStatistics['teacherTop10']>>('/admin/statistics/teacher-top10', { params })
 }
 
 /* 获取教师被反馈列表 */

@@ -16,9 +16,9 @@
       </div>
       <div class="stat-card">
         <div class="stat-num">
-          <span class="num green">{{ stats.semesterCount }}</span><span class="unit">条</span>
+          <span class="num green">{{ topCategory.count }}</span><span class="unit">条</span>
         </div>
-        <div class="stat-desc">本月反馈类别最多是教学，共{{ stats.semesterCount }}条</div>
+        <div class="stat-desc">本月反馈类别最多是{{ topCategory.name }}，共{{ topCategory.count }}条</div>
       </div>
     </div>
 
@@ -60,7 +60,7 @@
               <div class="bar-wrapper">
                 <div class="bar-fill" :style="{ height: getBarHeight(item.count) + '%' }" />
               </div>
-              <span class="bar-label">{{ item.semester.replace('学期', '') }}</span>
+              <span class="bar-label">{{ item.semester }}</span>
             </div>
           </div>
         </div>
@@ -75,14 +75,22 @@
       </div>
       <div class="top10-filter">
         <span class="filter-label">时间</span>
-        <el-date-picker v-model="top10Start" type="date" placeholder="2025-09-01" size="small" style="width:140px" />
-        <span class="date-sep">至</span>
-        <el-date-picker v-model="top10End" type="date" placeholder="2025-04-14" size="small" style="width:140px" />
+        <el-date-picker
+          v-model="top10DateRange"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          size="small"
+          style="width:280px"
+          value-format="YYYY-MM-DD"
+          @change="fetchTop10"
+        />
         <span class="spacer" />
         <el-button size="small" class="btn-export">导出</el-button>
       </div>
 
-      <el-table :data="stats.teacherTop10" class="top10-table" size="small">
+      <el-table :data="top10List" class="top10-table" size="small">
         <el-table-column prop="rank" label="序号" width="60" align="center" />
         <el-table-column label="教师" min-width="100" align="center">
           <template #default="{ row }">
@@ -90,6 +98,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="subject" label="科目" width="80" align="center" />
+        <el-table-column prop="categoryName" label="反馈类别" width="100" align="center" />
         <el-table-column prop="gradeName" label="年级/学期" width="120" align="center" />
         <el-table-column prop="className" label="班级/学级" width="120" align="center" />
         <el-table-column prop="count" label="被反馈次数" width="100" align="center" />
@@ -106,13 +115,13 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getStatisticsApi } from '@/api/admin'
+import { getStatisticsApi, getTeacherTop10Api } from '@/api/admin'
 import type { FeedbackStatistics } from '@/api/admin'
 
 const router = useRouter()
 const loading = ref(false)
-const top10Start = ref('')
-const top10End = ref('')
+const top10DateRange = ref<[string, string] | null>(null)
+const top10List = ref<FeedbackStatistics['teacherTop10']>([])
 const pieDateRange = ref<[string, string] | null>(null)
 
 const stats = reactive<FeedbackStatistics>({
@@ -126,6 +135,13 @@ const COLORS: Record<string, string> = {
 }
 
 function getCategoryColor(name: string) { return COLORS[name] || '#909399' }
+
+/* 本月反馈最多的类别 */
+const topCategory = computed(() => {
+  const dist = stats.categoryDistribution
+  if (!dist.length) return { name: '暂无', count: 0 }
+  return dist.reduce((max, item) => item.count > max.count ? item : max, dist[0])
+})
 
 const pieGradientStyle = computed(() => {
   const dist = stats.categoryDistribution
@@ -148,11 +164,24 @@ function getBarHeight(count: number) {
 
 function goTeacher(id: number) { router.push(`/admin/statistics/teacher/${id}`) }
 
+async function fetchTop10() {
+  const params: { startDate?: string; endDate?: string } = {}
+  if (top10DateRange.value) {
+    params.startDate = top10DateRange.value[0]
+    params.endDate = top10DateRange.value[1]
+  }
+  try {
+    const { data } = await getTeacherTop10Api(params)
+    top10List.value = data.data
+  } catch { /* 错误已在拦截器处理 */ }
+}
+
 onMounted(async () => {
   loading.value = true
   try {
     const { data } = await getStatisticsApi()
     Object.assign(stats, data.data)
+    top10List.value = data.data.teacherTop10
   } catch { /* 错误已在拦截器处理 */ }
   finally { loading.value = false }
 })
@@ -210,7 +239,7 @@ onMounted(async () => {
   width: 40px; height: 240px; background: #f0f0f0; border-radius: 4px 4px 0 0;
   display: flex; align-items: flex-end; overflow: hidden;
 }
-.bar-fill { width: 100%; background: #E6A23C; border-radius: 4px 4px 0 0; transition: height 0.5s; }
+.bar-fill { width: 100%; background: #2AABCB; border-radius: 4px 4px 0 0; transition: height 0.5s; }
 .bar-label { font-size: 11px; color: #666; text-align: center; white-space: nowrap; }
 
 .top10-card {

@@ -95,5 +95,8 @@ public class FeedbackStatisticsVO {
 
         /** 反馈数量 */
         private Integer count;
+
+        /** 反馈类别名称 */
+        private String categoryName;
     }
 }

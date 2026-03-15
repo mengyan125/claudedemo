@@ -86,6 +86,21 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
     }
 
     @Override
+    public List<TeacherTop10Item> getTeacherTop10(Date startDate, Date endDate) {
+        List<FbFeedback> feedbacks = queryNonDraftFeedbacks();
+        // 按时间筛选
+        if (startDate != null || endDate != null) {
+            feedbacks = feedbacks.stream().filter(fb -> {
+                if (fb.getCreateTime() == null) return false;
+                if (startDate != null && fb.getCreateTime().before(startDate)) return false;
+                if (endDate != null && fb.getCreateTime().after(endDate)) return false;
+                return true;
+            }).collect(Collectors.toList());
+        }
+        return buildTeacherTop10(feedbacks);
+    }
+
+    @Override
     public TeacherFeedbackResultVO getTeacherFeedbackList(Long teacherId) {
         // 查询教师信息
         SysUser teacher = sysUserMapper.selectById(teacherId);
@@ -187,57 +202,103 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
                 .collect(Collectors.toList());
     }
 
-    /** 构建学期趋势统计 */
+    /** 构建本学期每月反馈统计 */
     private List<SemesterTrendItem> buildSemesterTrend(
             List<FbFeedback> allFeedbacks) {
-        // 查询所有学期
-        LambdaQueryWrapper<BaseSemester> wrapper = new LambdaQueryWrapper<>();
-        wrapper.orderByAsc(BaseSemester::getStartDate);
-        List<BaseSemester> semesters = baseSemesterMapper.selectList(wrapper);
+        BaseSemester current = getCurrentSemester();
+        if (current == null) {
+            return new ArrayList<>();
+        }
+        Date semesterStart = current.getStartDate();
+        Date semesterEnd = current.getEndDate();
 
-        return semesters.stream().map(semester -> {
-            Date start = semester.getStartDate();
-            Date end = semester.getEndDate();
-            int count = (int) allFeedbacks.stream()
-                    .filter(fb -> fb.getCreateTime() != null
-                            && !fb.getCreateTime().before(start)
-                            && !fb.getCreateTime().after(end))
+        // 筛选当前学期内的反馈
+        List<FbFeedback> semesterFeedbacks = allFeedbacks.stream()
+                .filter(fb -> fb.getCreateTime() != null
+                        && !fb.getCreateTime().before(semesterStart)
+                        && !fb.getCreateTime().after(semesterEnd))
+                .collect(Collectors.toList());
+
+        // 生成学期内每个月的统计
+        Calendar startCal = Calendar.getInstance();
+        startCal.setTime(semesterStart);
+        Calendar endCal = Calendar.getInstance();
+        endCal.setTime(semesterEnd);
+
+        List<SemesterTrendItem> result = new ArrayList<>();
+        Calendar cursor = (Calendar) startCal.clone();
+        cursor.set(Calendar.DAY_OF_MONTH, 1);
+
+        while (!cursor.after(endCal)) {
+            int year = cursor.get(Calendar.YEAR);
+            int month = cursor.get(Calendar.MONTH);
+            String label = (month + 1) + "月";
+
+            int count = (int) semesterFeedbacks.stream()
+                    .filter(fb -> {
+                        Calendar fbCal = Calendar.getInstance();
+                        fbCal.setTime(fb.getCreateTime());
+                        return fbCal.get(Calendar.YEAR) == year
+                                && fbCal.get(Calendar.MONTH) == month;
+                    })
                     .count();
-            return new SemesterTrendItem(semester.getSemesterName(), count);
-        }).collect(Collectors.toList());
+
+            result.add(new SemesterTrendItem(label, count));
+            cursor.add(Calendar.MONTH, 1);
+        }
+        return result;
     }
 
-    /** 构建教师被反馈Top10 */
+    /** 构建教师被反馈Top10（支持时间筛选） */
     private List<TeacherTop10Item> buildTeacherTop10(
-            List<FbFeedback> allFeedbacks) {
-        // 按教师ID分组统计
-        Map<Long, Long> teacherCountMap = allFeedbacks.stream()
+            List<FbFeedback> feedbacks) {
+        // 按教师ID分组，同时收集反馈列表用于统计类别
+        Map<Long, List<FbFeedback>> teacherFeedbackMap = feedbacks.stream()
                 .filter(fb -> fb.getTeacherId() != null)
-                .collect(Collectors.groupingBy(
-                        FbFeedback::getTeacherId, Collectors.counting()));
+                .collect(Collectors.groupingBy(FbFeedback::getTeacherId));
 
-        // 取前10名
-        List<Map.Entry<Long, Long>> top10Entries = teacherCountMap.entrySet()
+        // 查询所有类别名称
+        List<FbCategory> categories = fbCategoryMapper.selectList(null);
+        Map<Long, String> categoryNameMap = categories.stream()
+                .collect(Collectors.toMap(FbCategory::getId, FbCategory::getName));
+
+        // 按数量排序取前10
+        List<Map.Entry<Long, List<FbFeedback>>> top10Entries = teacherFeedbackMap.entrySet()
                 .stream()
-                .sorted((a, b) -> Long.compare(b.getValue(), a.getValue()))
+                .sorted((a, b) -> Integer.compare(b.getValue().size(), a.getValue().size()))
                 .limit(10)
                 .collect(Collectors.toList());
 
         List<TeacherTop10Item> result = new ArrayList<>();
         int rank = 1;
-        for (Map.Entry<Long, Long> entry : top10Entries) {
+        for (Map.Entry<Long, List<FbFeedback>> entry : top10Entries) {
             Long teacherId = entry.getKey();
-            int count = entry.getValue().intValue();
+            List<FbFeedback> teacherFbs = entry.getValue();
+            int count = teacherFbs.size();
+            // 统计该教师被反馈最多的类别
+            String topCategoryName = getTopCategoryName(teacherFbs, categoryNameMap);
             TeacherTop10Item item = buildTeacherTop10Item(
-                    rank++, teacherId, count);
+                    rank++, teacherId, count, topCategoryName);
             result.add(item);
         }
         return result;
     }
 
+    /** 获取反馈列表中最多的类别名称 */
+    private String getTopCategoryName(List<FbFeedback> feedbacks,
+                                       Map<Long, String> categoryNameMap) {
+        return feedbacks.stream()
+                .filter(fb -> fb.getCategoryId() != null)
+                .collect(Collectors.groupingBy(FbFeedback::getCategoryId, Collectors.counting()))
+                .entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(e -> categoryNameMap.getOrDefault(e.getKey(), "未知类别"))
+                .orElse("");
+    }
+
     /** 构建单个教师Top10项 */
     private TeacherTop10Item buildTeacherTop10Item(
-            int rank, Long teacherId, int count) {
+            int rank, Long teacherId, int count, String categoryName) {
         SysUser teacher = sysUserMapper.selectById(teacherId);
         String teacherName = teacher != null ? teacher.getRealName() : "未知教师";
 
@@ -263,7 +324,7 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
         }
 
         return new TeacherTop10Item(
-                rank, teacherId, teacherName, subject, gradeName, className, count);
+                rank, teacherId, teacherName, subject, gradeName, className, count, categoryName);
     }
 
     // ==================== 教师反馈列表私有方法 ====================

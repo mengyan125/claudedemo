@@ -89,7 +89,13 @@
       "Bash(\"/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe\" -u root -p123456 --default-character-set=utf8mb4 feedbackdb -e \"SHOW TABLES;\")",
       "Bash(\"/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe\" -u root -p123456 --default-character-set=utf8mb4 feedbackdb -e \"SELECT id, username, real_name, user_type, status FROM sys_user;\")",
       "Bash(\"/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe\" -u root -p123456 --default-character-set=utf8mb4 feedbackdb -e \"SELECT * FROM sys_role; SELECT * FROM sys_user_role;\")",
-      "Bash(JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF-8\" ./mvnw spring-boot:run -Dspring-boot.run.profiles=mysql)"
+      "Bash(JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF-8\" ./mvnw spring-boot:run -Dspring-boot.run.profiles=mysql)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM2NDk5ODksInVzZXJJZCI6MSwiaWF0IjoxNzczNTYzNTg5LCJ1c2VybmFtZSI6ImFkbWluIn0.uXqm1ay0xYUjY7cDDlWg82Exp9EOOFAJnzsXNn-rlXs\")",
+      "Bash(curl -s -H \"Authorization: Bearer $TOKEN\" \"http://localhost:8080/api/admin/statistics/teacher-top10\")",
+      "Bash(curl -s -H \"Authorization: Bearer $TOKEN\" \"http://localhost:8080/api/admin/statistics/teacher-top10?startDate=2026-01-01&endDate=2026-03-15\")",
+      "Bash(curl -s -H \"Authorization: Bearer $TOKEN\" \"http://localhost:8080/api/admin/statistics/teacher-top10?startDate=2025-01-01&endDate=2026-12-31\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM2NTAzMjcsInVzZXJJZCI6MSwiaWF0IjoxNzczNTYzOTI3LCJ1c2VybmFtZSI6ImFkbWluIn0.dw6BmF-S8uwbYCK0Zps0vyssVON1EuEJkkUOQg7wCYQ\")",
+      "Bash(curl -s -H \"Authorization: Bearer $TOKEN\" \"http://localhost:8080/api/admin/statistics\")"
     ]
   }
 }
