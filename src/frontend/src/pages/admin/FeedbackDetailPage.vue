@@ -41,7 +41,6 @@
         <h3 class="section-title">反馈内容：</h3>
         <p class="section-content">{{ detail.content }}</p>
         <div v-for="att in detail.attachments" :key="att.id" class="attachment-item">
-          <div class="att-icon" />
           <span class="att-name">{{ att.fileName }}</span>
           <a class="att-link" :href="att.fileUrl" download>下载</a>
           <a class="att-link" @click="previewAttachment(att)">预览</a>
@@ -368,7 +367,6 @@ onMounted(async () => {
 .fav-tag-inactive { color: #999; }
 
 .attachment-item { display: flex; align-items: center; gap: 12px; padding: 8px 16px; }
-.att-icon { width: 32px; height: 32px; background: #e8f4fd; border-radius: 4px; }
 .att-name { font-size: 13px; color: #333; }
 .att-link { font-size: 13px; color: #2AABCB; text-decoration: none; cursor: pointer; }
 .att-link:hover { text-decoration: underline; }

@@ -86,7 +86,7 @@
         <el-table-column prop="rank" label="序号" width="60" align="center" />
         <el-table-column label="教师" min-width="100" align="center">
           <template #default="{ row }">
-            <span class="teacher-link" @click="goTeacher(row.rank)">{{ row.teacherName }}</span>
+            <span class="teacher-link" @click="goTeacher(row.teacherId)">{{ row.teacherName }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="subject" label="科目" width="80" align="center" />
@@ -95,7 +95,7 @@
         <el-table-column prop="count" label="被反馈次数" width="100" align="center" />
         <el-table-column label="操作" width="80" align="center">
           <template #default="{ row }">
-            <span class="view-link" @click="goTeacher(row.rank)">查看</span>
+            <span class="view-link" @click="goTeacher(row.teacherId)">查看</span>
           </template>
         </el-table-column>
       </el-table>

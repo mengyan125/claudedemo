@@ -10,16 +10,16 @@
 
     <!-- 学期表格 -->
     <el-table v-loading="loading" :data="semesterList" stripe class="data-table">
-      <el-table-column prop="semesterName" label="学期名称" min-width="200" />
-      <el-table-column prop="startDate" label="开始日期" width="160" />
-      <el-table-column prop="endDate" label="结束日期" width="160" />
-      <el-table-column label="当前学期" width="120">
+      <el-table-column prop="semesterName" label="学期名称" min-width="1" />
+      <el-table-column prop="startDate" label="开始日期" min-width="1" />
+      <el-table-column prop="endDate" label="结束日期" min-width="1" />
+      <el-table-column label="当前学期" min-width="1">
         <template #default="{ row }">
           <el-tag v-if="row.isCurrent" type="success" size="small">当前</el-tag>
           <span v-else class="text-muted">—</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="180">
+      <el-table-column label="操作" min-width="1" align="center">
         <template #default="{ row }">
           <el-button
             v-if="!row.isCurrent"

@@ -78,6 +78,9 @@ public class FeedbackStatisticsVO {
         /** 排名 */
         private Integer rank;
 
+        /** 教师ID */
+        private Long teacherId;
+
         /** 教师姓名 */
         private String teacherName;
 

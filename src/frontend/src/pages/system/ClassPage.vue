@@ -25,10 +25,10 @@
 
     <!-- 班级表格 -->
     <el-table v-loading="loading" :data="classList" stripe class="data-table">
-      <el-table-column prop="className" label="班级名称" min-width="200" />
-      <el-table-column prop="gradeName" label="所属年级" width="160" />
-      <el-table-column prop="sortOrder" label="排序" width="100" />
-      <el-table-column label="操作" min-width="160">
+      <el-table-column prop="className" label="班级名称" min-width="1" />
+      <el-table-column prop="gradeName" label="所属年级" min-width="1" />
+      <el-table-column prop="sortOrder" label="排序" min-width="1" />
+      <el-table-column label="操作" min-width="1" align="center">
         <template #default="{ row }">
           <el-button text class="text-btn-primary" @click="handleEdit(row)">编辑</el-button>
           <el-button text class="text-btn-danger" @click="handleDelete(row)">删除</el-button>

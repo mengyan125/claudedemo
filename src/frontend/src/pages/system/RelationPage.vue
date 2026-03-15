@@ -52,10 +52,10 @@
             :data="studentList"
             class="right-table"
           >
-            <el-table-column prop="studentName" label="姓名" />
-            <el-table-column prop="username" label="用户名" />
-            <el-table-column prop="assignTime" label="分配时间" />
-            <el-table-column label="操作">
+            <el-table-column prop="studentName" label="姓名" min-width="1" />
+            <el-table-column prop="username" label="用户名" min-width="1" />
+            <el-table-column prop="assignTime" label="分配时间" min-width="1" />
+            <el-table-column label="操作" min-width="1" align="center">
               <template #default="{ row }">
                 <el-button text class="text-btn-danger" @click="handleRemoveStudent(row)">移除</el-button>
               </template>
@@ -69,11 +69,11 @@
             :data="teacherList"
             class="right-table"
           >
-            <el-table-column prop="teacherName" label="姓名" />
-            <el-table-column prop="username" label="用户名" />
-            <el-table-column prop="subject" label="科目" />
-            <el-table-column prop="assignTime" label="分配时间" />
-            <el-table-column label="操作">
+            <el-table-column prop="teacherName" label="姓名" min-width="1" />
+            <el-table-column prop="username" label="用户名" min-width="1" />
+            <el-table-column prop="subject" label="科目" min-width="1" />
+            <el-table-column prop="assignTime" label="分配时间" min-width="1" />
+            <el-table-column label="操作" min-width="1" align="center">
               <template #default="{ row }">
                 <el-button text class="text-btn-danger" @click="handleRemoveTeacher(row)">移除</el-button>
               </template>
@@ -285,7 +285,10 @@ async function openAssignDialog() {
     assignTeacherVisible.value = true
     try {
       const { data } = await getUserListApi({ pageNum: 1, pageSize: 999, keyword: '' })
-      teacherOptions.value = data.data.list.filter(u => u.userType === 'teacher')
+      teacherOptions.value = data.data.list.filter(u =>
+        u.userType === 'teacher' &&
+        !(u.roles?.includes('SYSTEM_ADMIN') || u.roles?.includes('ROLE_ADMIN'))
+      )
     } catch {
       /* 错误已在拦截器处理 */
     }

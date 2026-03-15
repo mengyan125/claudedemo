@@ -10,22 +10,23 @@
 
     <!-- 快捷回复表格 -->
     <el-table v-loading="loading" :data="replyList" stripe class="data-table">
-      <el-table-column prop="content" label="回复内容" min-width="300" show-overflow-tooltip />
-      <el-table-column prop="sortOrder" label="排序" width="80" />
-      <el-table-column prop="createUserName" label="创建人" width="120" />
-      <el-table-column label="状态" width="100">
+      <el-table-column prop="content" label="回复内容" min-width="3" show-overflow-tooltip />
+      <el-table-column prop="sortOrder" label="排序" min-width="1" />
+      <el-table-column prop="createUserName" label="创建人" min-width="1" />
+      <el-table-column label="状态" min-width="1">
         <template #default="{ row }">
           <el-tag v-if="row.isActive" type="success" size="small">已启用</el-tag>
           <span v-else class="text-muted">未启用</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="240">
+      <el-table-column label="操作" min-width="2" align="center">
         <template #default="{ row }">
           <el-button
             v-if="!row.isActive"
             text class="text-btn-success"
             @click="handleSetActive(row)"
           >启用</el-button>
+          <el-button v-else text class="text-btn-success" style="visibility: hidden;">启用</el-button>
           <el-button text class="text-btn-primary" @click="handleEdit(row)">编辑</el-button>
           <el-button text class="text-btn-danger" @click="handleDelete(row)">删除</el-button>
         </template>

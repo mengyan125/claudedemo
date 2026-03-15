@@ -74,7 +74,14 @@
       "Bash(curl -s http://localhost:8080/api/student/categories -H \"Authorization: Bearer $STOKEN\")",
       "Bash(powershell.exe -Command \"Stop-Process -Name java -Force -ErrorAction SilentlyContinue\")",
       "Bash(pkill -f \"spring-boot\")",
-      "Bash(pkill -f \"java\")"
+      "Bash(pkill -f \"java\")",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe\" -h localhost -P 3306 -u root -e \"SELECT VERSION\\(\\);\")",
+      "Bash(powershell.exe -Command \"Stop-Process -Name mysqld -Force -ErrorAction SilentlyContinue\")",
+      "Bash(powershell.exe -Command \"Get-ItemProperty ''HKLM:\\\\SYSTEM\\\\CurrentControlSet\\\\Services\\\\MySQL57'' | Select-Object -ExpandProperty ImagePath\")",
+      "Read(//c/ProgramData/MySQL/MySQL Server 5.7/**)",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe\" -u root -e \"SELECT 1 AS connected;\")",
+      "Bash(powershell.exe -Command \"Start-Service -Name ''MySQL57''\")",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe\" -u root -p123456 -e \"SELECT VERSION\\(\\), CURRENT_USER\\(\\);\")"
     ],
     "additionalDirectories": [
       "\\tmp",

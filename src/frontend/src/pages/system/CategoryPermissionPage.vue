@@ -2,8 +2,8 @@
   <div class="category-permission-page">
     <!-- 表格 -->
     <el-table v-loading="loading" :data="permissionList" stripe class="data-table">
-      <el-table-column prop="categoryName" label="类别名称" min-width="160" />
-      <el-table-column label="负责管理员" min-width="300">
+      <el-table-column prop="categoryName" label="类别名称" min-width="1" />
+      <el-table-column label="负责管理员" min-width="3">
         <template #default="{ row }">
           <template v-if="getAdminNames(row.adminIds).length > 0">
             <el-tag
@@ -16,7 +16,7 @@
           <span v-else class="no-admin">暂无</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="120">
+      <el-table-column label="操作" min-width="1" align="center">
         <template #default="{ row }">
           <el-button text class="text-btn-primary" @click="openEditDialog(row)">
             编辑

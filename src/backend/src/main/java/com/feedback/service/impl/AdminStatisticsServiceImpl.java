@@ -263,7 +263,7 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
         }
 
         return new TeacherTop10Item(
-                rank, teacherName, subject, gradeName, className, count);
+                rank, teacherId, teacherName, subject, gradeName, className, count);
     }
 
     // ==================== 教师反馈列表私有方法 ====================

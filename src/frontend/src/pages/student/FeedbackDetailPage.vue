@@ -37,7 +37,6 @@
         <p class="section-content">{{ detail.content }}</p>
         <!-- 附件 -->
         <div v-for="att in detail.attachments" :key="att.id" class="attachment-item">
-          <div class="att-icon" />
           <span class="att-name">{{ att.fileName }}</span>
           <a class="att-link" :href="att.fileUrl" download>下载</a>
           <a class="att-link" @click="previewAttachment(att)">预览</a>
@@ -273,13 +272,6 @@ onMounted(() => {
   align-items: center;
   gap: 12px;
   padding: 8px 16px;
-}
-
-.att-icon {
-  width: 32px;
-  height: 32px;
-  background: #e8f4fd;
-  border-radius: 4px;
 }
 
 .att-name {

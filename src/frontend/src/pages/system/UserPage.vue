@@ -53,7 +53,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" min-width="1" />
-      <el-table-column v-if="isSystemAdmin" label="操作" min-width="1">
+      <el-table-column v-if="isSystemAdmin" label="操作" min-width="1" align="center">
         <template #default="{ row }">
           <el-button text class="text-btn-primary" @click="handleEdit(row)">编辑</el-button>
           <el-button

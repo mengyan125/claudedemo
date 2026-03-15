@@ -10,23 +10,23 @@
 
     <!-- 类别表格 -->
     <el-table v-loading="loading" :data="categoryList" stripe class="data-table">
-      <el-table-column prop="name" label="类别名称" min-width="160" />
-      <el-table-column label="关联任课教师" width="140">
+      <el-table-column prop="name" label="类别名称" min-width="1" />
+      <el-table-column label="关联任课教师" min-width="1">
         <template #default="{ row }">
           <el-tag :type="row.isTeachingRelated ? 'success' : 'info'" size="small">
             {{ row.isTeachingRelated ? '是' : '否' }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="sortOrder" label="显示顺序" width="100" />
-      <el-table-column label="状态" width="100">
+      <el-table-column prop="sortOrder" label="显示顺序" min-width="1" />
+      <el-table-column label="状态" min-width="1">
         <template #default="{ row }">
           <el-tag :type="row.status === 1 ? 'success' : 'danger'" size="small">
             {{ row.status === 1 ? '启用' : '停用' }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="200">
+      <el-table-column label="操作" min-width="1" align="center">
         <template #default="{ row }">
           <el-button
             text

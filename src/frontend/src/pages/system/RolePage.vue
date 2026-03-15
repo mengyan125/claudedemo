@@ -34,16 +34,16 @@
           stripe
           class="user-table"
         >
-          <el-table-column prop="username" label="用户名" width="180" />
-          <el-table-column prop="realName" label="真实姓名" width="160" />
-          <el-table-column label="用户类型" width="120">
+          <el-table-column prop="username" label="用户名" min-width="1" />
+          <el-table-column prop="realName" label="真实姓名" min-width="1" />
+          <el-table-column label="用户类型" min-width="1">
             <template #default="{ row }">
               <el-tag :type="userTypeTag(row.userType)" size="small">
                 {{ userTypeLabel(row.userType) }}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" min-width="100">
+          <el-table-column label="操作" min-width="1" align="center">
             <template #default="{ row }">
               <el-button type="danger" size="small" @click="handleRemove(row)">移除</el-button>
             </template>
@@ -85,16 +85,16 @@
         class="search-table"
         max-height="320"
       >
-        <el-table-column prop="username" label="用户名" width="140" />
-        <el-table-column prop="realName" label="真实姓名" width="140" />
-        <el-table-column label="用户类型" width="100">
+        <el-table-column prop="username" label="用户名" min-width="1" />
+        <el-table-column prop="realName" label="真实姓名" min-width="1" />
+        <el-table-column label="用户类型" min-width="1">
           <template #default="{ row }">
             <el-tag :type="userTypeTag(row.userType)" size="small">
               {{ userTypeLabel(row.userType) }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="100">
+        <el-table-column label="操作" min-width="1" align="center">
           <template #default="{ row }">
             <el-button
               type="primary"
