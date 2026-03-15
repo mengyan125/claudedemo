@@ -96,6 +96,13 @@ export interface AdminFeedbackListParams {
   categoryId?: number
   status?: string
   keyword?: string
+  gradeId?: number
+  classId?: number
+  teacherId?: number
+  dateStart?: string
+  dateEnd?: string
+  replyStatus?: string
+  isFavorited?: boolean
   pageNum: number
   pageSize: number
 }
@@ -123,6 +130,7 @@ export interface AdminFeedbackDetail {
   isAnonymous: boolean
   isTeachingRelated: boolean
   status: 'submitted' | 'replied'
+  isFavorited: boolean
   attachments: AdminAttachment[]
   replies: AdminReply[]
   createTime: string
@@ -139,7 +147,7 @@ export interface AdminReply {
   id: number
   content: string
   replyUserName: string
-  replyUserType: 'admin' | 'student'
+  userType: 'admin' | 'student' | 'teacher'
   createTime: string
 }
 
@@ -209,4 +217,59 @@ export function getTeacherFeedbackListApi(teacherId: number) {
 /* 获取快捷回复列表（用于回复弹窗） */
 export function getQuickRepliesForReplyApi() {
   return request.get<ApiResponse<Array<{ id: number; content: string }>>>('/admin/quick-reply/list')
+}
+
+/* ===== 状态统计 ===== */
+
+export interface FeedbackStatusCount {
+  totalCount: number
+  repliedCount: number
+  unrepliedCount: number
+}
+
+export function getStatusCountApi(params?: {
+  categoryId?: number
+  keyword?: string
+  gradeId?: number
+  classId?: number
+  teacherId?: number
+  dateStart?: string
+  dateEnd?: string
+}) {
+  return request.get<ApiResponse<FeedbackStatusCount>>('/admin/feedback/status-count', { params })
+}
+
+/* ===== 备注提醒 ===== */
+
+export interface ReminderItem {
+  id: number
+  feedbackId: number
+  feedbackTitle: string
+  senderId: number
+  senderName: string
+  content: string
+  isRead: boolean
+  createTime: string
+}
+
+export interface UserSearchItem {
+  id: number
+  username: string
+  realName: string
+  userType: string
+}
+
+/* 发送备注提醒 */
+export function sendReminderApi(feedbackId: number, data: { content: string; receiverIds?: number[] }) {
+  return request.post<ApiResponse<null>>(`/admin/feedback/${feedbackId}/reminder`, data)
+}
+
+/* 获取提醒列表 */
+export function getReminderListApi(params: { pageNum: number; pageSize: number }) {
+  return request.get<ApiResponse<PageResult<ReminderItem>>>('/admin/reminder/list', { params })
+}
+
+/* 搜索用户（选择提醒接收人） */
+export function searchUsersApi(keyword?: string, userType?: string) {
+  return request.get<ApiResponse<UserSearchItem[]>>('/admin/user/search', { params: { keyword, userType } })
 }

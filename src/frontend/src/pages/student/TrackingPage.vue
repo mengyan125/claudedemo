@@ -45,7 +45,7 @@
           <span v-if="item.teacherName" class="item-meta">反馈对象：{{ item.teacherName }}</span>
           <span class="item-meta">时间：{{ formatDate(item.createTime) }}</span>
         </div>
-        <div class="item-content">{{ item.content }}</div>
+        <div class="item-content" :title="item.content">{{ item.content }}</div>
       </div>
 
       <!-- 加载更多 -->
@@ -213,7 +213,6 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
 }
 
 .item-title {
@@ -255,6 +254,10 @@ onMounted(async () => {
 .item-content {
   font-size: 13px;
   color: #999;
+  margin-top: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .load-more {

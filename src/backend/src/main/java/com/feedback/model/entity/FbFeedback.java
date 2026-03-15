@@ -42,8 +42,11 @@ public class FbFeedback {
     /** 回复状态：unreplied=未回复 replied=已回复 */
     private String replyStatus;
 
-    /** 是否有未读回复：0=否 1=是 */
+    /** 是否有未读回复（学生视角）：0=否 1=是 */
     private Integer hasUnreadReply;
+
+    /** 管理员是否未读：0=已读 1=未读 */
+    private Integer hasUnreadForAdmin;
 
     /** 创建时间 */
     private Date createTime;

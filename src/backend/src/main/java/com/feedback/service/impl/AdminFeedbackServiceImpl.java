@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.feedback.common.exception.BusinessException;
 import com.feedback.common.result.PageResult;
 import com.feedback.mapper.*;
+import com.feedback.model.dto.CreateReminderDTO;
 import com.feedback.model.entity.*;
 import com.feedback.model.vo.*;
 import com.feedback.security.UserContext;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,13 +61,24 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
     @Autowired
     private BaseSemesterMapper baseSemesterMapper;
 
+    @Autowired
+    private FbReminderMapper fbReminderMapper;
+
+    @Autowired
+    private FbReminderReceiverMapper fbReminderReceiverMapper;
+
     @Override
     public PageResult<AdminFeedbackItemVO> getFeedbackList(Long categoryId, String status,
-                                                            String keyword, Integer pageNum,
-                                                            Integer pageSize) {
+                                                            String keyword, Long gradeId,
+                                                            Long classId, Long teacherId,
+                                                            String dateStart, String dateEnd,
+                                                            String replyStatus, Boolean isFavorited,
+                                                            Integer pageNum, Integer pageSize) {
         Long adminId = UserContext.getCurrentUserId();
         // 构建查询条件
-        LambdaQueryWrapper<FbFeedback> wrapper = buildListWrapper(categoryId, status, keyword);
+        LambdaQueryWrapper<FbFeedback> wrapper = buildListWrapper(categoryId, status, keyword,
+                gradeId, classId, teacherId, dateStart, dateEnd, replyStatus, isFavorited, adminId);
+        wrapper.orderByDesc(FbFeedback::getCreateTime);
         // 分页查询
         Page<FbFeedback> page = new Page<>(pageNum, pageSize);
         Page<FbFeedback> result = fbFeedbackMapper.selectPage(page, wrapper);
@@ -82,6 +95,12 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
         FbFeedback feedback = fbFeedbackMapper.selectById(id);
         if (feedback == null) {
             throw new BusinessException("反馈不存在");
+        }
+        // 标记管理员已读
+        if (feedback.getHasUnreadForAdmin() != null && feedback.getHasUnreadForAdmin() == 1) {
+            feedback.setHasUnreadForAdmin(0);
+            feedback.setUpdateTime(new Date());
+            fbFeedbackMapper.updateById(feedback);
         }
         return buildDetailVO(feedback, adminId);
     }
@@ -105,6 +124,7 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
         feedback.setStatus("replied");
         feedback.setReplyStatus("replied");
         feedback.setHasUnreadReply(1);
+        feedback.setHasUnreadForAdmin(0);
         feedback.setUpdateTime(new Date());
         fbFeedbackMapper.updateById(feedback);
     }
@@ -130,12 +150,145 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
         }
     }
 
+    // ==================== 状态数量统计 ====================
+
+    @Override
+    public FeedbackStatusCountVO getStatusCount(Long categoryId, String keyword, Long gradeId,
+                                                  Long classId, Long teacherId,
+                                                  String dateStart, String dateEnd) {
+        Long adminId = UserContext.getCurrentUserId();
+        // 构建基础查询条件（不含 status/replyStatus/isFavorited）
+        LambdaQueryWrapper<FbFeedback> baseWrapper = buildListWrapper(categoryId, null, keyword,
+                gradeId, classId, teacherId, dateStart, dateEnd, null, null, adminId);
+        Long totalCount = fbFeedbackMapper.selectCount(baseWrapper);
+
+        // 已回复
+        LambdaQueryWrapper<FbFeedback> repliedWrapper = buildListWrapper(categoryId, null, keyword,
+                gradeId, classId, teacherId, dateStart, dateEnd, "replied", null, adminId);
+        Long repliedCount = fbFeedbackMapper.selectCount(repliedWrapper);
+
+        // 未回复
+        Long unrepliedCount = totalCount - repliedCount;
+
+        return FeedbackStatusCountVO.builder()
+                .totalCount(totalCount)
+                .repliedCount(repliedCount)
+                .unrepliedCount(unrepliedCount)
+                .build();
+    }
+
+    // ==================== 备注提醒功能 ====================
+
+    @Override
+    @Transactional
+    public void sendReminder(Long feedbackId, CreateReminderDTO dto) {
+        Long senderId = UserContext.getCurrentUserId();
+        FbFeedback feedback = fbFeedbackMapper.selectById(feedbackId);
+        if (feedback == null) {
+            throw new BusinessException("反馈不存在");
+        }
+        // 插入提醒记录
+        FbReminder reminder = new FbReminder();
+        reminder.setFeedbackId(feedbackId);
+        reminder.setSenderId(senderId);
+        reminder.setContent(dto.getContent());
+        reminder.setCreateTime(new Date());
+        fbReminderMapper.insert(reminder);
+        // 批量插入接收人
+        List<Long> receiverIds = dto.getReceiverIds();
+        if (receiverIds != null && !receiverIds.isEmpty()) {
+            for (Long receiverId : receiverIds) {
+                FbReminderReceiver receiver = new FbReminderReceiver();
+                receiver.setReminderId(reminder.getId());
+                receiver.setReceiverId(receiverId);
+                receiver.setIsRead(0);
+                fbReminderReceiverMapper.insert(receiver);
+            }
+        }
+    }
+
+    @Override
+    public PageResult<ReminderItemVO> getReminderList(Integer pageNum,
+                                                       Integer pageSize) {
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+        Long currentUserId = UserContext.getCurrentUserId();
+        // 查询当前用户收到的提醒
+        LambdaQueryWrapper<FbReminderReceiver> rrWrapper =
+                new LambdaQueryWrapper<>();
+        rrWrapper.eq(FbReminderReceiver::getReceiverId, currentUserId);
+        // 分页查询接收记录
+        Page<FbReminderReceiver> page = new Page<>(pageNum, pageSize);
+        Page<FbReminderReceiver> rrPage =
+                fbReminderReceiverMapper.selectPage(page, rrWrapper);
+        List<ReminderItemVO> voList = new ArrayList<>();
+        for (FbReminderReceiver rr : rrPage.getRecords()) {
+            FbReminder reminder =
+                    fbReminderMapper.selectById(rr.getReminderId());
+            if (reminder == null) {
+                continue;
+            }
+            FbFeedback feedback =
+                    fbFeedbackMapper.selectById(reminder.getFeedbackId());
+            SysUser sender =
+                    sysUserMapper.selectById(reminder.getSenderId());
+            voList.add(ReminderItemVO.builder()
+                    .id(reminder.getId())
+                    .feedbackId(reminder.getFeedbackId())
+                    .feedbackTitle(feedback != null
+                            ? feedback.getTitle() : null)
+                    .senderId(reminder.getSenderId())
+                    .senderName(sender != null
+                            ? sender.getRealName() : null)
+                    .content(reminder.getContent())
+                    .isRead(rr.getIsRead() != null
+                            && rr.getIsRead() == 1)
+                    .createTime(reminder.getCreateTime() != null
+                            ? sdf.format(reminder.getCreateTime()) : null)
+                    .build());
+            // 标记为已读
+            if (rr.getIsRead() == null || rr.getIsRead() == 0) {
+                rr.setIsRead(1);
+                fbReminderReceiverMapper.updateById(rr);
+            }
+        }
+        return PageResult.of(voList, rrPage.getTotal(), pageNum, pageSize);
+    }
+
+    @Override
+    public List<UserSearchVO> searchUsers(String keyword, String userType) {
+        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
+        // 按用户类型过滤
+        if (StringUtils.hasText(userType)) {
+            wrapper.eq(SysUser::getUserType, userType);
+        } else {
+            // 默认只搜索非学生用户（管理员和教师）
+            wrapper.ne(SysUser::getUserType, "student");
+        }
+        if (StringUtils.hasText(keyword)) {
+            wrapper.and(w -> w.like(SysUser::getRealName, keyword)
+                    .or()
+                    .like(SysUser::getUsername, keyword));
+        }
+        wrapper.last("LIMIT 50");
+        List<SysUser> users = sysUserMapper.selectList(wrapper);
+        return users.stream().map(u -> UserSearchVO.builder()
+                .id(u.getId())
+                .username(u.getUsername())
+                .realName(u.getRealName())
+                .userType(u.getUserType())
+                .build()
+        ).collect(Collectors.toList());
+    }
+
     // ==================== 私有方法 ====================
 
-    /** 构建反馈列表查询条件 */
-    private LambdaQueryWrapper<FbFeedback> buildListWrapper(Long categoryId,
-                                                             String status,
-                                                             String keyword) {
+    /** 构建反馈列表查询条件（不含排序，调用方按需自行添加） */
+    private LambdaQueryWrapper<FbFeedback> buildListWrapper(Long categoryId, String status,
+                                                             String keyword, Long gradeId,
+                                                             Long classId, Long teacherId,
+                                                             String dateStart, String dateEnd,
+                                                             String replyStatus, Boolean isFavorited,
+                                                             Long adminId) {
         LambdaQueryWrapper<FbFeedback> wrapper = new LambdaQueryWrapper<>();
         // 过滤掉草稿
         wrapper.ne(FbFeedback::getStatus, "draft");
@@ -150,8 +303,91 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
                               .or()
                               .like(FbFeedback::getContent, keyword));
         }
-        wrapper.orderByDesc(FbFeedback::getCreateTime);
+        // 反馈对象（教师）
+        if (teacherId != null) {
+            wrapper.eq(FbFeedback::getTeacherId, teacherId);
+        }
+        // 回复情况
+        if (StringUtils.hasText(replyStatus)) {
+            wrapper.eq(FbFeedback::getReplyStatus, replyStatus);
+        }
+        // 时间范围
+        if (StringUtils.hasText(dateStart)) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date start = sdf.parse(dateStart);
+                wrapper.ge(FbFeedback::getCreateTime, start);
+            } catch (Exception ignored) { }
+        }
+        if (StringUtils.hasText(dateEnd)) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                // 结束日期取当天最后时刻
+                Date end = new Date(sdf.parse(dateEnd).getTime() + 24 * 60 * 60 * 1000 - 1);
+                wrapper.le(FbFeedback::getCreateTime, end);
+            } catch (Exception ignored) { }
+        }
+        // 年级/班级筛选：通过 base_student_class + base_class 关联查 studentId 集合
+        if (gradeId != null || classId != null) {
+            List<Long> studentIds = getStudentIdsByGradeOrClass(gradeId, classId);
+            if (studentIds.isEmpty()) {
+                // 无匹配学生，直接返回空结果
+                wrapper.eq(FbFeedback::getId, -1L);
+            } else {
+                wrapper.in(FbFeedback::getStudentId, studentIds);
+            }
+        }
+        // 仅查看收藏
+        if (isFavorited != null && isFavorited) {
+            List<Long> favoriteIds = getFavoriteIds(adminId);
+            if (favoriteIds.isEmpty()) {
+                wrapper.eq(FbFeedback::getId, -1L);
+            } else {
+                wrapper.in(FbFeedback::getId, favoriteIds);
+            }
+        }
         return wrapper;
+    }
+
+    /** 根据年级/班级获取学生ID集合 */
+    private List<Long> getStudentIdsByGradeOrClass(Long gradeId, Long classId) {
+        Long semesterId = getCurrentSemesterId();
+        if (semesterId == null) {
+            return new ArrayList<>();
+        }
+        // 如果指定了班级ID，直接查
+        if (classId != null) {
+            LambdaQueryWrapper<BaseStudentClass> scWrapper = new LambdaQueryWrapper<>();
+            scWrapper.eq(BaseStudentClass::getClassId, classId)
+                     .eq(BaseStudentClass::getSemesterId, semesterId);
+            return baseStudentClassMapper.selectList(scWrapper).stream()
+                    .map(BaseStudentClass::getStudentId)
+                    .collect(Collectors.toList());
+        }
+        // 只指定了年级ID，先查该年级下所有班级
+        LambdaQueryWrapper<BaseClass> classWrapper = new LambdaQueryWrapper<>();
+        classWrapper.eq(BaseClass::getGradeId, gradeId);
+        List<Long> classIds = baseClassMapper.selectList(classWrapper).stream()
+                .map(BaseClass::getId)
+                .collect(Collectors.toList());
+        if (classIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        LambdaQueryWrapper<BaseStudentClass> scWrapper = new LambdaQueryWrapper<>();
+        scWrapper.in(BaseStudentClass::getClassId, classIds)
+                 .eq(BaseStudentClass::getSemesterId, semesterId);
+        return baseStudentClassMapper.selectList(scWrapper).stream()
+                .map(BaseStudentClass::getStudentId)
+                .collect(Collectors.toList());
+    }
+
+    /** 获取当前管理员收藏的反馈ID集合 */
+    private List<Long> getFavoriteIds(Long adminId) {
+        LambdaQueryWrapper<FbCollection> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FbCollection::getUserId, adminId);
+        return fbCollectionMapper.selectList(wrapper).stream()
+                .map(FbCollection::getFeedbackId)
+                .collect(Collectors.toList());
     }
 
     /** 将反馈实体转换为列表项VO */
@@ -175,7 +411,7 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
                 .studentName(studentName)
                 .isAnonymous(feedback.getIsAnonymous() != null && feedback.getIsAnonymous() == 1)
                 .status(feedback.getStatus())
-                .hasUnread(feedback.getHasUnreadReply() != null && feedback.getHasUnreadReply() == 1)
+                .hasUnread(feedback.getHasUnreadForAdmin() != null && feedback.getHasUnreadForAdmin() == 1)
                 .isFavorited(isFavorited)
                 .createTime(feedback.getCreateTime() != null ? sdf.format(feedback.getCreateTime()) : null)
                 .build();

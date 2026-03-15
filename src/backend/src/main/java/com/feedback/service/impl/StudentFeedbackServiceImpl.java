@@ -152,6 +152,10 @@ public class StudentFeedbackServiceImpl implements StudentFeedbackService {
         reply.setContent(content);
         reply.setCreateTime(new Date());
         fbReplyMapper.insert(reply);
+        // 学生回复后标记管理员未读
+        feedback.setHasUnreadForAdmin(1);
+        feedback.setUpdateTime(new Date());
+        fbFeedbackMapper.updateById(feedback);
     }
 
     // ==================== 私有方法 ====================
@@ -357,6 +361,7 @@ public class StudentFeedbackServiceImpl implements StudentFeedbackService {
         feedback.setContent(dto.getContent());
         feedback.setIsAnonymous(Boolean.TRUE.equals(dto.getIsAnonymous()) ? 1 : 0);
         feedback.setStatus(dto.getStatus());
+        feedback.setHasUnreadForAdmin("submitted".equals(dto.getStatus()) ? 1 : 0);
         feedback.setUpdateTime(new Date());
         fbFeedbackMapper.updateById(feedback);
         return feedback;
@@ -374,6 +379,7 @@ public class StudentFeedbackServiceImpl implements StudentFeedbackService {
         feedback.setStatus(dto.getStatus());
         feedback.setReplyStatus("unreplied");
         feedback.setHasUnreadReply(0);
+        feedback.setHasUnreadForAdmin("submitted".equals(dto.getStatus()) ? 1 : 0);
         feedback.setCreateTime(new Date());
         feedback.setUpdateTime(new Date());
         fbFeedbackMapper.insert(feedback);

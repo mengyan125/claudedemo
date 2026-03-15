@@ -59,7 +59,7 @@ export interface ReplyItem {
   id: number
   content: string
   replyUserName: string
-  replyUserType: 'admin' | 'student'
+  userType: 'admin' | 'student'
   createTime: string
 }
 

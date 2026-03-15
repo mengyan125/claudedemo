@@ -71,7 +71,10 @@
       "Bash(powershell.exe -Command \"Stop-Process -Name java -Force -ErrorAction SilentlyContinue; echo done\")",
       "Bash(STOKEN=\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHVkZW50MSIsInVzZXJUeXBlIjoic3R1ZGVudCIsImV4cCI6MTc3MzU4ODg2MiwidXNlcklkIjo1LCJpYXQiOjE3NzM1MDI0NjIsInVzZXJuYW1lIjoic3R1ZGVudDEifQ.vAWowfRxljxcAwfoTjxE9_32FBT0HRLczmvHZoTom6M\")",
       "Bash(curl -s http://localhost:8080/api/student/teachers -H \"Authorization: Bearer $STOKEN\")",
-      "Bash(curl -s http://localhost:8080/api/student/categories -H \"Authorization: Bearer $STOKEN\")"
+      "Bash(curl -s http://localhost:8080/api/student/categories -H \"Authorization: Bearer $STOKEN\")",
+      "Bash(powershell.exe -Command \"Stop-Process -Name java -Force -ErrorAction SilentlyContinue\")",
+      "Bash(pkill -f \"spring-boot\")",
+      "Bash(pkill -f \"java\")"
     ],
     "additionalDirectories": [
       "\\tmp",

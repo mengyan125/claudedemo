@@ -63,6 +63,7 @@
               :file-list="fileList"
               :on-change="handleFileChange"
               :on-remove="handleFileRemove"
+              :on-exceed="handleExceed"
               :limit="9"
               accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov"
               multiple
@@ -150,6 +151,11 @@ const formRules: FormRules = {
 function handleCategoryChange() {
   formData.teacherId = undefined
   formData.isTeachingRelated = true
+}
+
+/* 文件超出限制 */
+function handleExceed() {
+  ElMessage.warning('最多只能上传9个附件')
 }
 
 function handleFileChange(_file: UploadFile, newFileList: UploadFile[]) {

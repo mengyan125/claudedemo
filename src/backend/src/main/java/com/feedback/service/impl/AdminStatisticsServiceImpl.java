@@ -315,8 +315,8 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
                 .isAnonymous(feedback.getIsAnonymous() != null
                         && feedback.getIsAnonymous() == 1)
                 .status(feedback.getStatus())
-                .hasUnread(feedback.getHasUnreadReply() != null
-                        && feedback.getHasUnreadReply() == 1)
+                .hasUnread(feedback.getHasUnreadForAdmin() != null
+                        && feedback.getHasUnreadForAdmin() == 1)
                 .isFavorited(isFavorited)
                 .createTime(feedback.getCreateTime() != null
                         ? sdf.format(feedback.getCreateTime()) : null)

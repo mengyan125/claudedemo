@@ -8,6 +8,7 @@ D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\TeacherOptio
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\impl\BaseGradeServiceImpl.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\impl\AdminQuickReplyServiceImpl.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\FbCategoryMapper.java
+D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\UserSearchVO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\FbCategoryAdminMapper.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\dto\CreateSemesterDTO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\common\result\PageResult.java
@@ -34,6 +35,8 @@ D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\impl\SystemUs
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\controller\AdminQuickReplyController.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\AuthService.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\FbFeedback.java
+D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\FbReminderMapper.java
+D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\FeedbackStatusCountVO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\FbFeedbackAttachment.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\impl\BaseSemesterServiceImpl.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\dto\CreateGradeDTO.java
@@ -49,6 +52,7 @@ D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\dto\UpdateCateg
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\AdminCategoryService.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\BaseStudentClass.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\BaseGrade.java
+D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\FbReminderReceiver.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\BaseTeacherClassMapper.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\dto\UpdateCategoryStatusDTO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\BaseClassMapper.java
@@ -70,10 +74,12 @@ D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\BaseSemesterS
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\ClassItemVO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\FbCategory.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\FbReplyMapper.java
+D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\FbReminderReceiverMapper.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\BaseStudentClassMapper.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\common\exception\GlobalExceptionHandler.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\impl\StudentFeedbackServiceImpl.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\TeacherAssignmentVO.java
+D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\dto\CreateReminderDTO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\dto\CreateClassDTO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\common\constant\UserTypeEnum.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\BaseSemester.java
@@ -91,6 +97,7 @@ D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\SysUserRoleMap
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\dto\CreateCategoryDTO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\TeacherFeedbackResultVO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\controller\StudentFeedbackController.java
+D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\ReminderItemVO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\SemesterItemVO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\FbQuickReply.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\CategoryPermissionVO.java
@@ -98,6 +105,7 @@ D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\ReplyItemVO.
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\SysUserMapper.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\SysUser.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\SysRole.java
+D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\FbReminder.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\dto\CreateQuickReplyDTO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\dto\UpdateQuickReplyDTO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\FbCollectionMapper.java

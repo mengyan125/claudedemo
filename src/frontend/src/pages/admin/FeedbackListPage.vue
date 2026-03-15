@@ -4,20 +4,30 @@
     <div class="filter-card">
       <div class="filter-row">
         <span class="filter-label">类别：</span>
-        <el-select v-model="filterCategory" placeholder="教学" clearable size="small" style="width:140px" @change="handleFilter">
+        <el-select v-model="filterCategory" placeholder="全部类别" clearable size="small" style="width:140px" @change="handleFilter">
           <el-option v-for="c in categories" :key="c.id" :label="c.name" :value="c.id" />
         </el-select>
         <span class="filter-label">年级</span>
-        <el-select v-model="filterGrade" placeholder="一年级" clearable size="small" style="width:120px" @change="handleFilter">
-          <el-option label="高一" value="高一" /><el-option label="高二" value="高二" />
+        <el-select v-model="filterGrade" placeholder="全部年级" clearable size="small" style="width:120px" @change="handleGradeChange">
+          <el-option v-for="g in grades" :key="g.id" :label="g.gradeName" :value="g.id" />
         </el-select>
         <span class="filter-label">班级</span>
-        <el-select v-model="filterClass" placeholder="全部班级" clearable size="small" style="width:120px" @change="handleFilter">
-          <el-option label="高一（1班）" value="1" /><el-option label="高一（3班）" value="3" />
+        <el-select v-model="filterClass" placeholder="全部班级" clearable size="small" style="width:140px" @change="handleFilter">
+          <el-option v-for="c in classes" :key="c.id" :label="c.className" :value="c.id" />
         </el-select>
         <span class="filter-label">反馈对象</span>
-        <el-select v-model="filterTarget" placeholder="全部" clearable size="small" style="width:100px" @change="handleFilter">
-          <el-option label="英语—李学" value="1" /><el-option label="数学—王老师" value="2" />
+        <el-select
+          v-model="filterTarget"
+          placeholder="全部"
+          clearable
+          filterable
+          remote
+          :remote-method="searchTeachers"
+          size="small"
+          style="width:160px"
+          @change="handleFilter"
+        >
+          <el-option v-for="t in teacherOptions" :key="t.id" :label="t.realName" :value="t.id" />
         </el-select>
         <el-input v-model="keyword" placeholder="搜索关键词" clearable size="small" style="width:220px" @keyup.enter="handleFilter" @clear="handleFilter">
           <template #prefix><el-icon><Search /></el-icon></template>
@@ -26,30 +36,23 @@
 
       <div class="filter-row">
         <span class="filter-label">时间：</span>
-        <el-date-picker v-model="dateStart" type="date" placeholder="2025-03-01" size="small" style="width:140px" />
+        <el-date-picker v-model="dateStart" type="date" placeholder="开始日期" size="small" style="width:140px" value-format="YYYY-MM-DD" @change="handleFilter" />
         <span class="date-sep">至</span>
-        <el-date-picker v-model="dateEnd" type="date" placeholder="2025-04-07" size="small" style="width:140px" />
+        <el-date-picker v-model="dateEnd" type="date" placeholder="结束日期" size="small" style="width:140px" value-format="YYYY-MM-DD" @change="handleFilter" />
       </div>
 
       <div class="filter-row">
-        <span class="filter-label">状态：</span>
-        <span
-          v-for="s in statusTabs" :key="s.value"
-          class="tab-item" :class="{ active: filterStatus === s.value }"
-          @click="filterStatus = s.value; handleFilter()"
-        >{{ s.label }}</span>
-        <span class="tab-spacer" />
         <span class="filter-label">回复情况：</span>
         <span
           v-for="r in replyTabs" :key="r.value"
           class="tab-item" :class="{ active: filterReply === r.value }"
           @click="filterReply = r.value; handleFilter()"
-        >{{ r.label }}</span>
+        >{{ r.label }}（{{ r.count }}条）</span>
       </div>
 
       <div class="filter-row">
-        <span class="link-item">我的收藏</span>
-        <span class="link-item">提醒关注</span>
+        <span class="link-item" :class="{ 'link-active': filterFavorited }" @click="toggleFavoriteFilter">我的收藏</span>
+        <span class="link-item" @click="router.push('/admin/reminder')">提醒关注</span>
       </div>
     </div>
 
@@ -65,7 +68,11 @@
           <div class="item-title-row">
             <span class="item-title" @click="goDetail(item.id)">{{ item.title }}</span>
             <span class="item-spacer" />
-            <span class="item-fav">♡ 收藏</span>
+            <span
+              class="item-fav"
+              :class="{ 'item-fav-active': item.isFavorited }"
+              @click.stop="handleToggleFavorite(item)"
+            >{{ item.isFavorited ? '❤ 已收藏' : '♡ 收藏' }}</span>
           </div>
           <div class="item-meta-row">
             <span class="meta">类别：{{ item.categoryName }}</span>
@@ -87,33 +94,47 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Search } from '@element-plus/icons-vue'
-import { getAdminFeedbackListApi, getCategoryListApi } from '@/api/admin'
-import type { AdminFeedbackItem, CategoryItem } from '@/api/admin'
+import { ElMessage } from 'element-plus'
+import {
+  getAdminFeedbackListApi,
+  getCategoryListApi,
+  toggleFavoriteApi,
+  getStatusCountApi,
+  searchUsersApi
+} from '@/api/admin'
+import type { AdminFeedbackItem, CategoryItem, FeedbackStatusCount, UserSearchItem } from '@/api/admin'
+import request from '@/utils/request'
+import type { ApiResponse } from '@/utils/request'
+
+/* 年级/班级接口类型 */
+interface GradeItem { id: number; gradeName: string }
+interface ClassItem { id: number; className: string; gradeId: number }
 
 const router = useRouter()
 const loading = ref(false)
 const categories = ref<CategoryItem[]>([])
+const grades = ref<GradeItem[]>([])
+const classes = ref<ClassItem[]>([])
+const teacherOptions = ref<UserSearchItem[]>([])
 const feedbackList = ref<AdminFeedbackItem[]>([])
 const filterCategory = ref<number | undefined>(undefined)
-const filterGrade = ref('')
-const filterClass = ref('')
-const filterTarget = ref('')
+const filterGrade = ref<number | undefined>(undefined)
+const filterClass = ref<number | undefined>(undefined)
+const filterTarget = ref<number | undefined>(undefined)
 const keyword = ref('')
 const dateStart = ref('')
 const dateEnd = ref('')
-const filterStatus = ref('')
 const filterReply = ref('')
+const filterFavorited = ref(false)
 
-const statusTabs = [
-  { label: '全部（3条）', value: '' },
-  { label: '未读(2条)', value: 'unread' },
-  { label: '已读（1条）', value: 'read' }
-]
-const replyTabs = [
-  { label: '全部（3条）', value: '' },
-  { label: '未回复(2条)', value: 'submitted' },
-  { label: '已回复(1条)', value: 'replied' }
-]
+/* 状态统计 */
+const statusCount = ref<FeedbackStatusCount>({ totalCount: 0, repliedCount: 0, unrepliedCount: 0 })
+
+const replyTabs = ref([
+  { label: '全部', value: '', count: 0 },
+  { label: '未回复', value: 'unreplied', count: 0 },
+  { label: '已回复', value: 'replied', count: 0 }
+])
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr)
@@ -124,31 +145,105 @@ function goDetail(id: number) {
   router.push(`/admin/feedback/${id}`)
 }
 
+function buildFilterParams() {
+  return {
+    categoryId: filterCategory.value,
+    keyword: keyword.value || undefined,
+    gradeId: filterGrade.value,
+    classId: filterClass.value,
+    teacherId: filterTarget.value,
+    dateStart: dateStart.value || undefined,
+    dateEnd: dateEnd.value || undefined,
+    replyStatus: filterReply.value || undefined,
+    isFavorited: filterFavorited.value || undefined,
+    pageNum: 1,
+    pageSize: 20
+  }
+}
+
 async function fetchList() {
   loading.value = true
   try {
-    const { data } = await getAdminFeedbackListApi({
-      categoryId: filterCategory.value,
-      status: filterReply.value,
-      keyword: keyword.value,
-      pageNum: 1,
-      pageSize: 20
-    })
+    const { data } = await getAdminFeedbackListApi(buildFilterParams())
     feedbackList.value = data.data.list
   } catch { /* 错误已在拦截器处理 */ }
   finally { loading.value = false }
 }
 
-function handleFilter() { fetchList() }
+async function fetchStatusCount() {
+  try {
+    const { data } = await getStatusCountApi({
+      categoryId: filterCategory.value,
+      keyword: keyword.value || undefined,
+      gradeId: filterGrade.value,
+      classId: filterClass.value,
+      teacherId: filterTarget.value,
+      dateStart: dateStart.value || undefined,
+      dateEnd: dateEnd.value || undefined
+    })
+    statusCount.value = data.data
+    replyTabs.value = [
+      { label: '全部', value: '', count: data.data.totalCount },
+      { label: '未回复', value: 'unreplied', count: data.data.unrepliedCount },
+      { label: '已回复', value: 'replied', count: data.data.repliedCount }
+    ]
+  } catch { /* 错误已在拦截器处理 */ }
+}
 
-function goFeedback() { /* placeholder */ }
+function handleFilter() {
+  fetchList()
+  fetchStatusCount()
+}
+
+async function handleGradeChange() {
+  filterClass.value = undefined
+  if (filterGrade.value) {
+    try {
+      const { data } = await request.get<ApiResponse<ClassItem[]>>('/base/class/list', { params: { gradeId: filterGrade.value } })
+      classes.value = data.data
+    } catch { /* 错误已在拦截器处理 */ }
+  } else {
+    classes.value = []
+  }
+  handleFilter()
+}
+
+async function searchTeachers(keyword: string) {
+  if (!keyword) {
+    teacherOptions.value = []
+    return
+  }
+  try {
+    const { data } = await searchUsersApi(keyword, 'teacher')
+    teacherOptions.value = data.data
+  } catch { /* 错误已在拦截器处理 */ }
+}
+
+function toggleFavoriteFilter() {
+  filterFavorited.value = !filterFavorited.value
+  handleFilter()
+}
+
+async function handleToggleFavorite(item: AdminFeedbackItem) {
+  try {
+    await toggleFavoriteApi(item.id)
+    item.isFavorited = !item.isFavorited
+    ElMessage.success(item.isFavorited ? '已收藏' : '已取消收藏')
+  } catch { /* 错误已在拦截器处理 */ }
+}
 
 onMounted(async () => {
+  /* 并行加载类别和年级列表 */
   try {
-    const { data } = await getCategoryListApi()
-    categories.value = data.data
+    const [catRes, gradeRes] = await Promise.all([
+      getCategoryListApi(),
+      request.get<ApiResponse<GradeItem[]>>('/base/grade/list')
+    ])
+    categories.value = catRes.data.data
+    grades.value = gradeRes.data.data
   } catch { /* 错误已在拦截器处理 */ }
   fetchList()
+  fetchStatusCount()
 })
 </script>
 
@@ -201,8 +296,6 @@ onMounted(async () => {
 
 .tab-item:hover { color: #2AABCB; }
 
-.tab-spacer { width: 40px; }
-
 .link-item {
   font-size: 13px;
   color: #333;
@@ -210,6 +303,7 @@ onMounted(async () => {
 }
 
 .link-item:hover { color: #2AABCB; }
+.link-active { color: #2AABCB; font-weight: 600; }
 
 .list-card {
   background: #fff;
@@ -266,6 +360,7 @@ onMounted(async () => {
   margin-right: 8px;
 }
 .item-fav:hover { color: #2AABCB; }
+.item-fav-active { color: #FF4D4F; }
 
 .item-meta-row { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
 .meta { font-size: 13px; color: #999; white-space: nowrap; }

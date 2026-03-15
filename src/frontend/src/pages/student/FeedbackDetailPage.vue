@@ -39,8 +39,8 @@
         <div v-for="att in detail.attachments" :key="att.id" class="attachment-item">
           <div class="att-icon" />
           <span class="att-name">{{ att.fileName }}</span>
-          <a class="att-link" href="javascript:void(0)">下载</a>
-          <a class="att-link" href="javascript:void(0)">预览</a>
+          <a class="att-link" :href="att.fileUrl" download>下载</a>
+          <a class="att-link" @click="previewAttachment(att)">预览</a>
         </div>
       </div>
 
@@ -58,38 +58,55 @@
       </div>
 
       <!-- 追加回复输入 -->
-      <div class="reply-input-section">
-        <el-input
-          v-model="replyContent"
-          type="textarea"
-          :rows="3"
-          placeholder="请输入回复内容"
-          maxlength="200"
-          show-word-limit
-        />
-      </div>
+      <template v-if="canReply">
+        <div class="reply-input-section">
+          <el-input
+            v-model="replyContent"
+            type="textarea"
+            :rows="3"
+            placeholder="请输入回复内容"
+            maxlength="200"
+            show-word-limit
+          />
+        </div>
 
-      <!-- 操作按钮 -->
-      <div class="action-buttons">
-        <el-button size="large" round @click="router.push('/student/tracking')">返回</el-button>
-        <el-button
-          type="primary"
-          size="large"
-          round
-          class="btn-primary"
-          :loading="submitting"
-          :disabled="!replyContent.trim()"
-          @click="handleReply"
-        >
-          提交
-        </el-button>
-      </div>
+        <!-- 操作按钮 -->
+        <div class="action-buttons">
+          <el-button size="large" round @click="router.push('/student/tracking')">返回</el-button>
+          <el-button
+            type="primary"
+            size="large"
+            round
+            class="btn-primary"
+            :loading="submitting"
+            :disabled="!replyContent.trim()"
+            @click="handleReply"
+          >
+            提交
+          </el-button>
+        </div>
+      </template>
+
+      <template v-else>
+        <div class="wait-reply-hint">等待管理员回复后可继续反馈</div>
+        <div class="action-buttons">
+          <el-button size="large" round @click="router.push('/student/tracking')">返回</el-button>
+        </div>
+      </template>
     </div>
+
+    <!-- 附件预览弹窗 -->
+    <el-dialog v-model="previewVisible" title="附件预览" width="70%" destroy-on-close>
+      <div class="preview-container">
+        <img v-if="previewType === 'image'" :src="previewUrl" class="preview-image" />
+        <video v-else-if="previewType === 'video'" :src="previewUrl" controls class="preview-video" />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { ChatDotSquare } from '@element-plus/icons-vue'
@@ -102,6 +119,33 @@ const loading = ref(false)
 const submitting = ref(false)
 const detail = ref<FeedbackDetail | null>(null)
 const replyContent = ref('')
+
+/* 交替回复：只有最后一条回复是管理员发的，学生才能回复 */
+const canReply = computed(() => {
+  if (!detail.value || !detail.value.replies || detail.value.replies.length === 0) return false
+  const lastReply = detail.value.replies[detail.value.replies.length - 1]
+  return lastReply.userType === 'admin'
+})
+const previewVisible = ref(false)
+const previewUrl = ref('')
+const previewType = ref<'image' | 'video'>('image')
+
+const IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'gif']
+const VIDEO_EXTS = ['mp4', 'avi', 'mov']
+
+function previewAttachment(att: { fileName: string; fileUrl: string; fileType?: string }) {
+  const ext = (att.fileType || att.fileName.split('.').pop() || '').toLowerCase()
+  if (IMAGE_EXTS.includes(ext)) {
+    previewType.value = 'image'
+  } else if (VIDEO_EXTS.includes(ext)) {
+    previewType.value = 'video'
+  } else {
+    ElMessage.info('该文件类型暂不支持预览')
+    return
+  }
+  previewUrl.value = att.fileUrl
+  previewVisible.value = true
+}
 
 /* 获取详情 */
 async function fetchDetail() {
@@ -284,6 +328,13 @@ onMounted(() => {
   padding-left: 16px;
 }
 
+.wait-reply-hint {
+  font-size: 14px;
+  color: #999;
+  text-align: center;
+  padding: 16px 0;
+}
+
 .reply-input-section {
   display: flex;
   flex-direction: column;
@@ -306,4 +357,8 @@ onMounted(() => {
   background-color: #24a0bf;
   border-color: #24a0bf;
 }
+
+.preview-container { display: flex; justify-content: center; align-items: center; }
+.preview-image { max-width: 100%; max-height: 70vh; }
+.preview-video { max-width: 100%; max-height: 70vh; }
 </style>

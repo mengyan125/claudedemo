@@ -2,10 +2,12 @@ com\feedback\config\MyBatisConfig.class
 com\feedback\mapper\BaseTeacherClassMapper.class
 com\feedback\service\impl\AuthServiceImpl.class
 com\feedback\service\SystemUserService.class
+com\feedback\model\vo\UserSearchVO$UserSearchVOBuilder.class
 com\feedback\model\vo\FeedbackStatisticsVO.class
 com\feedback\controller\SystemPermissionController.class
 com\feedback\service\impl\BaseClassServiceImpl.class
 com\feedback\model\vo\FeedbackStatisticsVO$CategoryDistributionItem.class
+com\feedback\model\vo\FeedbackStatusCountVO$FeedbackStatusCountVOBuilder.class
 com\feedback\service\impl\SystemUserServiceImpl.class
 com\feedback\model\vo\AdminFeedbackDetailVO.class
 com\feedback\controller\BaseClassController.class
@@ -28,6 +30,7 @@ com\feedback\model\vo\StudentCategoryVO$StudentCategoryVOBuilder.class
 com\feedback\model\vo\ClassItemVO.class
 com\feedback\service\SystemPermissionService.class
 com\feedback\mapper\FbReplyMapper.class
+com\feedback\mapper\FbReminderMapper.class
 com\feedback\common\constant\RoleCodeEnum.class
 com\feedback\service\BaseClassService.class
 com\feedback\service\BaseRelationService.class
@@ -66,6 +69,7 @@ com\feedback\model\dto\CreateGradeDTO.class
 com\feedback\model\entity\BaseClass.class
 com\feedback\model\vo\FeedbackDetailVO.class
 com\feedback\model\entity\SysUserRole.class
+com\feedback\model\vo\UserSearchVO.class
 com\feedback\service\BaseGradeService.class
 com\feedback\model\entity\BaseTeacherClass.class
 com\feedback\model\vo\CategoryItemVO$CategoryItemVOBuilder.class
@@ -76,6 +80,8 @@ com\feedback\model\vo\ReplyItemVO$ReplyItemVOBuilder.class
 com\feedback\model\vo\ReplyItemVO.class
 com\feedback\model\vo\QuickReplyItemVO$QuickReplyItemVOBuilder.class
 com\feedback\model\vo\AdminFeedbackItemVO$AdminFeedbackItemVOBuilder.class
+com\feedback\model\vo\ReminderItemVO.class
+com\feedback\mapper\FbReminderReceiverMapper.class
 com\feedback\mapper\SysUserRoleMapper.class
 com\feedback\model\vo\AdminFeedbackItemVO.class
 com\feedback\service\AdminFeedbackService.class
@@ -87,6 +93,7 @@ com\feedback\model\vo\TeacherFeedbackResultVO.class
 com\feedback\model\vo\StudentCategoryVO.class
 com\feedback\model\vo\StudentAssignmentVO.class
 com\feedback\FeedbackApplication.class
+com\feedback\model\vo\ReminderItemVO$ReminderItemVOBuilder.class
 com\feedback\model\vo\UserItemVO.class
 com\feedback\model\entity\FbCategoryAdmin.class
 com\feedback\service\impl\AdminFeedbackServiceImpl.class
@@ -97,6 +104,7 @@ com\feedback\service\impl\AdminQuickReplyServiceImpl.class
 com\feedback\model\vo\CategoryPermissionVO$CategoryPermissionVOBuilder.class
 com\feedback\model\vo\RoleItemVO.class
 com\feedback\service\impl\SystemPermissionServiceImpl.class
+com\feedback\model\entity\FbReminderReceiver.class
 com\feedback\model\dto\LoginDTO.class
 com\feedback\model\entity\BaseSemester.class
 com\feedback\model\entity\SysUser.class
@@ -119,6 +127,7 @@ com\feedback\model\entity\FbCollection.class
 com\feedback\model\vo\ClassItemVO$ClassItemVOBuilder.class
 com\feedback\model\vo\FeedbackDetailVO$FeedbackDetailVOBuilder.class
 com\feedback\model\dto\UpdateGradeDTO.class
+com\feedback\model\entity\FbReminder.class
 com\feedback\model\dto\CreateUserDTO.class
 com\feedback\model\vo\FeedbackListItemVO.class
 com\feedback\service\impl\BaseRelationServiceImpl.class
@@ -133,12 +142,14 @@ com\feedback\common\constant\UserTypeEnum.class
 com\feedback\model\entity\FbReply.class
 com\feedback\service\AdminCategoryService.class
 com\feedback\model\vo\TeacherOptionVO.class
+com\feedback\model\dto\CreateReminderDTO.class
 com\feedback\common\exception\BusinessException.class
 com\feedback\controller\AdminStatisticsController.class
 com\feedback\model\dto\CreateCategoryDTO.class
 com\feedback\model\entity\FbFeedback.class
 com\feedback\model\dto\FeedbackSubmitDTO.class
 com\feedback\model\dto\UpdateCategoryStatusDTO.class
+com\feedback\model\vo\FeedbackStatusCountVO.class
 com\feedback\service\impl\AdminCategoryServiceImpl.class
 com\feedback\model\entity\FbQuickReply.class
 com\feedback\model\vo\AttachmentItemVO$AttachmentItemVOBuilder.class

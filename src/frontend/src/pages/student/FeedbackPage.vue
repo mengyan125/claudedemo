@@ -63,6 +63,7 @@
               :file-list="fileList"
               :on-change="handleFileChange"
               :on-remove="handleFileRemove"
+              :on-exceed="handleExceed"
               :limit="9"
               accept=".jpg,.jpeg,.png,.gif,.mp4,.avi,.mov"
               multiple
@@ -75,8 +76,8 @@
 
         <!-- 操作按钮 -->
         <div class="form-actions">
-          <el-button size="large" round @click="handleSave">暂存</el-button>
-          <el-button type="primary" size="large" round class="btn-primary" :loading="submitting" @click="handleSubmit">
+          <el-button size="large" round :loading="saving" :disabled="submitting" @click="handleSave">暂存</el-button>
+          <el-button type="primary" size="large" round class="btn-primary" :loading="submitting" :disabled="saving" @click="handleSubmit">
             提交
           </el-button>
         </div>
@@ -109,6 +110,7 @@ import type { StudentCategory, TeacherOption } from '@/api/student'
 const router = useRouter()
 const formRef = ref<FormInstance>()
 const submitting = ref(false)
+const saving = ref(false)
 const showSuccess = ref(false)
 
 const categories = ref<StudentCategory[]>([])
@@ -149,6 +151,11 @@ function handleCategoryChange() {
   formData.isTeachingRelated = true
 }
 
+/* 文件超出限制 */
+function handleExceed() {
+  ElMessage.warning('最多只能上传9个附件')
+}
+
 /* 文件变更 */
 function handleFileChange(_file: UploadFile, newFileList: UploadFile[]) {
   fileList.value = newFileList
@@ -173,7 +180,7 @@ async function uploadAllFiles(): Promise<number[]> {
 
 /* 暂存 */
 async function handleSave() {
-  submitting.value = true
+  saving.value = true
   try {
     const attachmentIds = await uploadAllFiles()
     await submitFeedbackApi({
@@ -191,7 +198,7 @@ async function handleSave() {
   } catch {
     /* 错误已在拦截器处理 */
   } finally {
-    submitting.value = false
+    saving.value = false
   }
 }
 
