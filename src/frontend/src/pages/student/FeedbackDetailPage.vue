@@ -120,11 +120,11 @@ const submitting = ref(false)
 const detail = ref<FeedbackDetail | null>(null)
 const replyContent = ref('')
 
-/* 交替回复：只有最后一条回复是管理员发的，学生才能回复 */
+/* 交替回复：只有最后一条回复不是学生发的，学生才能回复 */
 const canReply = computed(() => {
   if (!detail.value || !detail.value.replies || detail.value.replies.length === 0) return false
   const lastReply = detail.value.replies[detail.value.replies.length - 1]
-  return lastReply.userType === 'admin'
+  return lastReply.userType !== 'student'
 })
 const previewVisible = ref(false)
 const previewUrl = ref('')

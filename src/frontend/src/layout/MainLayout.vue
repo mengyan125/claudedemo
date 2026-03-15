@@ -23,7 +23,6 @@
       <!-- 右侧信息区 -->
       <div class="nav-right">
         <el-icon :size="20" class="nav-icon"><Bell /></el-icon>
-        <span class="school-tag">{{ userStore.userInfo?.schoolName || '学校' }}</span>
         <el-dropdown trigger="click" @command="handleCommand">
           <span class="user-info">
             {{ userStore.userInfo?.realName || '用户' }}
@@ -194,14 +193,6 @@ async function handleCommand(command: string) {
 
 .nav-icon:hover {
   color: #fff;
-}
-
-.school-tag {
-  font-size: 13px;
-  color: #fff;
-  padding: 4px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 4px;
 }
 
 .user-info {
