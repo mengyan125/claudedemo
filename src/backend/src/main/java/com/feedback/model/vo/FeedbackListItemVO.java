@@ -44,6 +44,9 @@ public class FeedbackListItemVO {
     /** 是否有未读回复 */
     private Boolean hasUnread;
 
+    /** 反馈内容摘要 */
+    private String content;
+
     /** 创建时间 */
     private String createTime;
 }

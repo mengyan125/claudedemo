@@ -252,7 +252,7 @@ onMounted(async () => {
   display: flex;
   justify-content: center;
   padding: 32px 80px;
-  height: 100%;
+  min-height: 100%;
   box-sizing: border-box;
   position: relative;
 }

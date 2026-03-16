@@ -82,7 +82,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           size="small"
-          style="width:280px"
+          style="width:220px"
           value-format="YYYY-MM-DD"
           @change="fetchTop10"
         />

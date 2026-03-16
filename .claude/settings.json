@@ -95,7 +95,18 @@
       "Bash(curl -s -H \"Authorization: Bearer $TOKEN\" \"http://localhost:8080/api/admin/statistics/teacher-top10?startDate=2026-01-01&endDate=2026-03-15\")",
       "Bash(curl -s -H \"Authorization: Bearer $TOKEN\" \"http://localhost:8080/api/admin/statistics/teacher-top10?startDate=2025-01-01&endDate=2026-12-31\")",
       "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM2NTAzMjcsInVzZXJJZCI6MSwiaWF0IjoxNzczNTYzOTI3LCJ1c2VybmFtZSI6ImFkbWluIn0.dw6BmF-S8uwbYCK0Zps0vyssVON1EuEJkkUOQg7wCYQ\")",
-      "Bash(curl -s -H \"Authorization: Bearer $TOKEN\" \"http://localhost:8080/api/admin/statistics\")"
+      "Bash(curl -s -H \"Authorization: Bearer $TOKEN\" \"http://localhost:8080/api/admin/statistics\")",
+      "Bash(powershell.exe -Command \"Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | Select-Object OwningProcess | ForEach-Object { Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue } | Select-Object Id, ProcessName, Path\")",
+      "Bash(powershell.exe -Command \"Stop-Process -Id 77500 -Force -ErrorAction SilentlyContinue; Stop-Process -Id 71048 -Force -ErrorAction SilentlyContinue\")",
+      "Bash(mysql -u root -p123456 -e \"SELECT 1\")",
+      "Bash(powershell.exe -Command \"Get-Command mysql -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\")",
+      "Bash(powershell.exe -Command \"Get-Service -Name ''*mysql*'' -ErrorAction SilentlyContinue | Select-Object Name,Status\")",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Program Files\\\\MySQL'' -Recurse -Filter ''mysql.exe'' -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName\")",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe\" -u root -p123456 -e \"SHOW DATABASES LIKE ''feedbackdb'';\")",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe\" -u root -p123456 feedbackdb -e \"SHOW TABLES;\")"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\yanmeng7\\AppData\\Local\\Temp"
     ]
   }
 }
