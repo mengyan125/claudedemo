@@ -3,10 +3,12 @@
     <!-- 筛选区域 -->
     <div class="filter-card">
       <div class="filter-row">
-        <span class="filter-label">类别：</span>
-        <el-select v-model="filterCategory" placeholder="全部类别" clearable size="small" style="width:140px" @change="handleFilter">
-          <el-option v-for="c in categories" :key="c.id" :label="c.name" :value="c.id" />
-        </el-select>
+        <template v-if="!isCategoryAdmin">
+          <span class="filter-label">类别：</span>
+          <el-select v-model="filterCategory" placeholder="全部类别" clearable size="small" style="width:140px" @change="handleFilter">
+            <el-option v-for="c in categories" :key="c.id" :label="c.name" :value="c.id" />
+          </el-select>
+        </template>
         <span class="filter-label">年级</span>
         <el-select v-model="filterGrade" placeholder="全部年级" clearable size="small" style="width:120px" @change="handleGradeChange">
           <el-option v-for="g in grades" :key="g.id" :label="g.gradeName" :value="g.id" />
@@ -106,6 +108,11 @@ import {
 import type { AdminFeedbackItem, CategoryItem, FeedbackStatusCount, UserSearchItem } from '@/api/admin'
 import request from '@/utils/request'
 import type { ApiResponse } from '@/utils/request'
+import { useUserStore } from '@/stores/user'
+import { storeToRefs } from 'pinia'
+
+const userStore = useUserStore()
+const { isCategoryAdmin } = storeToRefs(userStore)
 
 /* 年级/班级接口类型 */
 interface GradeItem { id: number; gradeName: string }
