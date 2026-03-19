@@ -2,38 +2,51 @@
   <div class="feedback-list-page">
     <!-- 筛选区域 -->
     <div class="filter-card">
-      <div class="filter-row">
-        <template v-if="!isCategoryAdmin">
+      <div :class="['filter-row', 'filter-row-top', { 'is-category-admin': isCategoryAdmin }]">
+        <div v-if="!isCategoryAdmin" class="filter-cell">
           <span class="filter-label">类别：</span>
-          <el-select v-model="filterCategory" placeholder="全部类别" clearable size="small" style="width:140px" @change="handleFilter">
+          <el-select v-model="filterCategory" class="filter-control" placeholder="全部类别" clearable size="small" @change="handleFilter">
             <el-option v-for="c in categories" :key="c.id" :label="c.name" :value="c.id" />
           </el-select>
-        </template>
-        <span class="filter-label">年级</span>
-        <el-select v-model="filterGrade" placeholder="全部年级" clearable size="small" style="width:120px" @change="handleGradeChange">
-          <el-option v-for="g in grades" :key="g.id" :label="g.gradeName" :value="g.id" />
-        </el-select>
-        <span class="filter-label">班级</span>
-        <el-select v-model="filterClass" placeholder="全部班级" clearable size="small" style="width:140px" @change="handleFilter">
-          <el-option v-for="c in classes" :key="c.id" :label="c.className" :value="c.id" />
-        </el-select>
-        <span class="filter-label">反馈对象</span>
-        <el-select
-          v-model="filterTarget"
-          placeholder="全部"
-          clearable
-          filterable
-          remote
-          :remote-method="searchTeachers"
-          size="small"
-          style="width:160px"
-          @change="handleFilter"
-        >
-          <el-option v-for="t in teacherOptions" :key="t.id" :label="t.realName" :value="t.id" />
-        </el-select>
-        <el-input v-model="keyword" placeholder="搜索关键词" clearable size="small" style="width:220px" @keyup.enter="handleFilter" @clear="handleFilter">
-          <template #prefix><el-icon><Search /></el-icon></template>
-        </el-input>
+        </div>
+
+        <div class="filter-cell">
+          <span class="filter-label">年级：</span>
+          <el-select v-model="filterGrade" class="filter-control" placeholder="全部年级" clearable size="small" @change="handleGradeChange">
+            <el-option v-for="g in grades" :key="g.id" :label="g.gradeName" :value="g.id" />
+          </el-select>
+        </div>
+
+        <div class="filter-cell">
+          <span class="filter-label">班级：</span>
+          <el-select v-model="filterClass" class="filter-control" placeholder="全部班级" clearable size="small" @change="handleFilter">
+            <el-option v-for="c in classes" :key="c.id" :label="c.className" :value="c.id" />
+          </el-select>
+        </div>
+
+        <div class="filter-cell">
+          <span class="filter-label">反馈对象：</span>
+          <el-select
+            v-model="filterTarget"
+            class="filter-control"
+            placeholder="全部"
+            clearable
+            filterable
+            remote
+            :remote-method="searchTeachers"
+            size="small"
+            @change="handleFilter"
+          >
+            <el-option v-for="t in teacherOptions" :key="t.id" :label="t.realName" :value="t.id" />
+          </el-select>
+        </div>
+
+        <div class="filter-cell">
+          <span class="filter-label">关键词：</span>
+          <el-input v-model="keyword" class="filter-control" placeholder="搜索关键词" clearable size="small" @keyup.enter="handleFilter" @clear="handleFilter">
+            <template #prefix><el-icon><Search /></el-icon></template>
+          </el-input>
+        </div>
       </div>
 
       <div class="filter-row">
@@ -279,10 +292,36 @@ onMounted(async () => {
   gap: 16px;
 }
 
+.filter-row-top {
+  width: 100%;
+  gap: 12px;
+}
+
+.filter-cell {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-row-top.is-category-admin .filter-cell {
+  flex: 1;
+}
+
 .filter-label {
   font-size: 13px;
   color: #333;
   white-space: nowrap;
+}
+
+.filter-control {
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-control :deep(.el-input__wrapper) {
+  width: 100%;
 }
 
 .date-sep {

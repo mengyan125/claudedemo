@@ -173,6 +173,12 @@ router.beforeEach(async (to, _from, next) => {
       return
     }
   }
+  /* 角色管理员/系统管理员进入根路径时，默认跳到第一个 nav（反馈查看） */
+  if (to.path === '/' && (userStore.isSystemAdmin || userStore.isRoleAdmin)) {
+    next('/admin/feedback')
+    return
+  }
+
   /* 角色权限检查 */
   const requiredRoles = to.meta.requiredRoles as string[] | undefined
   const requiredUserType = to.meta.requiredUserType as string | undefined
