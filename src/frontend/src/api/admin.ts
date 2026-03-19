@@ -206,8 +206,8 @@ export function toggleFavoriteApi(feedbackId: number) {
 }
 
 /* 获取反馈统计 */
-export function getStatisticsApi() {
-  return request.get<ApiResponse<FeedbackStatistics>>('/admin/statistics')
+export function getStatisticsApi(params?: { startDate?: string; endDate?: string }) {
+  return request.get<ApiResponse<FeedbackStatistics>>('/admin/statistics', { params })
 }
 
 /* 获取教师被反馈TOP10（支持时间筛选） */

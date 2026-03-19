@@ -54,7 +54,7 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
     private FbCollectionMapper fbCollectionMapper;
 
     @Override
-    public FeedbackStatisticsVO getStatistics() {
+    public FeedbackStatisticsVO getStatistics(Date startDate, Date endDate) {
         // 查询所有非草稿反馈
         List<FbFeedback> allFeedbacks = queryNonDraftFeedbacks();
         int totalCount = allFeedbacks.size();
@@ -65,9 +65,10 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
         // 本月反馈数
         int monthCount = countMonthFeedbacks(allFeedbacks);
 
-        // 类别分布
+        // 类别分布（支持时间筛选）
+        List<FbFeedback> filteredFeedbacks = filterByDateRange(allFeedbacks, startDate, endDate);
         List<CategoryDistributionItem> categoryDistribution =
-                buildCategoryDistribution(allFeedbacks, totalCount);
+                buildCategoryDistribution(filteredFeedbacks, filteredFeedbacks.size());
 
         // 学期趋势
         List<SemesterTrendItem> semesterTrend = buildSemesterTrend(allFeedbacks);
@@ -88,15 +89,7 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
     @Override
     public List<TeacherTop10Item> getTeacherTop10(Date startDate, Date endDate) {
         List<FbFeedback> feedbacks = queryNonDraftFeedbacks();
-        // 按时间筛选
-        if (startDate != null || endDate != null) {
-            feedbacks = feedbacks.stream().filter(fb -> {
-                if (fb.getCreateTime() == null) return false;
-                if (startDate != null && fb.getCreateTime().before(startDate)) return false;
-                if (endDate != null && fb.getCreateTime().after(endDate)) return false;
-                return true;
-            }).collect(Collectors.toList());
-        }
+        feedbacks = filterByDateRange(feedbacks, startDate, endDate);
         return buildTeacherTop10(feedbacks);
     }
 
@@ -139,6 +132,19 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
         LambdaQueryWrapper<FbFeedback> wrapper = new LambdaQueryWrapper<>();
         wrapper.ne(FbFeedback::getStatus, "draft");
         return fbFeedbackMapper.selectList(wrapper);
+    }
+
+    /** 按时间范围过滤反馈列表 */
+    private List<FbFeedback> filterByDateRange(List<FbFeedback> feedbacks, Date startDate, Date endDate) {
+        if (startDate == null && endDate == null) {
+            return feedbacks;
+        }
+        return feedbacks.stream().filter(fb -> {
+            if (fb.getCreateTime() == null) return false;
+            if (startDate != null && fb.getCreateTime().before(startDate)) return false;
+            if (endDate != null && fb.getCreateTime().after(endDate)) return false;
+            return true;
+        }).collect(Collectors.toList());
     }
 
     /** 统计当前学期反馈数 */

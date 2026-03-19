@@ -2,36 +2,30 @@
 
 ## 一、环境信息
 
-| 项目 | 开发环境（H2） | 本地 MySQL |
-|------|---------------|------------|
-| 数据库类型 | H2 内存数据库（MySQL 兼容模式） | MySQL 5.7.30 |
-| 连接地址 | 自动内嵌 | localhost:3306 |
-| 用户名 | sa | root |
-| 密码 | （空） | 123456 |
-| 数据库名 | feedbackdb | feedbackdb |
-| 字符集 | — | utf8mb4 |
-| Spring Profile | dev | mysql |
-| 数据持久化 | 否（重启丢失） | 是 |
+| 项目 | 本地 MySQL |
+|------|------------|
+| 数据库类型 | MySQL 5.7.30 |
+| 连接地址 | localhost:3306 |
+| 用户名 | root |
+| 密码 | 123456 |
+| 数据库名 | feedbackdb |
+| 字符集 | utf8mb4 |
+| Spring Profile | mysql（默认） |
+| 数据持久化 | 是 |
 
 ## 二、启动方式
 
 ```bash
-# H2 内存库（默认，每次重启自动重建）
 cd src/backend
-JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8" ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
-
-# 本地 MySQL（数据持久化）
-cd src/backend
-JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8" ./mvnw spring-boot:run -Dspring-boot.run.profiles=mysql
+JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8" ./mvnw spring-boot:run
 ```
 
 ## 三、配置文件
 
 | 文件 | 说明 |
 |------|------|
-| `src/backend/src/main/resources/application.yml` | 主配置（默认 dev profile） |
-| `src/backend/src/main/resources/application-dev.yml` | H2 开发环境 |
-| `src/backend/src/main/resources/application-mysql.yml` | 本地 MySQL 环境 |
+| `src/backend/src/main/resources/application.yml` | 主配置（默认 mysql profile） |
+| `src/backend/src/main/resources/application-mysql.yml` | MySQL 连接配置 |
 | `src/backend/src/main/resources/application-tidb.yml` | TiDB 生产环境（待配置） |
 
 ## 四、SQL 脚本
@@ -111,4 +105,4 @@ mysql -u root -p123456 --default-character-set=utf8mb4 feedbackdb < src/backend/
 2. **逻辑删除**：sys_user 表使用 `deleted` 字段实现逻辑删除（0=未删除，1=已删除）
 3. **ID 策略**：所有表主键使用 BIGINT AUTO_INCREMENT
 4. **字符集**：MySQL 客户端连接时需指定 `--default-character-set=utf8mb4`，JDBC URL 中使用 `characterEncoding=UTF-8`
-5. **无迁移工具**：未使用 Flyway/Liquibase，SQL 脚本文件名采用 Flyway 风格但通过 Spring Boot sql.init 机制加载
+5. **无迁移工具**：未使用 Flyway/Liquibase，SQL 脚本文件名采用 Flyway 风格，需手动执行

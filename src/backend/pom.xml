@@ -53,13 +53,6 @@
             <version>${mysql.version}</version>
         </dependency>
 
-        <!-- H2 内存数据库（用于测试） -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
         <!-- JWT 令牌 -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

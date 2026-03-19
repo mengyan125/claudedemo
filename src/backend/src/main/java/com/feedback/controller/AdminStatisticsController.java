@@ -31,8 +31,10 @@ public class AdminStatisticsController {
      * @return 统计概览数据
      */
     @GetMapping
-    public Result<FeedbackStatisticsVO> getStatistics() {
-        FeedbackStatisticsVO statistics = adminStatisticsService.getStatistics();
+    public Result<FeedbackStatisticsVO> getStatistics(
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
+        FeedbackStatisticsVO statistics = adminStatisticsService.getStatistics(startDate, endDate);
         return Result.ok(statistics);
     }
 

@@ -17,7 +17,7 @@ public interface AdminStatisticsService {
      *
      * @return 统计概览VO
      */
-    FeedbackStatisticsVO getStatistics();
+    FeedbackStatisticsVO getStatistics(Date startDate, Date endDate);
 
     /**
      * 获取教师被反馈TOP10（支持时间筛选）

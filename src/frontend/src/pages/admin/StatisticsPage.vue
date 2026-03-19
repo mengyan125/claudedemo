@@ -32,14 +32,14 @@
         </div>
         <div class="pie-date-row">
           <span class="pie-date-label">时间段：</span>
-          <el-date-picker v-model="pieDateRange" type="daterange" range-separator="至" start-placeholder="2025-03-01" end-placeholder="2025-03-14" size="small" style="width:220px" />
+          <el-date-picker v-model="pieDateRange" type="daterange" range-separator="至" start-placeholder="2025-03-01" end-placeholder="2025-03-14" size="small" style="width:220px" value-format="YYYY-MM-DD" clearable />
         </div>
         <div class="pie-area">
           <div class="pie-circle" :style="pieGradientStyle" />
         </div>
         <div class="pie-legend">
-          <div v-for="item in stats.categoryDistribution" :key="item.name" class="legend-item">
-            <span class="legend-dot" :style="{ background: getCategoryColor(item.name) }" />
+          <div v-for="(item, idx) in stats.categoryDistribution" :key="item.name" class="legend-item">
+            <span class="legend-dot" :style="{ background: PIE_COLORS[idx % PIE_COLORS.length] }" />
             <span class="legend-name">{{ item.name }}</span>
           </div>
         </div>
@@ -113,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { getStatisticsApi, getTeacherTop10Api } from '@/api/admin'
 import type { FeedbackStatistics } from '@/api/admin'
@@ -130,11 +130,6 @@ const stats = reactive<FeedbackStatistics>({
 })
 
 const PIE_COLORS = ['#E6A23C', '#9B59B6', '#67C23A', '#409EFF', '#E91E63']
-const COLORS: Record<string, string> = {
-  '教学': '#E6A23C', '后勤': '#9B59B6', '校园安全': '#67C23A', '学校食堂': '#409EFF', '图书馆': '#E91E63'
-}
-
-function getCategoryColor(name: string) { return COLORS[name] || '#909399' }
 
 /* 本月反馈最多的类别 */
 const topCategory = computed(() => {
@@ -176,15 +171,24 @@ async function fetchTop10() {
   } catch { /* 错误已在拦截器处理 */ }
 }
 
-onMounted(async () => {
+async function fetchStatistics() {
+  const params: { startDate?: string; endDate?: string } = {}
+  if (pieDateRange.value) {
+    params.startDate = pieDateRange.value[0]
+    params.endDate = pieDateRange.value[1]
+  }
   loading.value = true
   try {
-    const { data } = await getStatisticsApi()
+    const { data } = await getStatisticsApi(params)
     Object.assign(stats, data.data)
     top10List.value = data.data.teacherTop10
   } catch { /* 错误已在拦截器处理 */ }
   finally { loading.value = false }
-})
+}
+
+watch(pieDateRange, () => fetchStatistics())
+
+onMounted(() => fetchStatistics())
 </script>
 
 <style scoped>
