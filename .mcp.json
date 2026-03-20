@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["-p", "@playwright/mcp@latest", "playwright-mcp"],
+      "env": {
+        "PLAYWRIGHT_MCP_TIMEOUT_ACTION": "120000",
+        "PLAYWRIGHT_MCP_CDP_CONNECT_TIMEOUT": "120000"
+      }
+    }
+  }
+}

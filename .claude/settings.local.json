@@ -1,4 +1,7 @@
 {
+  "enabledMcpjsonServers": [
+    "playwright"
+  ],
   "permissions": {
     "allow": [
       "Bash(curl -s -X POST http://localhost:8080/api/system/user -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzM1NzE5NjUsInVzZXJJZCI6MSwiaWF0IjoxNzczNDg1NTY1LCJ1c2VybmFtZSI6ImFkbWluIn0.VDJWK4LZUKtCrUDH8ceAfVA2L9tJXgJnBmz4GBQRT4g\" -H \"Content-Type: application/json\" -d \"{\"\"username\"\":\"\"student1\"\",\"\"realName\"\":\"\"zhangsan\"\",\"\"password\"\":\"\"123456\"\",\"\"userType\"\":\"\"student\"\"}\")",

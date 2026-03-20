@@ -126,10 +126,29 @@
       "Bash(curl -s \"http://localhost:8080/api/admin/feedback/list?pageNum=1&pageSize=20\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzQwNjc4ODEsInVzZXJJZCI6MSwiaWF0IjoxNzczOTgxNDgxLCJ1c2VybmFtZSI6ImFkbWluIn0.y8okCczDgazTKj7hEkUoE0Hdo3PQvhD3KvqrX86WRKc\")",
       "Bash(curl -s http://localhost:8080/api/admin/feedback/16/reminder -X POST -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzQwNzAyMzEsInVzZXJJZCI6MSwiaWF0IjoxNzczOTgzODMxLCJ1c2VybmFtZSI6ImFkbWluIn0.Nfp4drMrYatYSHYwxa-VkoMvN3-QS1HazdX1c2hs0Y8\" -H \"Content-Type: application/json\" -d '{\"\"content\"\":\"\"自动化验证备注显示\"\",\"\"receiverIds\"\":[2]}')",
       "Bash(curl -s \"http://localhost:8080/api/admin/reminder/list?pageNum=1&pageSize=100\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzQwNzAyMzEsInVzZXJJZCI6MSwiaWF0IjoxNzczOTgzODMxLCJ1c2VybmFtZSI6ImFkbWluIn0.Nfp4drMrYatYSHYwxa-VkoMvN3-QS1HazdX1c2hs0Y8\")",
-      "Bash(curl -s -X POST \"http://localhost:8080/api/admin/feedback/16/reminder\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzQwNzAyMzEsInVzZXJJZCI6MSwiaWF0IjoxNzczOTgzODMxLCJ1c2VybmFtZSI6ImFkbWluIn0.Nfp4drMrYatYSHYwxa-VkoMvN3-QS1HazdX1c2hs0Y8\" -H \"Content-Type: application/json\" --data-raw '{\"\"content\"\":\"\"auto reminder verify\"\",\"\"receiverIds\"\":[2]}')"
+      "Bash(curl -s -X POST \"http://localhost:8080/api/admin/feedback/16/reminder\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzQwNzAyMzEsInVzZXJJZCI6MSwiaWF0IjoxNzczOTgzODMxLCJ1c2VybmFtZSI6ImFkbWluIn0.Nfp4drMrYatYSHYwxa-VkoMvN3-QS1HazdX1c2hs0Y8\" -H \"Content-Type: application/json\" --data-raw '{\"\"content\"\":\"\"auto reminder verify\"\",\"\"receiverIds\"\":[2]}')",
+      "Bash(npx -y @playwright/mcp@latest --help)",
+      "Bash(npx -y @playwright/mcp@latest)",
+      "Bash(npx -y -p @playwright/mcp@latest node -e \"console.log\\(JSON.stringify\\(require\\(''@playwright/mcp/package.json''\\).bin\\)\\)\")",
+      "Bash(npx -p @playwright/mcp@latest mcp --help)",
+      "Bash(npm view:*)",
+      "Bash(npx -p @playwright/mcp@latest playwright-mcp --help)",
+      "Bash(npm -v)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_install",
+      "Bash(curl -s http://localhost:8080/api/auth/login -X POST -H \"Content-Type: application/json\" -d '{\"\"username\"\":\"\"student1\"\",\"\"password\"\":\"\"123456\"\"}')",
+      "Bash(mysql -h 127.0.0.1 -P 3306 -uroot -p123456 -D feedbackdb -e \"SHOW TABLES;\")",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe\" -h 127.0.0.1 -P 3306 -uroot -p123456 -D feedbackdb -e \"SHOW TABLES;\")",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe\" -h 127.0.0.1 -P 3306 -uroot -p123456 -D feedbackdb -e \"SELECT id,username,real_name,user_type,status FROM sys_user ORDER BY id; SELECT id,role_code,role_name FROM sys_role ORDER BY id;\")",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe\" -h 127.0.0.1 -P 3306 -uroot -p123456 -D feedbackdb -e \"SET FOREIGN_KEY_CHECKS=0; TRUNCATE TABLE fb_feedback_attachment; TRUNCATE TABLE fb_reply; TRUNCATE TABLE fb_collection; TRUNCATE TABLE fb_reminder_receiver; TRUNCATE TABLE fb_reminder; TRUNCATE TABLE fb_feedback_admin_read; TRUNCATE TABLE fb_feedback; TRUNCATE TABLE fb_category_admin; TRUNCATE TABLE fb_quick_reply; TRUNCATE TABLE fb_category; TRUNCATE TABLE base_student_class; TRUNCATE TABLE base_teacher_class; TRUNCATE TABLE base_class; TRUNCATE TABLE base_grade; TRUNCATE TABLE base_semester; TRUNCATE TABLE sys_user_role; DELETE FROM sys_user WHERE id<>1; INSERT INTO sys_user_role \\(user_id, role_id\\) SELECT 1, id FROM sys_role WHERE role_code=''SYSTEM_ADMIN'' LIMIT 1; SET FOREIGN_KEY_CHECKS=1;\")",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe\" -h 127.0.0.1 -P 3306 -uroot -p123456 -D feedbackdb -e \"SELECT id,username,user_type,status FROM sys_user ORDER BY id; SELECT ur.user_id,r.role_code FROM sys_user_role ur JOIN sys_role r ON ur.role_id=r.id ORDER BY ur.user_id; SELECT ''fb_feedback'' AS t, COUNT\\(*\\) AS c FROM fb_feedback UNION ALL SELECT ''fb_reply'', COUNT\\(*\\) FROM fb_reply UNION ALL SELECT ''base_semester'', COUNT\\(*\\) FROM base_semester UNION ALL SELECT ''base_grade'', COUNT\\(*\\) FROM base_grade UNION ALL SELECT ''base_class'', COUNT\\(*\\) FROM base_class UNION ALL SELECT ''fb_category'', COUNT\\(*\\) FROM fb_category;\")"
     ],
     "additionalDirectories": [
       "C:\\Users\\yanmeng7\\AppData\\Local\\Temp"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "playwright"
+  ]
 }
