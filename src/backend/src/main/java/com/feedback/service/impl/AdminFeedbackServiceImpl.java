@@ -70,6 +70,9 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
     @Autowired
     private FbCategoryAdminMapper fbCategoryAdminMapper;
 
+    @Autowired
+    private FbFeedbackAdminReadMapper fbFeedbackAdminReadMapper;
+
     @Override
     public PageResult<AdminFeedbackItemVO> getFeedbackList(Long categoryId, String status,
                                                             String keyword, Long gradeId,
@@ -104,12 +107,8 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
         if (allowedCategoryIds != null && !allowedCategoryIds.contains(feedback.getCategoryId())) {
             throw new BusinessException(403, "权限不足");
         }
-        // 标记管理员已读
-        if (feedback.getHasUnreadForAdmin() != null && feedback.getHasUnreadForAdmin() == 1) {
-            feedback.setHasUnreadForAdmin(0);
-            feedback.setUpdateTime(new Date());
-            fbFeedbackMapper.updateById(feedback);
-        }
+        // 标记当前管理员已读（按用户隔离）
+        markAdminFeedbackRead(adminId, id);
         // 标记该反馈的备注提醒为已读
         markRemindersAsRead(adminId, id);
         return buildDetailVO(feedback, adminId);
@@ -204,16 +203,21 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
         reminder.setContent(dto.getContent());
         reminder.setCreateTime(new Date());
         fbReminderMapper.insert(reminder);
-        // 批量插入接收人
+        // 批量插入接收人（至少包含发送人本人，确保当前页可见）
         List<Long> receiverIds = dto.getReceiverIds();
+        List<Long> targetReceiverIds = new ArrayList<>();
         if (receiverIds != null && !receiverIds.isEmpty()) {
-            for (Long receiverId : receiverIds) {
-                FbReminderReceiver receiver = new FbReminderReceiver();
-                receiver.setReminderId(reminder.getId());
-                receiver.setReceiverId(receiverId);
-                receiver.setIsRead(0);
-                fbReminderReceiverMapper.insert(receiver);
-            }
+            targetReceiverIds.addAll(receiverIds);
+        }
+        if (!targetReceiverIds.contains(senderId)) {
+            targetReceiverIds.add(senderId);
+        }
+        for (Long receiverId : targetReceiverIds) {
+            FbReminderReceiver receiver = new FbReminderReceiver();
+            receiver.setReminderId(reminder.getId());
+            receiver.setReceiverId(receiverId);
+            receiver.setIsRead(0);
+            fbReminderReceiverMapper.insert(receiver);
         }
     }
 
@@ -433,7 +437,7 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
                 .studentName(studentName)
                 .isAnonymous(feedback.getIsAnonymous() != null && feedback.getIsAnonymous() == 1)
                 .status(feedback.getStatus())
-                .hasUnread(feedback.getHasUnreadForAdmin() != null && feedback.getHasUnreadForAdmin() == 1)
+                .hasUnread(checkHasUnreadForAdmin(adminId, feedback))
                 .hasUnreadReminder(hasUnreadReminder)
                 .isFavorited(isFavorited)
                 .createTime(feedback.getCreateTime() != null ? sdf.format(feedback.getCreateTime()) : null)
@@ -561,6 +565,35 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
         wrapper.eq(FbCollection::getUserId, adminId)
                .eq(FbCollection::getFeedbackId, feedbackId);
         return fbCollectionMapper.selectCount(wrapper) > 0;
+    }
+
+    /** 检查管理员列表未读状态（兼容历史字段） */
+    private boolean checkHasUnreadForAdmin(Long adminId, FbFeedback feedback) {
+        if (feedback.getHasUnreadForAdmin() == null || feedback.getHasUnreadForAdmin() != 1) {
+            return false;
+        }
+        LambdaQueryWrapper<FbFeedbackAdminRead> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FbFeedbackAdminRead::getFeedbackId, feedback.getId())
+               .eq(FbFeedbackAdminRead::getUserId, adminId)
+               .last("LIMIT 1");
+        return fbFeedbackAdminReadMapper.selectOne(wrapper) == null;
+    }
+
+    /** 记录管理员已读（幂等） */
+    private void markAdminFeedbackRead(Long adminId, Long feedbackId) {
+        LambdaQueryWrapper<FbFeedbackAdminRead> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FbFeedbackAdminRead::getFeedbackId, feedbackId)
+               .eq(FbFeedbackAdminRead::getUserId, adminId)
+               .last("LIMIT 1");
+        FbFeedbackAdminRead existing = fbFeedbackAdminReadMapper.selectOne(wrapper);
+        if (existing != null) {
+            return;
+        }
+        FbFeedbackAdminRead record = new FbFeedbackAdminRead();
+        record.setFeedbackId(feedbackId);
+        record.setUserId(adminId);
+        record.setReadTime(new Date());
+        fbFeedbackAdminReadMapper.insert(record);
     }
 
     /** 检查指定反馈是否有当前用户未读的备注提醒 */

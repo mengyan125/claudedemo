@@ -57,7 +57,7 @@
       "Bash(powershell.exe -Command \"Get-Process -Name java -ErrorAction SilentlyContinue\")",
       "Bash(powershell.exe -Command \"Get-Process -Name java -ErrorAction SilentlyContinue | Stop-Process -Force; Write-Host ''Java进程已停止''\")",
       "Bash(powershell.exe -Command \"Stop-Process -Id 41544 -Force; Stop-Process -Id 52256 -Force; echo done\")",
-      "Bash(JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF-8\" mvn spring-boot:run -Dspring-boot.run.profiles=dev)",
+      "Bash(JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF-8\" ./mvnw spring-boot:run)",
       "Bash(npm run:*)",
       "Bash(powershell.exe -Command \"Get-Process -Name java -ErrorAction SilentlyContinue | Select-Object Id\")",
       "Bash(where mvn.cmd)",

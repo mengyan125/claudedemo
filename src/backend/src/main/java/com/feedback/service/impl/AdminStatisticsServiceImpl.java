@@ -53,6 +53,9 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
     @Autowired
     private FbCollectionMapper fbCollectionMapper;
 
+    @Autowired
+    private FbFeedbackAdminReadMapper fbFeedbackAdminReadMapper;
+
     @Override
     public FeedbackStatisticsVO getStatistics(Date startDate, Date endDate) {
         // 查询所有非草稿反馈
@@ -382,8 +385,7 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
                 .isAnonymous(feedback.getIsAnonymous() != null
                         && feedback.getIsAnonymous() == 1)
                 .status(feedback.getStatus())
-                .hasUnread(feedback.getHasUnreadForAdmin() != null
-                        && feedback.getHasUnreadForAdmin() == 1)
+                .hasUnread(checkHasUnreadForAdmin(adminId, feedback))
                 .isFavorited(isFavorited)
                 .createTime(feedback.getCreateTime() != null
                         ? sdf.format(feedback.getCreateTime()) : null)
@@ -454,6 +456,18 @@ public class AdminStatisticsServiceImpl implements AdminStatisticsService {
         wrapper.eq(FbCollection::getUserId, adminId)
                .eq(FbCollection::getFeedbackId, feedbackId);
         return fbCollectionMapper.selectCount(wrapper) > 0;
+    }
+
+    /** 检查管理员列表未读状态（兼容历史字段） */
+    private boolean checkHasUnreadForAdmin(Long adminId, FbFeedback feedback) {
+        if (feedback.getHasUnreadForAdmin() == null || feedback.getHasUnreadForAdmin() != 1) {
+            return false;
+        }
+        LambdaQueryWrapper<FbFeedbackAdminRead> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FbFeedbackAdminRead::getFeedbackId, feedback.getId())
+               .eq(FbFeedbackAdminRead::getUserId, adminId)
+               .last("LIMIT 1");
+        return fbFeedbackAdminReadMapper.selectOne(wrapper) == null;
     }
 
     /** 截断内容 */

@@ -4,7 +4,7 @@
       "Bash(echo $SHELL)",
       "Bash(taskkill //F //IM java.exe)",
       "Bash(/c/windows/system32/taskkill //F //IM java.exe)",
-      "Bash(JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF-8\" ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev)",
+      "Bash(JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF-8\" ./mvnw spring-boot:run)",
       "Bash(curl -s http://localhost:8080/api/auth/login -X POST -H \"Content-Type: application/json\" -d '{\"\"username\"\":\"\"admin\"\",\"\"password\"\":\"\"123456\"\"}')",
       "Read(//Users/claudecode/src/backend/src/main/java/com/feedback/model/entity/**)",
       "Read(//Users/claudecode/src/backend/src/main/java/com/feedback/controller/**)",
@@ -110,7 +110,23 @@
       "Bash(pkill -f \"java.*spring\")",
       "Bash(nvm list:*)",
       "Bash(nvm use:*)",
-      "Bash(curl -sI http://localhost:3000/)"
+      "Bash(curl -sI http://localhost:3000/)",
+      "Bash(npm install:*)",
+      "Bash(pnpm add:*)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://localhost:3001/)",
+      "Bash(JAVA_TOOL_OPTIONS=\"-Dfile.encoding=UTF-8\" ./mvnw -q -DskipTests compile)",
+      "Bash(python -:*)",
+      "Bash(where.exe node:*)",
+      "Bash(curl -s http://localhost:3000/)",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe\" -u root -p123456 --default-character-set=utf8mb4 feedbackdb -e \"SHOW TABLES LIKE ''fb_feedback_admin_read'';\")",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe\" -u root -p123456 --default-character-set=utf8mb4 feedbackdb -e \"CREATE TABLE IF NOT EXISTS fb_feedback_admin_read \\( id BIGINT AUTO_INCREMENT PRIMARY KEY, feedback_id BIGINT NOT NULL COMMENT ''反馈ID'', user_id BIGINT NOT NULL COMMENT ''管理员用户ID'', read_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT ''已读时间'', UNIQUE KEY uk_far_feedback_user \\(feedback_id, user_id\\), INDEX idx_far_user_id \\(user_id\\), INDEX idx_far_feedback_id \\(feedback_id\\) \\);\")",
+      "Bash(\"$MYSQL\" -u root -p123456 --default-character-set=utf8mb4 feedbackdb -e \"SHOW TABLES LIKE ''fb_feedback_admin_read'';\")",
+      "Bash(curl -s \"http://localhost:8080/api/admin/feedback/list?pageNum=1&pageSize=20\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzQwNjc4ODEsInVzZXJJZCI6MSwiaWF0IjoxNzczOTgxNDgxLCJ1c2VybmFtZSI6ImFkbWluIn0.y8okCczDgazTKj7hEkUoE0Hdo3PQvhD3KvqrX86WRKc\")",
+      "Bash(curl -s http://localhost:8080/api/admin/feedback/16/reminder -X POST -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzQwNzAyMzEsInVzZXJJZCI6MSwiaWF0IjoxNzczOTgzODMxLCJ1c2VybmFtZSI6ImFkbWluIn0.Nfp4drMrYatYSHYwxa-VkoMvN3-QS1HazdX1c2hs0Y8\" -H \"Content-Type: application/json\" -d '{\"\"content\"\":\"\"自动化验证备注显示\"\",\"\"receiverIds\"\":[2]}')",
+      "Bash(curl -s \"http://localhost:8080/api/admin/reminder/list?pageNum=1&pageSize=100\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzQwNzAyMzEsInVzZXJJZCI6MSwiaWF0IjoxNzczOTgzODMxLCJ1c2VybmFtZSI6ImFkbWluIn0.Nfp4drMrYatYSHYwxa-VkoMvN3-QS1HazdX1c2hs0Y8\")",
+      "Bash(curl -s -X POST \"http://localhost:8080/api/admin/feedback/16/reminder\" -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJUeXBlIjoiYWRtaW4iLCJleHAiOjE3NzQwNzAyMzEsInVzZXJJZCI6MSwiaWF0IjoxNzczOTgzODMxLCJ1c2VybmFtZSI6ImFkbWluIn0.Nfp4drMrYatYSHYwxa-VkoMvN3-QS1HazdX1c2hs0Y8\" -H \"Content-Type: application/json\" --data-raw '{\"\"content\"\":\"\"auto reminder verify\"\",\"\"receiverIds\"\":[2]}')"
     ],
     "additionalDirectories": [
       "C:\\Users\\yanmeng7\\AppData\\Local\\Temp"

@@ -268,8 +268,9 @@ async function switchToReminder() {
 
 async function fetchReminders() {
   try {
+    const feedbackId = Number(route.params.id)
     const { data } = await getReminderListApi({ pageNum: 1, pageSize: 50 })
-    reminderList.value = data.data.list
+    reminderList.value = data.data.list.filter(item => item.feedbackId === feedbackId)
   } catch { /* 错误已在拦截器处理 */ }
 }
 

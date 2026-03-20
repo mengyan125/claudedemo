@@ -31,9 +31,6 @@
             class="filter-control"
             placeholder="全部"
             clearable
-            filterable
-            remote
-            :remote-method="searchTeachers"
             size="small"
             @change="handleFilter"
           >
@@ -67,7 +64,7 @@
 
       <div class="filter-row">
         <span class="link-item" :class="{ 'link-active': filterFavorited }" @click="toggleFavoriteFilter">我的收藏</span>
-        <span class="link-item" @click="router.push('/admin/reminder')">提醒关注</span>
+        <span class="link-item" :class="{ 'link-active': filterReminder }" @click="toggleReminderFilter">提醒关注</span>
       </div>
     </div>
 
@@ -116,7 +113,8 @@ import {
   getCategoryListApi,
   toggleFavoriteApi,
   getStatusCountApi,
-  searchUsersApi
+  searchUsersApi,
+  getReminderListApi
 } from '@/api/admin'
 import type { AdminFeedbackItem, CategoryItem, FeedbackStatusCount, UserSearchItem } from '@/api/admin'
 import request from '@/utils/request'
@@ -147,6 +145,8 @@ const dateStart = ref('')
 const dateEnd = ref('')
 const filterReply = ref('')
 const filterFavorited = ref(false)
+const filterReminder = ref(false)
+const reminderFeedbackIds = ref<Set<number>>(new Set())
 
 /* 状态统计 */
 const statusCount = ref<FeedbackStatusCount>({ totalCount: 0, repliedCount: 0, unrepliedCount: 0 })
@@ -178,7 +178,7 @@ function buildFilterParams() {
     replyStatus: filterReply.value || undefined,
     isFavorited: filterFavorited.value || undefined,
     pageNum: 1,
-    pageSize: 20
+    pageSize: filterReminder.value ? 200 : 20
   }
 }
 
@@ -186,7 +186,10 @@ async function fetchList() {
   loading.value = true
   try {
     const { data } = await getAdminFeedbackListApi(buildFilterParams())
-    feedbackList.value = data.data.list
+    const list = data.data.list
+    feedbackList.value = filterReminder.value
+      ? list.filter(item => reminderFeedbackIds.value.has(item.id))
+      : list
   } catch { /* 错误已在拦截器处理 */ }
   finally { loading.value = false }
 }
@@ -211,37 +214,63 @@ async function fetchStatusCount() {
   } catch { /* 错误已在拦截器处理 */ }
 }
 
-function handleFilter() {
+async function fetchReminderFeedbackIds() {
+  if (!filterReminder.value) {
+    reminderFeedbackIds.value = new Set()
+    return
+  }
+  try {
+    const { data } = await getReminderListApi({ pageNum: 1, pageSize: 200 })
+    reminderFeedbackIds.value = new Set(data.data.list.map(item => item.feedbackId))
+  } catch {
+    reminderFeedbackIds.value = new Set()
+    /* 错误已在拦截器处理 */
+  }
+}
+
+async function handleFilter() {
+  await fetchReminderFeedbackIds()
   fetchList()
   fetchStatusCount()
 }
 
 async function handleGradeChange() {
   filterClass.value = undefined
-  if (filterGrade.value) {
-    try {
-      const { data } = await request.get<ApiResponse<ClassItem[]>>('/base/class/list', { params: { gradeId: filterGrade.value } })
-      classes.value = data.data
-    } catch { /* 错误已在拦截器处理 */ }
-  } else {
+  try {
+    const { data } = await request.get<ApiResponse<ClassItem[]>>('/base/class/list', {
+      params: filterGrade.value ? { gradeId: filterGrade.value } : {}
+    })
+    classes.value = data.data
+  } catch {
     classes.value = []
+    /* 错误已在拦截器处理 */
   }
   handleFilter()
 }
 
-async function searchTeachers(keyword: string) {
-  if (!keyword) {
-    teacherOptions.value = []
-    return
-  }
+async function fetchTeachers() {
   try {
-    const { data } = await searchUsersApi(keyword, 'teacher')
+    const { data } = await searchUsersApi(undefined, 'teacher')
     teacherOptions.value = data.data
-  } catch { /* 错误已在拦截器处理 */ }
+  } catch {
+    teacherOptions.value = []
+    /* 错误已在拦截器处理 */
+  }
 }
 
 function toggleFavoriteFilter() {
   filterFavorited.value = !filterFavorited.value
+  if (filterFavorited.value) {
+    filterReminder.value = false
+  }
+  handleFilter()
+}
+
+function toggleReminderFilter() {
+  filterReminder.value = !filterReminder.value
+  if (filterReminder.value) {
+    filterFavorited.value = false
+  }
   handleFilter()
 }
 
@@ -263,6 +292,9 @@ onMounted(async () => {
     categories.value = catRes.data.data
     grades.value = gradeRes.data.data
   } catch { /* 错误已在拦截器处理 */ }
+  await fetchTeachers()
+  await handleGradeChange()
+  await fetchReminderFeedbackIds()
   fetchList()
   fetchStatusCount()
 })

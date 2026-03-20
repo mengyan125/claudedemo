@@ -82,12 +82,11 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           size="small"
-          style="width:220px"
+          style="width:260px"
           value-format="YYYY-MM-DD"
           @change="fetchTop10"
         />
-        <span class="spacer" />
-        <el-button size="small" class="btn-export">导出</el-button>
+        <el-button size="small" class="btn-export" @click="exportTop10Excel">导出</el-button>
       </div>
 
       <el-table :data="top10List" class="top10-table" size="small">
@@ -117,6 +116,8 @@ import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { getStatisticsApi, getTeacherTop10Api } from '@/api/admin'
 import type { FeedbackStatistics } from '@/api/admin'
+import { ElMessage } from 'element-plus'
+import * as XLSX from 'xlsx'
 
 const router = useRouter()
 const loading = ref(false)
@@ -158,6 +159,40 @@ function getBarHeight(count: number) {
 }
 
 function goTeacher(id: number) { router.push(`/admin/statistics/teacher/${id}`) }
+
+function sanitizeExcelCell(value: unknown): string | number {
+  if (typeof value === 'number') {
+    return value
+  }
+  const text = String(value ?? '')
+  return /^[=+\-@]/.test(text) ? `'${text}` : text
+}
+
+function exportTop10Excel() {
+  if (!top10List.value.length) {
+    ElMessage.warning('暂无可导出数据')
+    return
+  }
+
+  const headers = ['序号', '教师', '科目', '反馈类别', '年级/学期', '班级/学级', '被反馈次数']
+  const rows = top10List.value.map(item => [
+    sanitizeExcelCell(item.rank),
+    sanitizeExcelCell(item.teacherName),
+    sanitizeExcelCell(item.subject),
+    sanitizeExcelCell(item.categoryName),
+    sanitizeExcelCell(item.gradeName),
+    sanitizeExcelCell(item.className),
+    sanitizeExcelCell(item.count)
+  ])
+
+  const sheet = XLSX.utils.aoa_to_sheet([headers, ...rows])
+  const book = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(book, sheet, 'TOP10')
+
+  const dateTag = new Date().toISOString().slice(0, 10)
+  XLSX.writeFile(book, `教师被反馈TOP10_${dateTag}.xlsx`)
+  ElMessage.success('导出成功')
+}
 
 async function fetchTop10() {
   const params: { startDate?: string; endDate?: string } = {}
@@ -251,11 +286,27 @@ onMounted(() => fetchStatistics())
   display: flex; flex-direction: column; gap: 16px;
 }
 .top10-header { display: flex; align-items: center; gap: 8px; }
-.top10-filter { display: flex; align-items: center; gap: 8px; }
-.filter-label { font-size: 13px; color: #333; }
-.date-sep { font-size: 13px; color: #666; }
-.spacer { flex: 1; }
-.btn-export { background: #2AABCB; border-color: #2AABCB; color: #fff; }
+.top10-filter {
+  position: relative;
+  min-height: 32px;
+  padding-right: 72px;
+}
+
+.filter-label {
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 13px;
+  color: #333;
+}
+
+.btn-export {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: #2AABCB;
+  border-color: #2AABCB;
+  color: #fff;
+}
 
 .teacher-link { color: #2AABCB; cursor: pointer; font-weight: 600; }
 .teacher-link:hover { text-decoration: underline; }

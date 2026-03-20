@@ -3,7 +3,7 @@
 ## 操作步骤
 
 1. 先停止已有的 Java 进程（后端）
-2. 启动后端 Spring Boot（H2 内存数据库，dev profile）
+2. 启动后端 Spring Boot（MySQL 默认 profile）
 3. 启动前端 Vite 开发服务器
 4. 验证两个服务都正常运行
 
@@ -11,11 +11,11 @@
 
 ```bash
 cd d:/xm/AI/claudedemo/src/backend
-JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8" ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8" ./mvnw spring-boot:run
 ```
 
 - 端口：8080
-- 数据库：H2 内存数据库（dev profile）
+- 数据库：MySQL（默认 mysql profile）
 - 启动后通过 `curl http://localhost:8080/api/auth/login` 验证
 
 ## 前端启动命令

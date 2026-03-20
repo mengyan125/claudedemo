@@ -16,6 +16,7 @@ D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\UserInfoVO.j
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\impl\BaseRelationServiceImpl.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\StudentFeedbackService.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\controller\BaseGradeController.java
+D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\FbFeedbackAdminReadMapper.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\impl\AdminFeedbackServiceImpl.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\QuickReplyItemVO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\mapper\BaseGradeMapper.java
@@ -89,6 +90,7 @@ D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\BaseSeme
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\CategoryItemVO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\SystemPermissionService.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\common\constant\RoleCodeEnum.java
+D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\entity\FbFeedbackAdminRead.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\model\vo\AdminFeedbackItemVO.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\security\UserContext.java
 D:\xm\AI\claudedemo\src\backend\src\main\java\com\feedback\service\impl\AdminCategoryServiceImpl.java

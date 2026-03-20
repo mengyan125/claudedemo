@@ -29,7 +29,13 @@
           <div class="item-title-row">
             <span class="item-title" @click="goDetail(item.id)">{{ item.title }}</span>
             <span class="item-spacer" />
-            <span class="item-fav">♡ 收藏</span>
+            <span
+              class="item-fav"
+              :class="{ favorited: item.isFavorited }"
+              @click.stop="toggleFavorite(item)"
+            >
+              {{ item.isFavorited ? '❤ 已收藏' : '♡ 收藏' }}
+            </span>
           </div>
           <div class="item-meta-row">
             <span class="meta">类别：{{ item.categoryName }}</span>
@@ -49,8 +55,9 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getTeacherFeedbackListApi } from '@/api/admin'
+import { getTeacherFeedbackListApi, toggleFavoriteApi } from '@/api/admin'
 import type { TeacherFeedbackItem, TeacherInfo } from '@/api/admin'
+import { ElMessage } from 'element-plus'
 
 const route = useRoute()
 const router = useRouter()
@@ -66,6 +73,16 @@ function formatDate(dateStr: string): string {
 
 function goDetail(id: number) {
   router.push(`/admin/feedback/${id}`)
+}
+
+async function toggleFavorite(item: TeacherFeedbackItem) {
+  try {
+    await toggleFavoriteApi(item.id)
+    item.isFavorited = !item.isFavorited
+    ElMessage.success(item.isFavorited ? '收藏成功' : '已取消收藏')
+  } catch {
+    // 错误已在拦截器处理
+  }
 }
 
 onMounted(async () => {
@@ -136,6 +153,7 @@ onMounted(async () => {
 
 .item-fav { font-size: 13px; color: #999; cursor: pointer; white-space: nowrap; }
 .item-fav:hover { color: #2AABCB; }
+.item-fav.favorited { color: #FF4D4F; }
 
 .item-meta-row { display: flex; align-items: center; gap: 24px; }
 .meta { font-size: 13px; color: #999; }

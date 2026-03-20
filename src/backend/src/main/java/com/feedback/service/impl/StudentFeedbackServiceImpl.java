@@ -37,6 +37,9 @@ public class StudentFeedbackServiceImpl implements StudentFeedbackService {
     private FbFeedbackMapper fbFeedbackMapper;
 
     @Autowired
+    private FbFeedbackAdminReadMapper fbFeedbackAdminReadMapper;
+
+    @Autowired
     private FbFeedbackAttachmentMapper fbFeedbackAttachmentMapper;
 
     @Autowired
@@ -152,10 +155,11 @@ public class StudentFeedbackServiceImpl implements StudentFeedbackService {
         reply.setContent(content);
         reply.setCreateTime(new Date());
         fbReplyMapper.insert(reply);
-        // 学生回复后标记管理员未读
+        // 学生回复后标记管理员未读（按反馈维度）
         feedback.setHasUnreadForAdmin(1);
         feedback.setUpdateTime(new Date());
         fbFeedbackMapper.updateById(feedback);
+        clearAdminReadRecords(feedbackId);
     }
 
     // ==================== 私有方法 ====================
@@ -346,6 +350,13 @@ public class StudentFeedbackServiceImpl implements StudentFeedbackService {
         }).collect(Collectors.toList());
     }
 
+    /** 清理反馈的管理员已读记录（当学生有新回复时） */
+    private void clearAdminReadRecords(Long feedbackId) {
+        LambdaQueryWrapper<FbFeedbackAdminRead> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FbFeedbackAdminRead::getFeedbackId, feedbackId);
+        fbFeedbackAdminReadMapper.delete(wrapper);
+    }
+
     /** 标记反馈已读 */
     private void markAsRead(FbFeedback feedback) {
         if (feedback.getHasUnreadReply() != null && feedback.getHasUnreadReply() == 1) {
@@ -376,6 +387,7 @@ public class StudentFeedbackServiceImpl implements StudentFeedbackService {
         feedback.setHasUnreadForAdmin("submitted".equals(dto.getStatus()) ? 1 : 0);
         feedback.setUpdateTime(new Date());
         fbFeedbackMapper.updateById(feedback);
+        clearAdminReadRecords(feedback.getId());
         return feedback;
     }
 
@@ -395,6 +407,7 @@ public class StudentFeedbackServiceImpl implements StudentFeedbackService {
         feedback.setCreateTime(new Date());
         feedback.setUpdateTime(new Date());
         fbFeedbackMapper.insert(feedback);
+        clearAdminReadRecords(feedback.getId());
         return feedback;
     }
 

@@ -57,6 +57,7 @@ com\feedback\service\impl\AdminStatisticsServiceImpl.class
 com\feedback\controller\AdminCategoryController.class
 com\feedback\model\dto\AssignTeacherDTO.class
 com\feedback\model\vo\TeacherAssignmentVO$TeacherAssignmentVOBuilder.class
+com\feedback\model\entity\FbFeedbackAdminRead.class
 com\feedback\model\vo\FeedbackStatisticsVO$SemesterTrendItem.class
 com\feedback\common\result\Result.class
 com\feedback\service\impl\BaseSemesterServiceImpl.class
@@ -80,6 +81,7 @@ com\feedback\model\dto\UpdateClassDTO.class
 com\feedback\service\AuthService.class
 com\feedback\model\vo\ReplyItemVO$ReplyItemVOBuilder.class
 com\feedback\model\vo\ReplyItemVO.class
+com\feedback\mapper\FbFeedbackAdminReadMapper.class
 com\feedback\model\dto\AssignRoleDTO.class
 com\feedback\model\vo\QuickReplyItemVO$QuickReplyItemVOBuilder.class
 com\feedback\model\vo\AdminFeedbackItemVO$AdminFeedbackItemVOBuilder.class
