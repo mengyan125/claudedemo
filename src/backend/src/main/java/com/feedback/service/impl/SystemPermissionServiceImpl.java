@@ -193,11 +193,9 @@ public class SystemPermissionServiceImpl implements SystemPermissionService {
         List<Long> safeNew = newAdminIds != null ? newAdminIds : Collections.emptyList();
         List<Long> safeOld = oldAdminIds != null ? oldAdminIds : Collections.emptyList();
 
-        // 新增的用户：确保拥有 CATEGORY_ADMIN 角色
+        // 所有新管理员列表中的用户：确保拥有 CATEGORY_ADMIN 角色
         for (Long userId : safeNew) {
-            if (!safeOld.contains(userId)) {
-                assignRole(userId, categoryAdminRoleId);
-            }
+            assignRole(userId, categoryAdminRoleId);
         }
         // 被移除的用户：若不再管理任何类别，撤销 CATEGORY_ADMIN 角色
         for (Long userId : safeOld) {

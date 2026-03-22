@@ -86,9 +86,14 @@ public class SystemUserServiceImpl implements SystemUserService {
         // 2. 检查用户名是否已存在
         checkUsernameUnique(dto.getUsername(), null);
 
-        // 3. 判断是否为角色管理员（前端传 role_admin，实际创建 teacher 并分配 ROLE_ADMIN 角色）
-        boolean isRoleAdmin = "role_admin".equals(dto.getUserType());
-        String actualUserType = isRoleAdmin ? "teacher" : dto.getUserType();
+        // 3. 判断是否为管理员角色（前端传 role_admin/category_admin，实际创建 teacher 并分配对应角色）
+        String roleCode = null;
+        if ("role_admin".equals(dto.getUserType())) {
+            roleCode = "ROLE_ADMIN";
+        } else if ("category_admin".equals(dto.getUserType())) {
+            roleCode = "CATEGORY_ADMIN";
+        }
+        String actualUserType = roleCode != null ? "teacher" : dto.getUserType();
 
         // 4. 构建用户实体并保存
         SysUser user = new SysUser();
@@ -100,17 +105,9 @@ public class SystemUserServiceImpl implements SystemUserService {
         user.setDeleted(0);
         sysUserMapper.insert(user);
 
-        // 5. 角色管理员自动分配 ROLE_ADMIN 角色
-        if (isRoleAdmin) {
-            LambdaQueryWrapper<SysRole> roleWrapper = new LambdaQueryWrapper<>();
-            roleWrapper.eq(SysRole::getRoleCode, "ROLE_ADMIN");
-            SysRole role = sysRoleMapper.selectOne(roleWrapper);
-            if (role != null) {
-                SysUserRole userRole = new SysUserRole();
-                userRole.setUserId(user.getId());
-                userRole.setRoleId(role.getId());
-                sysUserRoleMapper.insert(userRole);
-            }
+        // 5. 管理员角色自动分配对应角色
+        if (roleCode != null) {
+            assignRole(user.getId(), roleCode);
         }
     }
 
@@ -178,14 +175,29 @@ public class SystemUserServiceImpl implements SystemUserService {
      * @param excludeId 排除的用户ID（更新时排除自身）
      */
     private void checkUsernameUnique(String username, Long excludeId) {
-        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SysUser::getUsername, username);
-        if (excludeId != null) {
-            wrapper.ne(SysUser::getId, excludeId);
-        }
-        Long count = sysUserMapper.selectCount(wrapper);
+        // 使用自定义 SQL 查询，绕过 @TableLogic 的自动 deleted=0 过滤
+        // 因为数据库唯一索引不区分 deleted 字段
+        Long count = sysUserMapper.countByUsernameIncludeDeleted(username, excludeId);
         if (count > 0) {
             throw new BusinessException("用户名已存在");
+        }
+    }
+
+    /**
+     * 为用户分配指定角色
+     *
+     * @param userId   用户ID
+     * @param roleCode 角色编码
+     */
+    private void assignRole(Long userId, String roleCode) {
+        LambdaQueryWrapper<SysRole> roleWrapper = new LambdaQueryWrapper<>();
+        roleWrapper.eq(SysRole::getRoleCode, roleCode);
+        SysRole role = sysRoleMapper.selectOne(roleWrapper);
+        if (role != null) {
+            SysUserRole userRole = new SysUserRole();
+            userRole.setUserId(userId);
+            userRole.setRoleId(role.getId());
+            sysUserRoleMapper.insert(userRole);
         }
     }
 
@@ -201,11 +213,17 @@ public class SystemUserServiceImpl implements SystemUserService {
                 ? user.getCreateTime().format(DATE_FORMATTER)
                 : "";
 
+        // 角色管理员特殊显示，类别管理员保持教师类型（角色列已展示）
+        String displayUserType = user.getUserType();
+        if (roles.contains("ROLE_ADMIN")) {
+            displayUserType = "role_admin";
+        }
+
         return UserItemVO.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .realName(user.getRealName())
-                .userType(user.getUserType())
+                .userType(displayUserType)
                 .roles(roles)
                 .status(user.getStatus())
                 .createTime(createTimeStr)

@@ -203,12 +203,24 @@ function roleLabel(code: string) {
 
 /* 用户类型标签 */
 function userTypeLabel(type: string) {
-  const map: Record<string, string> = { student: '学生', teacher: '教师', admin: '管理员' }
+  const map: Record<string, string> = {
+    student: '学生',
+    teacher: '教师',
+    admin: '管理员',
+    role_admin: '角色管理员',
+    category_admin: '类别管理员'
+  }
   return map[type] || type
 }
 
 function userTypeTag(type: string) {
-  const map: Record<string, string> = { student: 'success', teacher: 'warning', admin: '' }
+  const map: Record<string, string> = {
+    student: 'success',
+    teacher: 'warning',
+    admin: '',
+    role_admin: 'danger',
+    category_admin: ''
+  }
   return map[type] || 'info'
 }
 

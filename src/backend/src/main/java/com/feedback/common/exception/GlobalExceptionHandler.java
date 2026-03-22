@@ -2,6 +2,7 @@ package com.feedback.common.exception;
 
 import com.feedback.common.result.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -31,6 +32,13 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining("; "));
         log.warn("参数校验失败：{}", msg);
         return Result.fail(400, msg);
+    }
+
+    /** 处理数据库唯一键冲突异常 */
+    @ExceptionHandler(DuplicateKeyException.class)
+    public Result<?> handleDuplicateKeyException(DuplicateKeyException e) {
+        log.warn("唯一键冲突：{}", e.getMessage());
+        return Result.fail("数据已存在，请检查后重试");
     }
 
     /** 处理其他未知异常 */
