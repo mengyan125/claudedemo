@@ -35,7 +35,13 @@
           <el-date-picker v-model="pieDateRange" type="daterange" range-separator="至" start-placeholder="2025-03-01" end-placeholder="2025-03-14" size="small" style="width:220px" value-format="YYYY-MM-DD" clearable />
         </div>
         <div class="pie-area">
-          <div class="pie-circle" :style="pieGradientStyle" />
+          <div class="pie-chart-wrapper">
+            <div class="pie-circle" :style="pieGradientStyle" @mousemove="onPieMouseMove" @mouseleave="pieTooltip.visible = false" />
+            <div v-if="pieTooltip.visible" class="pie-tooltip" :style="{ left: pieTooltip.x + 'px', top: pieTooltip.y + 'px' }">
+              <span class="pie-tooltip-dot" :style="{ background: pieTooltip.color }" />
+              <span>{{ pieTooltip.name }}：{{ pieTooltip.count }}条（{{ pieTooltip.percentage }}%）</span>
+            </div>
+          </div>
         </div>
         <div class="pie-legend">
           <div v-for="(item, idx) in stats.categoryDistribution" :key="item.name" class="legend-item">
@@ -57,7 +63,8 @@
           </div>
           <div class="bar-chart">
             <div v-for="item in stats.semesterTrend" :key="item.semester" class="bar-col">
-              <div class="bar-wrapper">
+              <div class="bar-wrapper" @mouseenter="item._hover = true" @mouseleave="item._hover = false">
+                <div class="bar-tip" v-if="item._hover">{{ item.count }}条</div>
                 <div class="bar-fill" :style="{ height: getBarHeight(item.count) + '%' }" />
               </div>
               <span class="bar-label">{{ item.semester }}</span>
@@ -131,6 +138,38 @@ const stats = reactive<FeedbackStatistics>({
 })
 
 const PIE_COLORS = ['#E6A23C', '#9B59B6', '#67C23A', '#409EFF', '#E91E63']
+
+/* 饼图 tooltip */
+const pieTooltip = reactive({ visible: false, x: 0, y: 0, name: '', count: 0, percentage: 0, color: '' })
+
+function onPieMouseMove(e: MouseEvent) {
+  const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+  const cx = rect.width / 2
+  const cy = rect.height / 2
+  const dx = e.clientX - rect.left - cx
+  const dy = e.clientY - rect.top - cy
+  // 计算角度（从12点方向顺时针，与 conic-gradient 一致）
+  let angle = Math.atan2(dx, -dy) * (180 / Math.PI)
+  if (angle < 0) angle += 360
+  const pct = angle / 3.6
+
+  const dist = stats.categoryDistribution
+  let acc = 0
+  for (let i = 0; i < dist.length; i++) {
+    acc += dist[i].percentage
+    if (pct <= acc) {
+      pieTooltip.name = dist[i].name
+      pieTooltip.count = dist[i].count
+      pieTooltip.percentage = Math.round(dist[i].percentage * 10) / 10
+      pieTooltip.color = PIE_COLORS[i % PIE_COLORS.length]
+      pieTooltip.visible = true
+      pieTooltip.x = e.clientX - rect.left + 12
+      pieTooltip.y = e.clientY - rect.top - 30
+      return
+    }
+  }
+  pieTooltip.visible = false
+}
 
 /* 本月反馈最多的类别 */
 const topCategory = computed(() => {
@@ -215,8 +254,10 @@ async function fetchStatistics() {
   loading.value = true
   try {
     const { data } = await getStatisticsApi(params)
-    Object.assign(stats, data.data)
-    top10List.value = data.data.teacherTop10
+    const result = data.data
+    result.semesterTrend = result.semesterTrend.map((item: any) => ({ ...item, _hover: false }))
+    Object.assign(stats, result)
+    top10List.value = result.teacherTop10
   } catch { /* 错误已在拦截器处理 */ }
   finally { loading.value = false }
 }
@@ -258,9 +299,21 @@ onMounted(() => fetchStatistics())
 .pie-area {
   flex: 1; display: flex; align-items: center; justify-content: center;
 }
+.pie-chart-wrapper {
+  position: relative;
+}
 .pie-circle {
   width: 220px; height: 220px; border-radius: 50%;
-  background: #f0f0f0; flex-shrink: 0;
+  background: #f0f0f0; flex-shrink: 0; cursor: pointer;
+}
+.pie-tooltip {
+  position: absolute; pointer-events: none; white-space: nowrap;
+  background: rgba(0, 0, 0, 0.75); color: #fff; font-size: 13px;
+  padding: 6px 12px; border-radius: 4px; display: flex; align-items: center; gap: 6px;
+  z-index: 10;
+}
+.pie-tooltip-dot {
+  width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0;
 }
 .pie-legend { display: flex; align-items: center; justify-content: center; gap: 16px; }
 .legend-item { display: flex; align-items: center; gap: 4px; font-size: 12px; }
@@ -276,7 +329,12 @@ onMounted(() => fetchStatistics())
 .bar-col { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
 .bar-wrapper {
   width: 40px; height: 240px; background: #f0f0f0; border-radius: 4px 4px 0 0;
-  display: flex; align-items: flex-end; overflow: hidden;
+  display: flex; align-items: flex-end; overflow: visible; position: relative; cursor: pointer;
+}
+.bar-tip {
+  position: absolute; top: -28px; left: 50%; transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.75); color: #fff; font-size: 12px;
+  padding: 4px 8px; border-radius: 4px; white-space: nowrap; z-index: 10;
 }
 .bar-fill { width: 100%; background: #2AABCB; border-radius: 4px 4px 0 0; transition: height 0.5s; }
 .bar-label { font-size: 11px; color: #666; text-align: center; white-space: nowrap; }
