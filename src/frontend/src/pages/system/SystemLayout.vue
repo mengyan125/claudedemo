@@ -14,7 +14,7 @@ const userStore = useUserStore()
 
 /* 系统管理子Tab配置（含角色过滤） */
 const allSystemTabs = [
-  { label: '学期管理', path: '/system/semester', requiredRoles: ['SYSTEM_ADMIN'] },
+  // { label: '学期管理', path: '/system/semester', requiredRoles: ['SYSTEM_ADMIN'] },
   { label: '年级管理', path: '/system/grade', requiredRoles: ['SYSTEM_ADMIN'] },
   { label: '班级管理', path: '/system/class', requiredRoles: ['SYSTEM_ADMIN'] },
   { label: '师生关系', path: '/system/relation', requiredRoles: ['SYSTEM_ADMIN'] },
