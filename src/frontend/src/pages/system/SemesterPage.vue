@@ -19,13 +19,18 @@
           <span v-else class="text-muted">—</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="1" align="center">
+      <el-table-column label="操作" width="280" align="center" class-name="operation-col">
         <template #default="{ row }">
           <el-button
             v-if="!row.isCurrent"
             text class="text-btn-primary"
             @click="handleSetCurrent(row)"
           >设为当前</el-button>
+          <el-button
+            v-else
+            text class="text-btn-warning"
+            @click="handleUnsetCurrent(row)"
+          >停用</el-button>
           <el-button text class="text-btn-primary" @click="handleEdit(row)">编辑</el-button>
           <el-button
             v-if="!row.isCurrent"
@@ -89,6 +94,7 @@ import {
   createSemesterApi,
   updateSemesterApi,
   setCurrentSemesterApi,
+  unsetCurrentSemesterApi,
   deleteSemesterApi
 } from '@/api/base'
 import type { SemesterItem } from '@/api/base'
@@ -180,6 +186,20 @@ async function handleSetCurrent(row: SemesterItem) {
   }
 }
 
+/* 停用当前学期 */
+async function handleUnsetCurrent(row: SemesterItem) {
+  await ElMessageBox.confirm(`确定停用当前学期「${row.semesterName}」吗？`, '提示', {
+    type: 'warning'
+  })
+  try {
+    await unsetCurrentSemesterApi(row.id)
+    ElMessage.success('停用成功')
+    fetchList()
+  } catch {
+    /* 错误已在拦截器处理 */
+  }
+}
+
 /* 删除 */
 async function handleDelete(row: SemesterItem) {
   await ElMessageBox.confirm(`确定删除学期「${row.semesterName}」吗？`, '提示', {
@@ -225,11 +245,22 @@ onMounted(() => {
   overflow: hidden;
 }
 
+:deep(.operation-col .cell) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
 .text-muted {
   color: #C0C4CC;
 }
 .text-btn-primary { color: #2AABCB !important; background: transparent !important; }
 .text-btn-primary:hover { color: #24a0bf !important; }
+.text-btn-warning { color: #E6A23C !important; background: transparent !important; }
+.text-btn-warning:hover { color: #d09a2e !important; }
 .text-btn-danger { color: #F56C6C !important; background: transparent !important; }
 .text-btn-danger:hover { color: #f23c3c !important; }
 .text-btn-success { color: #67C23A !important; background: transparent !important; }

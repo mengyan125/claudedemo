@@ -94,6 +94,11 @@
             <span v-if="item.teacherName" class="meta">反馈对象：{{ item.teacherName }}</span>
             <span class="meta">学生：{{ item.isAnonymous ? '匿名' : item.studentName }}</span>
             <span class="meta">时间：{{ formatDate(item.createTime) }}</span>
+            <span
+              v-if="isSystemAdmin"
+              class="item-delete item-delete-meta"
+              @click.stop="handleDeleteFeedback(item)"
+            >删除</span>
           </div>
         </div>
         <div v-if="item.hasUnread" class="unread-badge">未读</div>
@@ -107,11 +112,12 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Search, Bell } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   getAdminFeedbackListApi,
   getCategoryListApi,
   toggleFavoriteApi,
+  deleteAdminFeedbackApi,
   getStatusCountApi,
   searchUsersApi,
   getReminderListApi
@@ -123,7 +129,7 @@ import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 
 const userStore = useUserStore()
-const { isCategoryAdmin } = storeToRefs(userStore)
+const { isCategoryAdmin, isSystemAdmin } = storeToRefs(userStore)
 
 /* 年级/班级接口类型 */
 interface GradeItem { id: number; gradeName: string }
@@ -280,6 +286,25 @@ async function handleToggleFavorite(item: AdminFeedbackItem) {
     item.isFavorited = !item.isFavorited
     ElMessage.success(item.isFavorited ? '已收藏' : '已取消收藏')
   } catch { /* 错误已在拦截器处理 */ }
+}
+
+async function handleDeleteFeedback(item: AdminFeedbackItem) {
+  try {
+    await ElMessageBox.confirm(
+      `确认删除反馈“${item.title}”吗？删除后不可恢复。`,
+      '删除确认',
+      {
+        type: 'warning',
+        confirmButtonText: '删除',
+        cancelButtonText: '取消'
+      }
+    )
+    await deleteAdminFeedbackApi(item.id)
+    ElMessage.success('删除成功')
+    await handleFilter()
+  } catch {
+    /* 取消删除或错误已在拦截器处理 */
+  }
 }
 
 onMounted(async () => {
@@ -447,6 +472,15 @@ onMounted(async () => {
 
 .item-spacer { flex: 1; }
 
+.item-delete {
+  font-size: 13px;
+  color: #F56C6C;
+  cursor: pointer;
+  white-space: nowrap;
+  margin-right: 12px;
+}
+.item-delete:hover { color: #f78989; }
+
 .item-fav {
   font-size: 13px;
   color: #999;
@@ -459,6 +493,10 @@ onMounted(async () => {
 
 .item-meta-row { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
 .meta { font-size: 13px; color: #999; white-space: nowrap; }
+.item-delete-meta {
+  margin-left: auto;
+  margin-right: 0;
+}
 
 .unread-badge {
   background: #FF4D4F;

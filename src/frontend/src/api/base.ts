@@ -51,6 +51,11 @@ export function setCurrentSemesterApi(id: number) {
   return request.put<ApiResponse<null>>(`/base/semester/${id}/current`)
 }
 
+/* 取消当前学期 */
+export function unsetCurrentSemesterApi(id: number) {
+  return request.delete<ApiResponse<null>>(`/base/semester/${id}/current`)
+}
+
 /* 删除学期 */
 export function deleteSemesterApi(id: number) {
   return request.delete<ApiResponse<null>>(`/base/semester/${id}`)

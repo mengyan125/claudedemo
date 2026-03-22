@@ -63,6 +63,13 @@ public interface AdminFeedbackService {
     void toggleFavorite(Long feedbackId);
 
     /**
+     * 删除反馈
+     *
+     * @param feedbackId 反馈ID
+     */
+    void deleteFeedback(Long feedbackId);
+
+    /**
      * 发送备注提醒
      *
      * @param feedbackId 反馈ID

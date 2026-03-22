@@ -183,9 +183,11 @@ import {
   searchUsersApi
 } from '@/api/admin'
 import type { AdminFeedbackDetail, ReminderItem, UserSearchItem } from '@/api/admin'
+import { useUserStore } from '@/stores/user'
 
 const route = useRoute()
 const router = useRouter()
+const userStore = useUserStore()
 const loading = ref(false)
 const submitting = ref(false)
 const detail = ref<AdminFeedbackDetail | null>(null)
@@ -277,8 +279,12 @@ async function fetchReminders() {
 async function fetchAllUsers() {
   try {
     const { data } = await searchUsersApi()
-    allUsersRaw.value = data.data
-    allUsers.value = data.data.map((u: UserSearchItem) => ({ key: u.id, label: u.realName }))
+    const currentUserId = userStore.userInfo?.id
+    const filteredUsers = currentUserId
+      ? data.data.filter((u: UserSearchItem) => u.id !== currentUserId)
+      : data.data
+    allUsersRaw.value = filteredUsers
+    allUsers.value = filteredUsers.map((u: UserSearchItem) => ({ key: u.id, label: u.realName }))
   } catch { /* 错误已在拦截器处理 */ }
 }
 
@@ -406,6 +412,8 @@ onMounted(async () => {
 .reminder-receivers { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
 .receiver-hint { font-size: 12px; color: #999; }
 .selected-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+:deep(.el-transfer-panel) { width: 240px; }
 
 .action-buttons { display: flex; justify-content: center; gap: 20px; }
 .btn-primary { background-color: #2AABCB; border-color: #2AABCB; }

@@ -159,6 +159,66 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
         }
     }
 
+    @Override
+    @Transactional
+    public void deleteFeedback(Long feedbackId) {
+        Long adminId = UserContext.getCurrentUserId();
+        UserContext.UserInfo user = UserContext.getCurrentUser();
+        if (user == null || user.getRoles() == null || !user.getRoles().contains("SYSTEM_ADMIN")) {
+            throw new BusinessException(403, "仅系统管理员可删除反馈");
+        }
+
+        FbFeedback feedback = fbFeedbackMapper.selectById(feedbackId);
+        if (feedback == null) {
+            throw new BusinessException("反馈不存在");
+        }
+
+        // CATEGORY_ADMIN 做类别权限校验（理论上SYSTEM_ADMIN不会走到该限制，保留防御）
+        List<Long> allowedCategoryIds = getAllowedCategoryIds();
+        if (allowedCategoryIds != null && !allowedCategoryIds.contains(feedback.getCategoryId())) {
+            throw new BusinessException(403, "权限不足");
+        }
+
+        // 删除收藏关系
+        LambdaQueryWrapper<FbCollection> collectionWrapper = new LambdaQueryWrapper<>();
+        collectionWrapper.eq(FbCollection::getFeedbackId, feedbackId);
+        fbCollectionMapper.delete(collectionWrapper);
+
+        // 删除附件
+        LambdaQueryWrapper<FbFeedbackAttachment> attachmentWrapper = new LambdaQueryWrapper<>();
+        attachmentWrapper.eq(FbFeedbackAttachment::getFeedbackId, feedbackId);
+        fbFeedbackAttachmentMapper.delete(attachmentWrapper);
+
+        // 删除回复
+        LambdaQueryWrapper<FbReply> replyWrapper = new LambdaQueryWrapper<>();
+        replyWrapper.eq(FbReply::getFeedbackId, feedbackId);
+        fbReplyMapper.delete(replyWrapper);
+
+        // 删除管理员已读记录
+        LambdaQueryWrapper<FbFeedbackAdminRead> readWrapper = new LambdaQueryWrapper<>();
+        readWrapper.eq(FbFeedbackAdminRead::getFeedbackId, feedbackId);
+        fbFeedbackAdminReadMapper.delete(readWrapper);
+
+        // 删除提醒接收人及提醒本体
+        LambdaQueryWrapper<FbReminder> reminderQuery = new LambdaQueryWrapper<>();
+        reminderQuery.eq(FbReminder::getFeedbackId, feedbackId).select(FbReminder::getId);
+        List<Long> reminderIds = fbReminderMapper.selectList(reminderQuery).stream()
+                .map(FbReminder::getId)
+                .collect(Collectors.toList());
+        if (!reminderIds.isEmpty()) {
+            LambdaQueryWrapper<FbReminderReceiver> receiverWrapper = new LambdaQueryWrapper<>();
+            receiverWrapper.in(FbReminderReceiver::getReminderId, reminderIds);
+            fbReminderReceiverMapper.delete(receiverWrapper);
+
+            LambdaQueryWrapper<FbReminder> reminderDelete = new LambdaQueryWrapper<>();
+            reminderDelete.in(FbReminder::getId, reminderIds);
+            fbReminderMapper.delete(reminderDelete);
+        }
+
+        // 删除反馈
+        fbFeedbackMapper.deleteById(feedbackId);
+    }
+
     // ==================== 状态数量统计 ====================
 
     @Override

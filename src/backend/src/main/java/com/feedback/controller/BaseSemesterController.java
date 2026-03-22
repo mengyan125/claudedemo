@@ -71,6 +71,16 @@ public class BaseSemesterController {
     }
 
     /**
+     * 取消当前学期
+     */
+    @DeleteMapping("/{id}/current")
+    @RequiresRole("SYSTEM_ADMIN")
+    public Result<Void> unsetCurrentSemester(@PathVariable Long id) {
+        baseSemesterService.unsetCurrentSemester(id);
+        return Result.ok();
+    }
+
+    /**
      * 删除学期
      *
      * @param id 学期ID

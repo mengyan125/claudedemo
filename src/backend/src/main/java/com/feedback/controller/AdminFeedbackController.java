@@ -113,6 +113,16 @@ public class AdminFeedbackController {
     }
 
     /**
+     * 删除反馈（仅系统管理员）
+     */
+    @DeleteMapping("/feedback/{feedbackId}")
+    @RequiresRole({"SYSTEM_ADMIN"})
+    public Result<Void> deleteFeedback(@PathVariable Long feedbackId) {
+        adminFeedbackService.deleteFeedback(feedbackId);
+        return Result.ok();
+    }
+
+    /**
      * 发送备注提醒
      *
      * @param feedbackId 反馈ID

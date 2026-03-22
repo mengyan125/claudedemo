@@ -49,6 +49,13 @@ public interface BaseSemesterService {
     void setCurrentSemester(Long id);
 
     /**
+     * 取消当前学期
+     *
+     * @param id 学期ID
+     */
+    void unsetCurrentSemester(Long id);
+
+    /**
      * 删除学期
      *
      * @param id 学期ID

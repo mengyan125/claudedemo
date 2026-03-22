@@ -205,6 +205,11 @@ export function toggleFavoriteApi(feedbackId: number) {
   return request.post<ApiResponse<null>>(`/admin/feedback/${feedbackId}/favorite`)
 }
 
+/* 删除反馈（仅系统管理员） */
+export function deleteAdminFeedbackApi(feedbackId: number) {
+  return request.delete<ApiResponse<null>>(`/admin/feedback/${feedbackId}`)
+}
+
 /* 获取反馈统计 */
 export function getStatisticsApi(params?: { startDate?: string; endDate?: string }) {
   return request.get<ApiResponse<FeedbackStatistics>>('/admin/statistics', { params })

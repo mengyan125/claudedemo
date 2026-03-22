@@ -84,6 +84,19 @@ public class BaseSemesterServiceImpl implements BaseSemesterService {
     }
 
     @Override
+    public void unsetCurrentSemester(Long id) {
+        BaseSemester semester = baseSemesterMapper.selectById(id);
+        if (semester == null) {
+            throw new BusinessException("学期不存在");
+        }
+        if (semester.getIsCurrent() == null || semester.getIsCurrent() != 1) {
+            throw new BusinessException("该学期未启用");
+        }
+        semester.setIsCurrent(0);
+        baseSemesterMapper.updateById(semester);
+    }
+
+    @Override
     public void deleteSemester(Long id) {
         BaseSemester semester = baseSemesterMapper.selectById(id);
         if (semester == null) {
