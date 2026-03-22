@@ -142,7 +142,24 @@ public class SystemUserServiceImpl implements SystemUserService {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
         if (StringUtils.hasText(dto.getUserType())) {
-            user.setUserType(dto.getUserType());
+            // 判断是否为管理员角色类型，与 createUser 保持一致
+            String newRoleCode = null;
+            if ("role_admin".equals(dto.getUserType())) {
+                newRoleCode = "ROLE_ADMIN";
+            } else if ("category_admin".equals(dto.getUserType())) {
+                newRoleCode = "CATEGORY_ADMIN";
+            }
+            String actualUserType = newRoleCode != null ? "teacher" : dto.getUserType();
+            user.setUserType(actualUserType);
+
+            // 清除旧的管理员角色
+            removeRoleByCode(id, "ROLE_ADMIN");
+            removeRoleByCode(id, "CATEGORY_ADMIN");
+
+            // 分配新角色
+            if (newRoleCode != null) {
+                assignRole(id, newRoleCode);
+            }
         }
 
         sysUserMapper.updateById(user);
@@ -194,10 +211,34 @@ public class SystemUserServiceImpl implements SystemUserService {
         roleWrapper.eq(SysRole::getRoleCode, roleCode);
         SysRole role = sysRoleMapper.selectOne(roleWrapper);
         if (role != null) {
-            SysUserRole userRole = new SysUserRole();
-            userRole.setUserId(userId);
-            userRole.setRoleId(role.getId());
-            sysUserRoleMapper.insert(userRole);
+            // 检查是否已存在，避免重复
+            LambdaQueryWrapper<SysUserRole> checkWrapper = new LambdaQueryWrapper<>();
+            checkWrapper.eq(SysUserRole::getUserId, userId)
+                        .eq(SysUserRole::getRoleId, role.getId());
+            if (sysUserRoleMapper.selectCount(checkWrapper) == 0) {
+                SysUserRole userRole = new SysUserRole();
+                userRole.setUserId(userId);
+                userRole.setRoleId(role.getId());
+                sysUserRoleMapper.insert(userRole);
+            }
+        }
+    }
+
+    /**
+     * 移除用户的指定角色
+     *
+     * @param userId   用户ID
+     * @param roleCode 角色编码
+     */
+    private void removeRoleByCode(Long userId, String roleCode) {
+        LambdaQueryWrapper<SysRole> roleWrapper = new LambdaQueryWrapper<>();
+        roleWrapper.eq(SysRole::getRoleCode, roleCode);
+        SysRole role = sysRoleMapper.selectOne(roleWrapper);
+        if (role != null) {
+            LambdaQueryWrapper<SysUserRole> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(SysUserRole::getUserId, userId)
+                   .eq(SysUserRole::getRoleId, role.getId());
+            sysUserRoleMapper.delete(wrapper);
         }
     }
 
