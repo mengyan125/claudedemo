@@ -228,15 +228,15 @@ public class StudentFeedbackServiceImpl implements StudentFeedbackService {
     }
 
     /** 将反馈实体转换为列表项VO */
-    /** 截取内容摘要，超过15字显示"……" */
+    /** 截取内容摘要，超过50字显示"……" */
     private String truncateContent(String content) {
         if (content == null) {
             return null;
         }
-        if (content.length() <= 15) {
+        if (content.length() <= 50) {
             return content;
         }
-        return content.substring(0, 15) + "……";
+        return content.substring(0, 50) + "……";
     }
 
     private FeedbackListItemVO convertToListItemVO(FbFeedback feedback) {
@@ -251,7 +251,7 @@ public class StudentFeedbackServiceImpl implements StudentFeedbackService {
                 .teacherId(feedback.getTeacherId())
                 .teacherName(teacherName)
                 .title(feedback.getTitle())
-                .content(truncateContent(feedback.getContent()))
+                .content(feedback.getContent())
                 .isAnonymous(feedback.getIsAnonymous() != null && feedback.getIsAnonymous() == 1)
                 .status(feedback.getStatus())
                 .replyStatus(feedback.getReplyStatus())
