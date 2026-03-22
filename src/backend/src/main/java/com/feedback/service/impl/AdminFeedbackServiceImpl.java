@@ -73,6 +73,12 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
     @Autowired
     private FbFeedbackAdminReadMapper fbFeedbackAdminReadMapper;
 
+    @Autowired
+    private SysUserRoleMapper sysUserRoleMapper;
+
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
+
     @Override
     public PageResult<AdminFeedbackItemVO> getFeedbackList(Long categoryId, String status,
                                                             String keyword, Long gradeId,
@@ -757,10 +763,35 @@ public class AdminFeedbackServiceImpl implements AdminFeedbackService {
                     .id(r.getId())
                     .replyUserId(r.getReplyUserId())
                     .replyUserName(user != null ? user.getRealName() : null)
-                    .userType(user != null ? user.getUserType() : null)
+                    .userType(user != null ? resolveDisplayUserType(user) : null)
                     .content(r.getContent())
                     .createTime(r.getCreateTime() != null ? sdf.format(r.getCreateTime()) : null)
                     .build();
         }).collect(Collectors.toList());
+    }
+
+    /** 根据用户角色转换显示用户类型 */
+    private String resolveDisplayUserType(SysUser user) {
+        List<String> roleCodes = getUserRoleCodes(user.getId());
+        if (roleCodes.contains("ROLE_ADMIN")) {
+            return "role_admin";
+        }
+        if (roleCodes.contains("CATEGORY_ADMIN")) {
+            return "category_admin";
+        }
+        return user.getUserType();
+    }
+
+    /** 查询用户角色编码列表 */
+    private List<String> getUserRoleCodes(Long userId) {
+        LambdaQueryWrapper<SysUserRole> urWrapper = new LambdaQueryWrapper<>();
+        urWrapper.eq(SysUserRole::getUserId, userId);
+        List<SysUserRole> userRoles = sysUserRoleMapper.selectList(urWrapper);
+        if (userRoles.isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+        List<Long> roleIds = userRoles.stream().map(SysUserRole::getRoleId).collect(Collectors.toList());
+        List<SysRole> roles = sysRoleMapper.selectBatchIds(roleIds);
+        return roles.stream().map(SysRole::getRoleCode).collect(Collectors.toList());
     }
 }

@@ -213,7 +213,7 @@ const tempSelectedIds = ref<number[]>([])
 const sendingReminder = ref(false)
 
 function formatUserType(type: string) {
-  const map: Record<string, string> = { admin: '管理员', student: '学生', teacher: '教师' }
+  const map: Record<string, string> = { admin: '管理员', student: '学生', teacher: '教师', role_admin: '角色管理员', category_admin: '类别管理员' }
   return map[type] || type
 }
 
