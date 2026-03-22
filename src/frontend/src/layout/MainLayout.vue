@@ -33,9 +33,6 @@
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-        <el-icon :size="20" class="nav-icon" @click="showSettings = true">
-          <Setting />
-        </el-icon>
       </div>
     </header>
 
@@ -47,16 +44,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Grid, ArrowDown, Setting } from '@element-plus/icons-vue'
+import { Grid, ArrowDown } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import { logoutApi } from '@/api/auth'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
-const showSettings = ref(false)
 
 /* Tab 导航配置 */
 interface TabItem {

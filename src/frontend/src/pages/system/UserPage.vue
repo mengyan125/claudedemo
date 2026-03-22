@@ -18,9 +18,6 @@
         <el-button type="primary" round @click="openCreateDialog">
           <el-icon><Plus /></el-icon>新增用户
         </el-button>
-        <el-button round @click="openBatchDialog">
-          <el-icon><Upload /></el-icon>批量导入
-        </el-button>
       </div>
     </div>
 
@@ -153,7 +150,7 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
-import { Search, Plus, Upload } from '@element-plus/icons-vue'
+import { Search, Plus } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import {
   getUserListApi,

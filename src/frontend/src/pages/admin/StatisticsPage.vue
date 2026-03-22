@@ -90,18 +90,18 @@
       </div>
 
       <el-table :data="top10List" class="top10-table" size="small">
-        <el-table-column prop="rank" label="序号" width="60" align="center" />
-        <el-table-column label="教师" min-width="100" align="center">
+        <el-table-column prop="rank" label="序号" min-width="1" align="center" />
+        <el-table-column label="教师" min-width="1" align="center">
           <template #default="{ row }">
             <span class="teacher-link" @click="goTeacher(row.teacherId)">{{ row.teacherName }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="subject" label="科目" width="80" align="center" />
-        <el-table-column prop="categoryName" label="反馈类别" width="100" align="center" />
-        <el-table-column prop="gradeName" label="年级/学期" width="120" align="center" />
-        <el-table-column prop="className" label="班级/学级" width="120" align="center" />
-        <el-table-column prop="count" label="被反馈次数" width="100" align="center" />
-        <el-table-column label="操作" width="80" align="center">
+        <el-table-column prop="subject" label="科目" min-width="1" align="center" />
+        <el-table-column prop="categoryName" label="反馈类别" min-width="1" align="center" />
+        <el-table-column prop="gradeName" label="年级/学期" min-width="1" align="center" />
+        <el-table-column prop="className" label="班级/学级" min-width="1" align="center" />
+        <el-table-column prop="count" label="被反馈次数" min-width="1" align="center" />
+        <el-table-column label="操作" min-width="1" align="center">
           <template #default="{ row }">
             <span class="view-link" @click="goTeacher(row.teacherId)">查看</span>
           </template>
